@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".MenuActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+        <LinearLayout
+            android:id="@+id/layout"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:paddingBottom="20dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:gravity="center_vertical"
+            android:layout_below="@id/toolbar">
+
+            <ImageView
+                android:id="@+id/logo_restau"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/logo"
+                android:padding="4dp"
+                android:background="@drawable/rect_plein_border"
+                android:layout_marginRight="@dimen/appbar_padding_top"
+                android:layout_marginLeft="@dimen/appbar_padding_top"
+                />
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="@dimen/appbar_padding_top">
+
+                <TextView
+                    android:id="@+id/nom_restau_details"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:text="Restaurant Tchop Tchop"
+                    android:textSize="@dimen/slide_title_middle"
+                    android:textColor="@color/white"
+                    android:gravity="center"
+                    android:layout_marginBottom="4dp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="->"
+                        android:textSize="@dimen/slide_title_mini"
+                        android:textColor="@color/white"
+                        android:gravity="center"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginBottom="4dp"/>
+
+                    <TextView
+                        android:id="@+id/nbCategorie"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="05"
+                        android:textSize="@dimen/slide_title_mini"
+                        android:textColor="@color/yellow"
+                        android:gravity="center"
+                        android:layout_marginLeft="6dp"
+                        android:layout_marginBottom="4dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="catégorie(s)"
+                        android:textSize="@dimen/slide_title_mini"
+                        android:textColor="@color/white"
+                        android:gravity="center"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginBottom="4dp"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="->"
+                        android:textSize="@dimen/slide_title_mini"
+                        android:textColor="@color/white"
+                        android:gravity="center"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginBottom="4dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="15"
+                        android:textSize="@dimen/slide_title_mini"
+                        android:textColor="@color/yellow"
+                        android:gravity="center"
+                        android:layout_marginLeft="6dp"
+                        android:layout_marginBottom="4dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="menu(s)"
+                        android:textSize="@dimen/slide_title_mini"
+                        android:textColor="@color/white"
+                        android:gravity="center"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginBottom="4dp"/>
+
+                </LinearLayout>
+
+
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <include layout="@layout/content_menu" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/add_menu_fab"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="15dp"
+        app:backgroundTint="@color/bleuFonce"
+        android:src="@drawable/ic_add_white_24dp" />
+
+</android.support.design.widget.CoordinatorLayout>

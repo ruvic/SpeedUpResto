@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">SpeedUpResto</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="mini_text">
+        "A material metaphor is the unifying theory of a rationalized space and a system of motion."
+        "The material is grounded in tactile reality, inspired by the study of paper and ink, yet "
+        "technologically advanced and open to imagination and magic.\n"
+    </string>
+
+    <string name="add_to_cart">Ajouter au Panier</string>
+    <string name="qte">Qté</string>
+    <string name="mark_like_delivered">Marquer comme livré</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="empty_list">liste vide, aucun élément n\'as été ajouté</string>
+
+    <string name="ajouter">AJOUTER</string>
+    <string name="modifier">MODIFIER</string>
+    <string name="annuler">ANNULER</string>
+    <string name="refuser">REFUSER</string>
+    <string name="livre">LIVRE</string>
+    <string name="non_livre">NON LIVRE</string>
+
+</resources>
