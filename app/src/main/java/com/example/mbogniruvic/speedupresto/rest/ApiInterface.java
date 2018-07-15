@@ -3,6 +3,7 @@ package com.example.mbogniruvic.speedupresto.rest;
 import com.example.mbogniruvic.speedupresto.models.Category;
 import com.example.mbogniruvic.speedupresto.models.CategoryMenuResponse;
 import com.example.mbogniruvic.speedupresto.models.CategoryResponse;
+import com.example.mbogniruvic.speedupresto.models.CreateMenuItemResponse;
 import com.example.mbogniruvic.speedupresto.models.MenuItem;
 import com.example.mbogniruvic.speedupresto.models.UpdateMenuitemResponse;
 
@@ -11,6 +12,7 @@ import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -38,6 +40,18 @@ public interface ApiInterface {
                 @Field("restauID") String restauID,
                 @Field("disponible") boolean disponible
             );
+
+    @POST("menuItem")
+    @FormUrlEncoded
+    Call<CreateMenuItemResponse> createMenuItem(
+            @Field("nom") String nom,
+            @Field("image") String image,
+            @Field("price") double price,
+            @Field("desc") String desc,
+            @Field("catID") String catID,
+            @Field("restauID") String restauID,
+            @Field("disponible") boolean disponible
+    );
 
 
 

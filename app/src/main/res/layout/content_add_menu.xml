@@ -6,72 +6,95 @@
     android:layout_gravity="fill_vertical"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
+    <LinearLayout android:layout_width="match_parent"
         android:layout_height="match_parent"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:orientation="vertical">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="0dp"
+            android:layout_margin="0dp"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="202dp"
+                android:layout_gravity="center_horizontal"
+                android:paddingBottom="10dp"
+                android:background="@color/white">
+
+                <ImageView
+                    android:id="@+id/add_menu_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="170dp"
+                    android:clickable="true"
+                    android:scaleType="centerCrop"
+                    android:foreground="@drawable/click_selector_transparent"
+                    android:src="@drawable/ic_image_empty_fonce" />
+
+                <ImageButton
+                    android:id="@+id/add_load_image"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginBottom="0dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:background="@drawable/click_selector"
+                    android:clickable="true"
+                    android:src="@drawable/ic_add_a_photo_white_24dp"/>
+
+            </RelativeLayout>
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginTop="0dp"
+            android:layout_marginTop="5dp"
             android:orientation="vertical">
 
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="55dp"
-                android:layout_marginTop="@dimen/appbar_padding_top"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp"
-                android:paddingTop="5dp"
-                android:paddingBottom="5dp"
-                android:background="@drawable/rounded_rect_empty">
-
-                <com.jaredrummler.materialspinner.MaterialSpinner
-                    android:id="@+id/spinner"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:paddingTop="0dp"
-                    android:paddingBottom="0dp"
-                    android:layout_marginTop="0dp"
-                    android:layout_marginBottom="0dp"
-                    app:ms_hint="Choisir une catégorie"
-                    app:ms_dropdown_max_height="180dp" />
-
-            </FrameLayout>
-
-            <EditText
-                android:id="@+id/phone"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:hint="Nom du menu"
-                android:inputType="text"
-                android:textCursorDrawable="@null"
-                android:textSize="@dimen/slide_title_middle"
-                android:textColor="@color/gris_mat"
-                android:drawablePadding="@dimen/fab_margin"
-                android:layout_marginTop="@dimen/appbar_padding_top"
-                android:background="@drawable/rounded_rect_empty"
-                android:paddingTop="@dimen/appbar_padding_top"
-                android:paddingLeft="@dimen/fab_margin"
-                android:paddingBottom="@dimen/appbar_padding_top" />
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_height="match_parent"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="0dp"
+                android:orientation="vertical">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="55dp"
+                    android:layout_marginTop="@dimen/appbar_padding_top"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:background="@drawable/rounded_rect_empty">
+
+                    <com.jaredrummler.materialspinner.MaterialSpinner
+                        android:id="@+id/add_menu_cat"
+                        android:textColor="@color/gris_mat"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:paddingTop="0dp"
+                        android:paddingBottom="0dp"
+                        android:layout_marginTop="0dp"
+                        android:layout_marginBottom="0dp"
+                        app:ms_hint="Choisir une catégorie"
+                        app:ms_dropdown_max_height="180dp" />
+
+                </FrameLayout>
 
                 <EditText
-                    android:layout_width="150dp"
+                    android:id="@+id/add_menu_name"
+                    android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:hint="Prix"
+                    android:hint="Nom du menu"
+                    android:inputType="text"
                     android:textCursorDrawable="@null"
-                    android:inputType="numberDecimal"
                     android:textSize="@dimen/slide_title_middle"
                     android:textColor="@color/gris_mat"
                     android:drawablePadding="@dimen/fab_margin"
@@ -79,73 +102,98 @@
                     android:background="@drawable/rounded_rect_empty"
                     android:paddingTop="@dimen/appbar_padding_top"
                     android:paddingLeft="@dimen/fab_margin"
-                    android:layout_marginRight="15dp"
                     android:paddingBottom="@dimen/appbar_padding_top" />
 
-                <android.support.v7.widget.SwitchCompat
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="0dp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="10dp"
-                    android:text="Menu disponible"
-                    android:textColor="@color/green"
-                    android:theme="@style/SwitchCompatTheme"
-                    android:checked="true" />
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/add_menu_price"
+                        android:layout_width="150dp"
+                        android:layout_height="50dp"
+                        android:hint="Prix"
+                        android:textCursorDrawable="@null"
+                        android:inputType="numberDecimal"
+                        android:textSize="@dimen/slide_title_middle"
+                        android:textColor="@color/gris_mat"
+                        android:drawablePadding="@dimen/fab_margin"
+                        android:layout_marginTop="@dimen/appbar_padding_top"
+                        android:background="@drawable/rounded_rect_empty"
+                        android:paddingTop="@dimen/appbar_padding_top"
+                        android:paddingLeft="@dimen/fab_margin"
+                        android:layout_marginRight="15dp"
+                        android:paddingBottom="@dimen/appbar_padding_top" />
+
+                    <android.support.v7.widget.SwitchCompat
+                        android:id="@+id/add_menu_dispo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="0dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="10dp"
+                        android:text="Menu disponible"
+                        android:textColor="@color/green"
+                        android:theme="@style/SwitchCompatTheme"
+                        android:checked="true" />
+
+                </LinearLayout>
+
+                <EditText
+                    android:id="@+id/add_menu_desc"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:hint="Description"
+                    android:lines="5"
+                    android:textCursorDrawable="@null"
+                    android:textSize="@dimen/slide_title_middle"
+                    android:textColor="@color/gris_mat"
+                    android:drawablePadding="@dimen/fab_margin"
+                    android:layout_marginTop="@dimen/appbar_padding_top"
+                    android:background="@drawable/rounded_rect_empty"
+                    android:paddingTop="@dimen/appbar_padding_top"
+                    android:paddingLeft="@dimen/fab_margin"
+                    android:paddingBottom="@dimen/appbar_padding_top" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <Button
+                        android:id="@+id/add_menu_cancel_btn"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/annuler"
+                        android:textSize="@dimen/text_mini"
+                        android:textColor="@color/red"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="16dp"
+                        android:layout_marginLeft="35dp"
+                        android:background="@drawable/rounded_button_plein_cancel" />
+
+                    <Button
+                        android:id="@+id/add_menu_add_btn"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/ajouter"
+                        android:textSize="@dimen/text_mini"
+                        android:textColor="@color/white"
+                        android:gravity="center"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="16dp"
+                        android:layout_marginRight="40dp"
+                        android:background="@drawable/rounded_button_plein" />
+
+                </RelativeLayout>
 
             </LinearLayout>
 
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:hint="Description"
-                android:lines="5"
-                android:textCursorDrawable="@null"
-                android:textSize="@dimen/slide_title_middle"
-                android:textColor="@color/gris_mat"
-                android:drawablePadding="@dimen/fab_margin"
-                android:layout_marginTop="@dimen/appbar_padding_top"
-                android:background="@drawable/rounded_rect_empty"
-                android:paddingTop="@dimen/appbar_padding_top"
-                android:paddingLeft="@dimen/fab_margin"
-                android:paddingBottom="@dimen/appbar_padding_top" />
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <Button
-                    android:id="@+id/cancel_cmd_btn"
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/annuler"
-                    android:textSize="@dimen/text_mini"
-                    android:textColor="@color/red"
-                    android:layout_alignParentLeft="true"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="16dp"
-                    android:layout_marginLeft="35dp"
-                    android:background="@drawable/rounded_button_plein_cancel" />
-
-                <Button
-                    android:id="@+id/mark_cmd_btn"
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/ajouter"
-                    android:textSize="@dimen/text_mini"
-                    android:textColor="@color/white"
-                    android:gravity="center"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="16dp"
-                    android:layout_marginRight="50dp"
-                    android:background="@drawable/rounded_button_plein" />
-
-            </RelativeLayout>
 
         </LinearLayout>
-
-
     </LinearLayout>
+
 
 </android.support.v4.widget.NestedScrollView>

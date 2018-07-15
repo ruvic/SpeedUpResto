@@ -80,8 +80,12 @@ public class MenuActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Click action
-                View fragmentView = getLayoutInflater().inflate(R.layout.fragment_add_categorie_menu, null);
+
+                Intent intent = new Intent(MenuActivity.this, AddMenuActivity.class);
+                startActivity(intent);
+
+
+                /*View fragmentView = getLayoutInflater().inflate(R.layout.fragment_add_categorie_menu, null);
 
                 final BottomSheetDialog dialog = new BottomSheetDialog(context);
                 dialog.setContentView(fragmentView);
@@ -111,7 +115,7 @@ public class MenuActivity extends AppCompatActivity {
                     public void onClick(View view) {
                         dialog.hide();
                     }
-                });
+                });*/
 
             }
         });
