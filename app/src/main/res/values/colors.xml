@@ -12,12 +12,14 @@
     <color name="colorPrimaryText">#212121</color>
     <color name="colorSecondaryText">#757575</color>
 
+
     <color name="icons">#ffffff</color>
     <color name="divider">#bdbdbd</color>
     <color name="yellow">#f9bc02</color>
     <color name="gris">#bcaaa4</color>
     <color name="grisClair">#dcd1ce</color>
     <color name="grisSombre">#dcd1ce</color>
+    <color name="prixFond">#d7e53935</color>
 
 
     <color name="gris_mat">#212121</color>

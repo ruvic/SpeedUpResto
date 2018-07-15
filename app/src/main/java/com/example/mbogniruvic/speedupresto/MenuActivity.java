@@ -12,27 +12,46 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mbogniruvic.speedupresto.Adapters.CategoriesAdapters;
 import com.example.mbogniruvic.speedupresto.Adapters.CommandesAdapter;
 import com.example.mbogniruvic.speedupresto.models.CategoryMenu;
+import com.example.mbogniruvic.speedupresto.models.CategoryMenuResponse;
 import com.example.mbogniruvic.speedupresto.models.MenuItem;
+import com.example.mbogniruvic.speedupresto.rest.ApiClient;
+import com.example.mbogniruvic.speedupresto.rest.ApiInterface;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class MenuActivity extends AppCompatActivity {
 
-    List<CategoryMenu> categoryList=new ArrayList<>();
-    CategoriesAdapters mAdapter;
-    RecyclerView recyclerView;
-    Context context;
+    public static final String TAG = MenuActivity.class.getSimpleName();
+    public static final String MENU_ITEM_TAG=TAG+".MENU_ITEM";
+    public static final String CAT_NAME_TAG=TAG+".CAT_NAME";
+    public static final String CAT_OBJECT_TAG=TAG+".CAT_OBJECT";
+    public static final String CAT_CURRENT_TAG=TAG+".CURRENT";
+    public static final String MENU_ITEM_VOIR_PLUS_TAG=TAG+".CAT_OBJECT_VOIR_PLUS";
+
+
+    private List<CategoryMenu> categoryList;
+    private CategoriesAdapters mAdapter;
+    private RecyclerView recyclerView;
+    private Context context;
+    private TextView nbCategorieField;
+    private TextView nbMenuField;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,9 +61,7 @@ public class MenuActivity extends AppCompatActivity {
         context=this;
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
-
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -52,16 +69,12 @@ public class MenuActivity extends AppCompatActivity {
             }
         });
 
-        recyclerView=(RecyclerView)findViewById(R.id.recyclerV_categorie);
-        mAdapter = new CategoriesAdapters(categoryList, this);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(mAdapter);
 
+        //get Address
+        nbCategorieField=(TextView) findViewById(R.id.nbCategorie);
+        nbMenuField=(TextView)findViewById(R.id.nbMenus);
 
-
-        prepareMovieData();
+        prepareDatas();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.add_menu_fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -139,38 +152,66 @@ public class MenuActivity extends AppCompatActivity {
 
     }
 
-    private void prepareMovieData() {
+    private void prepareDatas() {
 
-        List<String> catNoms=new ArrayList<>();
-        catNoms.add("Patisserie");
-        catNoms.add("Sauce");
-        catNoms.add("Glaces");
-        catNoms.add("Amuses Gueul");
-        catNoms.add("Goûté");
-        catNoms.add("Patisserie 2");
-        catNoms.add("Sauce 2");
-        catNoms.add("Glaces 2");
-        catNoms.add("Amuses Gueul2");
-        catNoms.add("Goûté 2");
-        catNoms.add("Patisserie 3");
-        catNoms.add("Sauce 3");
-        catNoms.add("Glaces 3");
-        catNoms.add("Amuses Gueul 3");
-        catNoms.add("Goûté 3");
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+        Call<CategoryMenuResponse> call=apiService.getMenusByCategories("5b060369244f78388a78f157");
 
-        CategoryMenu cat=null;
+        call.enqueue(new Callback<CategoryMenuResponse>() {
 
-        for (int i=0; i<catNoms.size(); i++){
-            cat=new CategoryMenu(catNoms.get(i));
-            List<MenuItem> menus=new ArrayList<>();
-            for (int j=0; j<10; j++){
-                menus.add(new MenuItem(j+1));
+            @Override
+            public void onResponse(Call<CategoryMenuResponse>call, Response<CategoryMenuResponse> response) {
+                categoryList = response.body().getResult();
+
+                if(categoryList!=null && categoryList.size()!=0){
+
+                    recyclerView=(RecyclerView)findViewById(R.id.recyclerV_categorie);
+                    mAdapter = new CategoriesAdapters(categoryList);
+                    RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
+                    recyclerView.setLayoutManager(mLayoutManager);
+                    recyclerView.setItemAnimator(new DefaultItemAnimator());
+                    recyclerView.setAdapter(mAdapter);
+
+                    int nbCat=categoryList.size();
+                    int nbMenu=0;
+
+                    for (int i=0; i<nbCat; i++){
+                        nbMenu+=categoryList.get(i).getMenus().size();
+                    }
+
+
+                    nbCategorieField.setText(format(nbCat));
+                    nbMenuField.setText(format(nbMenu));
+
+
+
+                    /*String result="";
+
+                    for (CategoryMenu cat: categoryList) {
+                        result+=cat.toString()+"\n";
+                    }
+
+                    Toast.makeText(context, result, Toast.LENGTH_SHORT).show();*/
+
+                }else if(categoryList==null){
+                    Toast.makeText(context, "Liste null", Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(context, "Liste vide", Toast.LENGTH_SHORT).show();
+                }
+
             }
-            cat.setMenus(menus);
-            categoryList.add(cat);
-        }
 
+            @Override
+            public void onFailure(Call<CategoryMenuResponse>call, Throwable t) {
+                // Log error here since request failed
+                //Log.e(TAG, t.toString());
+                Toast.makeText(context, t.toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
 
+    }
 
+    public static String format(int number) {
+        return  (number<10)?"0"+number:""+number;
     }
 }

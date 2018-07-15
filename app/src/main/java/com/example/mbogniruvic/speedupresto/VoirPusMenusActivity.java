@@ -8,10 +8,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mbogniruvic.speedupresto.Adapters.CategorieItemsAdapter;
 import com.example.mbogniruvic.speedupresto.Adapters.CategoriesAdapters;
+import com.example.mbogniruvic.speedupresto.models.CategoryMenu;
 import com.example.mbogniruvic.speedupresto.models.MenuItem;
 
 import java.util.ArrayList;
@@ -20,9 +23,16 @@ import java.util.List;
 public class VoirPusMenusActivity extends AppCompatActivity {
 
     Toolbar toolbar;
-    Context context;
     RecyclerView recyclerView;
+    ImageView logoRestoView;
+    TextView nomRestoView;
+    TextView nomCatView;
+    TextView nbMenusView;
     List<MenuItem> menusList;
+    Context context;
+    CategoryMenu currentCat;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,24 +49,26 @@ public class VoirPusMenusActivity extends AppCompatActivity {
             }
         });
 
-        prepareData();
+        currentCat=getIntent().getParcelableExtra(MenuActivity.CAT_OBJECT_TAG);
+        menusList=currentCat.getMenus();
 
-        prepareData();
-
+        //get Adresses
         recyclerView=(RecyclerView)findViewById(R.id.recyclerV_voir_plus);
-        CategorieItemsAdapter mAdapter = new CategorieItemsAdapter(menusList, true);
+        logoRestoView=(ImageView)findViewById(R.id.voir_plus_logo_restau);
+        nomRestoView=(TextView)findViewById(R.id.voir_plus_nom_categorie);
+        nomCatView=(TextView)findViewById(R.id.voir_plus_nom_categorie);
+        nbMenusView=(TextView)findViewById(R.id.voir_plus_nbMenus);
+
+        //init field
+        CategorieItemsAdapter mAdapter = new CategorieItemsAdapter(menusList, currentCat ,true);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-
         recyclerView.setAdapter(mAdapter);
+
+        nomCatView.setText(currentCat.getCategorie());
+        nbMenusView.setText(MenuActivity.format(currentCat.getMenus().size()));
         
     }
 
-    private void prepareData() {
-        menusList=new ArrayList<>();
-        for (int i=1; i<20; i++){
-            menusList.add(new MenuItem(i));
-        }
-    }
 }

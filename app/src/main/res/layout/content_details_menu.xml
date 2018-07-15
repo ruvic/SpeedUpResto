@@ -14,7 +14,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="202dp"
             android:layout_gravity="center_horizontal"
             android:paddingBottom="10dp"
             android:layout_marginBottom="10dp"
@@ -24,11 +24,12 @@
             <ImageView
                 android:id="@+id/details_menu_image"
                 android:layout_width="match_parent"
-                android:layout_height="150dp"
+                android:layout_height="180dp"
                 android:clickable="true"
+                android:scaleType="centerCrop"
                 android:background="@drawable/rect_empty_border"
                 android:foreground="@drawable/click_selector_transparent"
-                android:src="@drawable/a" />
+                android:src="@drawable/ic_image_empty" />
 
             <ImageButton
                 android:layout_width="50dp"
@@ -112,7 +113,7 @@
                 android:textStyle="bold"/>
 
             <EditText
-                android:id="@+id/phone"
+                android:id="@+id/details_nom_menu"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:hint="Nom du menu"
@@ -143,6 +144,7 @@
                 android:orientation="horizontal">
 
                 <EditText
+                    android:id="@+id/details_prix"
                     android:layout_width="150dp"
                     android:layout_height="50dp"
                     android:hint="Prix"
@@ -162,6 +164,7 @@
 
 
                 <TextView
+                    android:id="@+id/details_dispo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Menu disponible"
@@ -193,6 +196,7 @@
                 android:textStyle="bold"/>
 
             <EditText
+                android:id="@+id/details_desc"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:layout_marginTop="@dimen/appbar_padding_top"

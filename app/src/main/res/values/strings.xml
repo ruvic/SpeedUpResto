@@ -27,5 +27,8 @@
     <string name="refuser">REFUSER</string>
     <string name="livre">LIVRE</string>
     <string name="non_livre">NON LIVRE</string>
+    <string name="menu_dispo">Menu disponible</string>
+    <string name="menu_non_dispo">Menu indisponible</string>
+
 
 </resources>

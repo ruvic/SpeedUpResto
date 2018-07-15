@@ -39,6 +39,8 @@ public class MenuItem implements Parcelable {
     @SerializedName("disponible")
     private boolean isDispo;
 
+    private String nomCat;
+
 
     public MenuItem(String id, String idCat, String image, String nom,
                     double price, String desc, boolean isDispo) {
@@ -52,16 +54,6 @@ public class MenuItem implements Parcelable {
     }
 
 
-    protected MenuItem(Parcel in) {
-        id = in.readString();
-        IdCat = in.readString();
-        image = in.readString();
-        nom = in.readString();
-        price = in.readDouble();
-        desc = in.readString();
-        isDispo = in.readByte() != 0;
-    }
-
     public MenuItem(int id) {
 
         this.nom = "beafsteak Plantain + Pomme";
@@ -73,6 +65,31 @@ public class MenuItem implements Parcelable {
         this.image = "http://speedup.com";
         this.desc = "description";
 
+    }
+
+    protected MenuItem(Parcel in) {
+        id = in.readString();
+        IdCat = in.readString();
+        image = in.readString();
+        nom = in.readString();
+        price = in.readDouble();
+        desc = in.readString();
+        isDispo = in.readInt()==1;
+    }
+
+    public MenuItem() {
+    }
+
+    @Override
+    public String toString() {
+        String result="Id_menu : "+this.getId()+"\n"
+                +"nom : "+this.getNom()+"\n"
+                +"image : "+this.getImage()+"\n"
+                +"catID : "+this.getIdCat()+"\n"
+                +"price : "+this.getPrice()+"\n"
+                +"desc : "+this.getDesc()+"\n"
+                +"dispo : "+this.isDispo;
+        return result;
     }
 
     public static final Creator<MenuItem> CREATOR = new Creator<MenuItem>() {
@@ -92,6 +109,8 @@ public class MenuItem implements Parcelable {
         return 0;
     }
 
+
+
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(id);
@@ -100,7 +119,7 @@ public class MenuItem implements Parcelable {
         parcel.writeString(nom);
         parcel.writeDouble(price);
         parcel.writeString(desc);
-
+        parcel.writeInt(isDispo?1:0);
     }
 
 
@@ -169,5 +188,13 @@ public class MenuItem implements Parcelable {
         }
 
         return false;
+    }
+
+    public String getNomCat() {
+        return nomCat;
+    }
+
+    public void setNomCat(String nomCat) {
+        this.nomCat = nomCat;
     }
 }

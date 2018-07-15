@@ -78,7 +78,7 @@
                         android:layout_marginBottom="4dp"/>
 
                     <TextView
-                        android:id="@+id/nbCategorie"
+                        android:id="@+id/voir_plus_nom_categorie"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Patisserie"
@@ -106,6 +106,7 @@
                         android:layout_marginBottom="4dp"/>
 
                     <TextView
+                        android:id="@+id/voir_plus_nbMenus"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="15"

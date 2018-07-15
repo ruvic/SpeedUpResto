@@ -10,7 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.mbogniruvic.speedupresto.MenuActivity;
 import com.example.mbogniruvic.speedupresto.R;
 import com.example.mbogniruvic.speedupresto.VoirPusMenusActivity;
 import com.example.mbogniruvic.speedupresto.models.CategoryMenu;
@@ -38,25 +40,26 @@ public class CategoriesAdapters extends RecyclerView.Adapter<CategoriesAdapters.
         }
     }
 
-    public CategoriesAdapters(List<CategoryMenu> categoryMenuList, Context context) {
+    public CategoriesAdapters(List<CategoryMenu> categoryMenuList) {
         this.categoryMenuList = categoryMenuList;
-        this.context=context;
     }
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.categorie_list_row, parent, false);
-
+        context=parent.getContext();
         return new CategoriesAdapters.MyViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        CategoryMenu cat=categoryMenuList.get(position);
+        final CategoryMenu cat=categoryMenuList.get(position);
         holder.categorie.setText(cat.getCategorie());
 
-        CategorieItemsAdapter mAdapter = new CategorieItemsAdapter(cat.getMenus());
+        //Toast.makeText(context, "passage 1 : "+holder.categorie.getText(), Toast.LENGTH_SHORT).show();
+
+        CategorieItemsAdapter mAdapter = new CategorieItemsAdapter(cat.getMenus(), cat);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this.context,LinearLayoutManager.HORIZONTAL, false);
         holder.categorieItems.setLayoutManager(mLayoutManager);
         holder.categorieItems.setItemAnimator(new DefaultItemAnimator());
@@ -66,6 +69,7 @@ public class CategoriesAdapters extends RecyclerView.Adapter<CategoriesAdapters.
             @Override
             public void onClick(View view) {
             Intent intent=new Intent(context, VoirPusMenusActivity.class);
+            intent.putExtra(MenuActivity.CAT_OBJECT_TAG, cat);
             context.startActivity(intent);
             }
         });

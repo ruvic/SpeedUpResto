@@ -79,7 +79,7 @@
                         android:id="@+id/nbCategorie"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="05"
+                        android:text="00"
                         android:textSize="@dimen/slide_title_mini"
                         android:textColor="@color/yellow"
                         android:gravity="center"
@@ -114,9 +114,10 @@
                         android:layout_marginBottom="4dp"/>
 
                     <TextView
+                        android:id="@+id/nbMenus"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="15"
+                        android:text="00"
                         android:textSize="@dimen/slide_title_mini"
                         android:textColor="@color/yellow"
                         android:gravity="center"

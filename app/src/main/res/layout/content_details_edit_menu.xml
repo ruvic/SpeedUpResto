@@ -14,7 +14,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="180dp"
+            android:layout_height="202dp"
             android:layout_gravity="center_horizontal"
             android:background="@color/white"
             android:layout_marginBottom="10dp"
@@ -24,17 +24,19 @@
             <ImageView
                 android:id="@+id/edit_menu_image"
                 android:layout_width="match_parent"
-                android:layout_height="150dp"
+                android:layout_height="180dp"
                 android:clickable="true"
+                android:scaleType="centerCrop"
                 android:background="@drawable/rect_empty_border"
                 android:foreground="@drawable/click_selector_transparent"
-                android:src="@drawable/a" />
+                android:src="@drawable/ic_image_empty" />
 
             <ImageButton
+                android:id="@+id/edit_menu_load_image"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginRight="16dp"
-                android:layout_marginBottom="5dp"
+                android:layout_marginBottom="0dp"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentRight="true"
                 android:background="@drawable/click_selector"
@@ -73,6 +75,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:paddingTop="0dp"
+                    android:textColor="@color/gris_mat"
                     android:paddingBottom="0dp"
                     android:layout_marginTop="0dp"
                     android:layout_marginBottom="0dp"
@@ -90,7 +93,7 @@
                 android:textStyle="bold"/>
 
             <EditText
-                android:id="@+id/phone"
+                android:id="@+id/edit_nom_menu"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:hint="Nom du menu"
@@ -120,6 +123,7 @@
                 android:orientation="horizontal">
 
                 <EditText
+                    android:id="@+id/edit_prix_menu"
                     android:layout_width="150dp"
                     android:layout_height="50dp"
                     android:hint="Prix"
@@ -138,12 +142,14 @@
 
 
                 <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/edit_dispo_menu"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="0dp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="10dp"
                     android:text="Menu disponible"
+                    android:textStyle="bold"
                     android:textColor="@color/green"
                     android:theme="@style/SwitchCompatTheme"
                     android:checked="true" />
@@ -159,6 +165,7 @@
                 android:textStyle="bold"/>
 
             <EditText
+                android:id="@+id/edit_desc_menu"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:layout_marginTop="@dimen/appbar_padding_top"
@@ -179,7 +186,7 @@
                 android:layout_height="wrap_content">
 
                 <Button
-                    android:id="@+id/cancel_cmd_btn"
+                    android:id="@+id/cancel_edit_menu_btn"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:text="@string/annuler"
@@ -192,7 +199,7 @@
                     android:background="@drawable/rounded_button_plein_cancel" />
 
                 <Button
-                    android:id="@+id/mark_cmd_btn"
+                    android:id="@+id/edit_menu_btn"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:text="@string/modifier"
