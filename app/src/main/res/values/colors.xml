@@ -20,6 +20,7 @@
     <color name="grisClair">#dcd1ce</color>
     <color name="grisSombre">#dcd1ce</color>
     <color name="prixFond">#d7e53935</color>
+    <color name="prof_label_color">#e53935</color>
 
 
     <color name="gris_mat">#212121</color>

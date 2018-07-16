@@ -1,17 +1,26 @@
 package com.example.mbogniruvic.speedupresto.models;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Review {
 
-    private int id;
-    private int idRest;
-    private int idMenu;
-    private int idUser;
+    @SerializedName("_id")
+    private String id;
+    @SerializedName("restauID")
+    private String idRest;
+    @SerializedName("menuID")
+    private String idMenu;
+    @SerializedName("userID")
+    private String idUser;
+    @SerializedName("note")
     private float note;
+    @SerializedName("comment")
     private String comment;
+    @SerializedName("updatedAt")
     private String date;
 
 
-    public Review(int id, int idRest, int idMenu, int idUser, float note, String comment, String date) {
+    public Review(String id, String idRest, String idMenu, String idUser, float note, String comment, String date) {
         this.id = id;
         this.idRest = idRest;
         this.idMenu = idMenu;
@@ -25,35 +34,37 @@ public class Review {
 
     }
 
-    public int getId() {
+    
+
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public int getIdRest() {
+    public String getIdRest() {
         return idRest;
     }
 
-    public void setIdRest(int idRest) {
+    public void setIdRest(String idRest) {
         this.idRest = idRest;
     }
 
-    public int getIdMenu() {
+    public String getIdMenu() {
         return idMenu;
     }
 
-    public void setIdMenu(int idMenu) {
+    public void setIdMenu(String idMenu) {
         this.idMenu = idMenu;
     }
 
-    public int getIdUser() {
+    public String getIdUser() {
         return idUser;
     }
 
-    public void setIdUser(int idUser) {
+    public void setIdUser(String idUser) {
         this.idUser = idUser;
     }
 

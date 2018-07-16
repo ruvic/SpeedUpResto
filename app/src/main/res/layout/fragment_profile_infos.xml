@@ -12,7 +12,7 @@
             android:id="@+id/contact_button"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:background="@color/material_light_blue_500"
+            android:background="@drawable/rec_empty_red_border"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:gravity="center">
@@ -29,7 +29,7 @@
                 android:text="CONTACTS"
                 android:paddingTop="10dp"
                 android:layout_marginLeft="20dp"
-                android:textColor="@color/white"
+                android:textColor="@color/prof_label_color"
                 android:textStyle="bold"
                 android:textSize="14sp" />
         </RelativeLayout>
@@ -72,15 +72,16 @@
                         android:layout_height="wrap_content"
                         android:text="MOBILE"
                         android:textSize="12sp"
+                        android:textColor="@color/gris_mat"
                         android:paddingBottom="5dp"
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/phone_text"
+                        android:id="@+id/prof_phone_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textSize="11sp"
-                        android:text="221-067-004" />
+                        android:text="" />
 
                 </LinearLayout>
 
@@ -108,16 +109,17 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="EMAIL"
+                        android:textColor="@color/gris_mat"
                         android:textSize="12sp"
                         android:paddingBottom="2dp"
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/email_text"
+                        android:id="@+id/prof_email_text"
                         android:textSize="11sp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="tchoptchop@gmail.com" />
+                        android:text="" />
 
                 </LinearLayout>
 
@@ -130,7 +132,7 @@
             android:layout_height="48dp"
             android:layout_marginTop="10dp"
             android:layout_below="@id/contact_layout"
-            android:background="@color/material_light_blue_500"
+            android:background="@drawable/rec_empty_red_border"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:gravity="center">
@@ -146,18 +148,18 @@
                 android:text="DESCRIPTION"
                 android:paddingTop="10dp"
                 android:layout_marginLeft="20dp"
-                android:textColor="@color/white"
+                android:textColor="@color/prof_label_color"
                 android:textStyle="bold"
                 android:textSize="14sp" />
 
         </RelativeLayout>
 
         <TextView
-            android:id="@+id/bio_text"
+            android:id="@+id/prof_bio_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:text="@string/mini_text"
+            android:text=""
             android:layout_marginRight="10dp"
             android:layout_marginBottom="10dp"
             android:layout_marginTop="10dp"
@@ -169,7 +171,7 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_below="@id/contact_layout"
-            android:background="@color/material_light_blue_500"
+            android:background="@drawable/rec_empty_red_border"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:gravity="center">
@@ -185,7 +187,7 @@
                 android:text="AUTRES"
                 android:paddingTop="10dp"
                 android:layout_marginLeft="20dp"
-                android:textColor="@color/white"
+                android:textColor="@color/prof_label_color"
                 android:textStyle="bold"
                 android:textSize="14sp" />
 
@@ -205,7 +207,6 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/plus_item_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Nombre de notes"
@@ -217,10 +218,10 @@
                     android:textColor="@color/noir" />
 
                 <TextView
-                    android:id="@+id/profile_infos_nbr_notes"
+                    android:id="@+id/prof_nbr_notes"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="7.0/10"
+                    android:text=""
                     android:layout_marginLeft="25dp"
                     android:textStyle="italic"
                     android:textSize="11sp" />
@@ -253,10 +254,10 @@
                     android:textColor="@color/noir" />
 
                 <TextView
-                    android:id="@+id/profile_infos_min_order"
+                    android:id="@+id/prof_min_order"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="7.0/10"
+                    android:text=""
                     android:layout_marginLeft="25dp"
                     android:textStyle="italic"
                     android:textSize="11sp" />
@@ -289,10 +290,10 @@
                     android:textColor="@color/noir" />
 
                 <TextView
-                    android:id="@+id/profile_infos_frais_livrais"
+                    android:id="@+id/prof_frais_livrais"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="7.0/10"
+                    android:text=""
                     android:layout_marginLeft="25dp"
                     android:textStyle="italic"
                     android:textSize="11sp" />
@@ -325,10 +326,10 @@
                     android:textColor="@color/noir" />
 
                 <TextView
-                    android:id="@+id/profile_infos_duree_livras"
+                    android:id="@+id/prof_duree_livras"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="7.0/10"
+                    android:text=""
                     android:layout_marginLeft="25dp"
                     android:textStyle="italic"
                     android:textSize="11sp" />
@@ -361,10 +362,10 @@
                     android:textColor="@color/noir" />
 
                 <TextView
-                    android:id="@+id/profile_infos_etat"
+                    android:id="@+id/prof_etat"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="7.0/10"
+                    android:text=""
                     android:layout_marginLeft="25dp"
                     android:textStyle="italic"
                     android:textSize="11sp" />

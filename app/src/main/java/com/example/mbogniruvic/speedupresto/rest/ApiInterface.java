@@ -1,11 +1,14 @@
 package com.example.mbogniruvic.speedupresto.rest;
 
+import com.example.mbogniruvic.speedupresto.models.AllRestauReviewsResponse;
 import com.example.mbogniruvic.speedupresto.models.Category;
 import com.example.mbogniruvic.speedupresto.models.CategoryMenuResponse;
 import com.example.mbogniruvic.speedupresto.models.CategoryResponse;
 import com.example.mbogniruvic.speedupresto.models.CreateMenuItemResponse;
 import com.example.mbogniruvic.speedupresto.models.MenuItem;
+import com.example.mbogniruvic.speedupresto.models.RestaurantResponse;
 import com.example.mbogniruvic.speedupresto.models.UpdateMenuitemResponse;
+import com.example.mbogniruvic.speedupresto.models.UserResponse;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -52,6 +55,16 @@ public interface ApiInterface {
             @Field("restauID") String restauID,
             @Field("disponible") boolean disponible
     );
+
+    @GET("restaurants/{restauID}")
+    Call<RestaurantResponse> getRestaurantProfile(@Path("restauID") String restauID);
+
+    @GET("reviews/restau/{restauID}")
+    Call<AllRestauReviewsResponse> getAllRestauReviews(@Path("restauID") String restauID);
+
+    @GET("users/{userId}")
+    Call<UserResponse> getUserWithSingleId(@Path("userId") String userId);
+
 
 
 

@@ -17,12 +17,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mbogniruvic.speedupresto.Adapters.CategoriesAdapters;
 import com.example.mbogniruvic.speedupresto.Adapters.CommandesAdapter;
+import com.example.mbogniruvic.speedupresto.Tasks.DownLoadImageTask;
+import com.example.mbogniruvic.speedupresto.Tasks.RestaurantPreferencesDB;
 import com.example.mbogniruvic.speedupresto.models.CategoryMenu;
 import com.example.mbogniruvic.speedupresto.models.CategoryMenuResponse;
 import com.example.mbogniruvic.speedupresto.models.MenuItem;
@@ -50,8 +53,13 @@ public class MenuActivity extends AppCompatActivity {
     private CategoriesAdapters mAdapter;
     private RecyclerView recyclerView;
     private Context context;
+    private RestaurantPreferencesDB shareDB;
+    private ImageView logoRestauview;
+    private TextView nomRestauView;
     private TextView nbCategorieField;
     private TextView nbMenuField;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,8 +79,14 @@ public class MenuActivity extends AppCompatActivity {
 
 
         //get Address
+        logoRestauview=(ImageView)findViewById(R.id.logo_restau);
+        nomRestauView=(TextView)findViewById(R.id.nom_restau);
         nbCategorieField=(TextView) findViewById(R.id.nbCategorie);
         nbMenuField=(TextView)findViewById(R.id.nbMenus);
+
+        shareDB=MainActivity.shareDB;
+        new DownLoadImageTask(logoRestauview).execute(shareDB.getString(RestaurantPreferencesDB.IMAGE_KEY, ""));
+        nomRestauView.setText(shareDB.getString(RestaurantPreferencesDB.NOM_KEY, "<nom du restaurant>"));
 
         prepareDatas();
 

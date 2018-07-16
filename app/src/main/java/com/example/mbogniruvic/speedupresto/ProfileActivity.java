@@ -1,50 +1,41 @@
 package com.example.mbogniruvic.speedupresto;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
-import com.example.mbogniruvic.speedupresto.Adapters.RecyclerViewBiographieAdapter;
-import com.example.mbogniruvic.speedupresto.Adapters.RecyclerViewCommentsAdapter;
-import com.example.mbogniruvic.speedupresto.Adapters.RecyclerViewContactsAdapter;
-import com.example.mbogniruvic.speedupresto.Adapters.RecyclerViewPlusAdapter;
-import com.example.mbogniruvic.speedupresto.Fragments.LivreFragment;
-import com.example.mbogniruvic.speedupresto.Fragments.NonLivreFragment;
 import com.example.mbogniruvic.speedupresto.Fragments.ProfileAvisFragment;
 import com.example.mbogniruvic.speedupresto.Fragments.ProfileInfosFragment;
-import com.example.mbogniruvic.speedupresto.Fragments.RefuseFragment;
-import com.example.mbogniruvic.speedupresto.itemModels.BiographieItemModel;
-import com.example.mbogniruvic.speedupresto.itemModels.CommentItemsModel;
-import com.example.mbogniruvic.speedupresto.itemModels.ContactItemModel;
-import com.example.mbogniruvic.speedupresto.itemModels.PlusItemModels;
-import com.example.mbogniruvic.speedupresto.models.Restaurant;
-import com.example.mbogniruvic.speedupresto.models.Review;
-import com.github.aakira.expandablelayout.Utils;
+import com.example.mbogniruvic.speedupresto.Tasks.DownLoadImageTask;
+import com.example.mbogniruvic.speedupresto.Tasks.RestaurantPreferencesDB;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ProfileActivity extends AppCompatActivity {
 
-    List<BiographieItemModel> biographs;
-    List<ContactItemModel> contacts;
-    List<PlusItemModels> plusItems;
-    List<CommentItemsModel> commentItems;
+
     ViewPager viewPager;
     TabLayout tabLayout;
+    Context context;
+    private ImageView profileImageView;
+    private TextView restoNomView;
+    private TextView localView;
+    private TextView noteView;
+    private RestaurantPreferencesDB shareDB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +44,6 @@ public class ProfileActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -61,11 +51,28 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
+        context=this;
         viewPager = (ViewPager) findViewById(R.id.profile_viewpager);
         setupViewPager(viewPager);
 
         tabLayout = (TabLayout) findViewById(R.id.prof_tab);
         tabLayout.setupWithViewPager(viewPager);
+
+        //get Adresses
+        profileImageView=(ImageView)findViewById(R.id.prof_image);
+        restoNomView=(TextView)findViewById(R.id.prof_resto_name);
+        localView=(TextView)findViewById(R.id.prof_local);
+        noteView=(TextView)findViewById(R.id.prof_note);
+
+        //init field
+        shareDB=MainActivity.shareDB;
+        new DownLoadImageTask(profileImageView).execute(shareDB.getString(RestaurantPreferencesDB.IMAGE_KEY, null));
+        restoNomView.setText(shareDB.getString(RestaurantPreferencesDB.NOM_KEY, "<Nom du restaurant>"));
+
+        String local=shareDB.getString(RestaurantPreferencesDB.CITY_KEY, "<city>")+" , "
+                +shareDB.getString(RestaurantPreferencesDB.QUARTIER_KEY, "<quartier>");
+        localView.setText(local);
+        noteView.setText(shareDB.getFloat(RestaurantPreferencesDB.NOTE_KEY, 0.0f)+" / 10");
 
     }
 
@@ -127,74 +134,4 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
-    private void prepareComment() {
-
-        commentItems=new ArrayList<>();
-        List<Review> comments=new ArrayList<>();
-
-        Review comment=new Review();
-        comment.setNote(7.5f);
-        comment.setDate("Tuesday, 25, 2018");
-        comment.setComment(getString(R.string.mini_text));
-        comments.add(comment);
-
-        comment=new Review();
-        comment.setNote(8.0f);
-        comment.setDate("Tuesday, 25, 2018");
-        comment.setComment(getString(R.string.mini_text));
-        comments.add(comment);
-
-        comment=new Review();
-        comment.setNote(2.5f);
-        comment.setDate("Friday, 27, 2018");
-        comment.setComment(getString(R.string.mini_text));
-        comments.add(comment);
-
-        CommentItemsModel item=new CommentItemsModel(
-                comments,
-                R.color.material_light_blue_500,
-                R.color.white,
-                Utils.createInterpolator(Utils.LINEAR_INTERPOLATOR)
-        );
-
-        commentItems.add(item);
-
-    }
-
-    private void preparePlus() {
-
-        plusItems=new ArrayList<>();
-
-        plusItems.add(new PlusItemModels(
-                new Restaurant(),
-                R.color.material_light_blue_500,
-                R.color.white,
-                Utils.createInterpolator(Utils.LINEAR_INTERPOLATOR)
-        ));
-
-    }
-
-    private void prepareContact() {
-
-        contacts=new ArrayList<>();
-
-        contacts.add(new ContactItemModel(
-                "695715681 / 671030522",
-                "toto_tata@gmail.com",
-                R.color.material_light_blue_500,
-                R.color.white,
-                Utils.createInterpolator(Utils.LINEAR_INTERPOLATOR)));
-
-    }
-
-    private void prepareBiographie() {
-        biographs=new ArrayList<>();
-
-        biographs.add(new BiographieItemModel(
-                getString(R.string.mini_text),
-                R.color.material_light_blue_500,
-                R.color.white,
-                Utils.createInterpolator(Utils.LINEAR_INTERPOLATOR)));
-
-    }
 }

@@ -2,17 +2,12 @@ package com.example.mbogniruvic.speedupresto;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Movie;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -26,8 +21,9 @@ import android.widget.Toast;
 import com.example.mbogniruvic.speedupresto.Fragments.LivreFragment;
 import com.example.mbogniruvic.speedupresto.Fragments.NonLivreFragment;
 import com.example.mbogniruvic.speedupresto.Fragments.RefuseFragment;
-import com.example.mbogniruvic.speedupresto.models.CategoryMenu;
-import com.example.mbogniruvic.speedupresto.models.CategoryMenuResponse;
+import com.example.mbogniruvic.speedupresto.Tasks.RestaurantPreferencesDB;
+import com.example.mbogniruvic.speedupresto.models.Restaurant;
+import com.example.mbogniruvic.speedupresto.models.RestaurantResponse;
 import com.example.mbogniruvic.speedupresto.rest.ApiClient;
 import com.example.mbogniruvic.speedupresto.rest.ApiInterface;
 
@@ -45,6 +41,9 @@ public class MainActivity extends AppCompatActivity
     private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
+    private String restauID="5b060369244f78388a78f157";
+    public static RestaurantPreferencesDB shareDB;
+    private Restaurant restaurant;
     Context context;
 
     @Override
@@ -53,6 +52,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        context=this;
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -69,6 +69,40 @@ public class MainActivity extends AppCompatActivity
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
 
+        //Store restaurant informations in sharePreference
+        //get Restaurant profile from Databases
+
+        getRestaurantProfile();
+
+
+
+    }
+
+    private void getRestaurantProfile() {
+
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+        Call<RestaurantResponse> call=apiService.getRestaurantProfile(restauID);
+
+        call.enqueue(new Callback<RestaurantResponse>() {
+
+            @Override
+            public void onResponse(Call<RestaurantResponse> call, Response<RestaurantResponse> response) {
+                if(!response.body().isError()){
+                    restaurant=response.body().getRestaurant();
+
+                    shareDB=new RestaurantPreferencesDB(context);
+                    shareDB.put(restaurant);
+                    Toast.makeText(context, "Infos chargé avec succès", Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(context, "Echec du chargement des informations", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RestaurantResponse> call, Throwable t) {
+                Toast.makeText(context, t.toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
 
     }
 

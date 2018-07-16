@@ -14,6 +14,8 @@ import android.widget.Toast;
 
 import com.example.mbogniruvic.speedupresto.Adapters.CategorieItemsAdapter;
 import com.example.mbogniruvic.speedupresto.Adapters.CategoriesAdapters;
+import com.example.mbogniruvic.speedupresto.Tasks.DownLoadImageTask;
+import com.example.mbogniruvic.speedupresto.Tasks.RestaurantPreferencesDB;
 import com.example.mbogniruvic.speedupresto.models.CategoryMenu;
 import com.example.mbogniruvic.speedupresto.models.MenuItem;
 
@@ -31,6 +33,7 @@ public class VoirPusMenusActivity extends AppCompatActivity {
     List<MenuItem> menusList;
     Context context;
     CategoryMenu currentCat;
+    RestaurantPreferencesDB shareDB;
 
 
     @Override
@@ -55,7 +58,7 @@ public class VoirPusMenusActivity extends AppCompatActivity {
         //get Adresses
         recyclerView=(RecyclerView)findViewById(R.id.recyclerV_voir_plus);
         logoRestoView=(ImageView)findViewById(R.id.voir_plus_logo_restau);
-        nomRestoView=(TextView)findViewById(R.id.voir_plus_nom_categorie);
+        nomRestoView=(TextView)findViewById(R.id.voir_plus_nom_restau);
         nomCatView=(TextView)findViewById(R.id.voir_plus_nom_categorie);
         nbMenusView=(TextView)findViewById(R.id.voir_plus_nbMenus);
 
@@ -66,6 +69,9 @@ public class VoirPusMenusActivity extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
 
+        shareDB=MainActivity.shareDB;
+        new DownLoadImageTask(logoRestoView).execute(shareDB.getString(RestaurantPreferencesDB.IMAGE_KEY, ""));
+        nomRestoView.setText(shareDB.getString(RestaurantPreferencesDB.NOM_KEY, "<nom du restaurant>"));
         nomCatView.setText(currentCat.getCategorie());
         nbMenusView.setText(MenuActivity.format(currentCat.getMenus().size()));
         

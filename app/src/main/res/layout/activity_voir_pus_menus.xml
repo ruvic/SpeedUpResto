@@ -37,8 +37,9 @@
                 android:id="@+id/voir_plus_logo_restau"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
-                android:src="@drawable/logo"
-                android:padding="4dp"
+                android:src="@drawable/ic_image_empty"
+                android:scaleType="fitXY"
+                android:padding="0dp"
                 android:background="@drawable/rect_plein_border"
                 android:layout_marginRight="@dimen/appbar_padding_top"
                 android:layout_marginLeft="@dimen/appbar_padding_top"
@@ -52,7 +53,7 @@
                 android:layout_marginLeft="@dimen/appbar_padding_top">
 
                 <TextView
-                    android:id="@+id/voir_plus_nom_restau_details"
+                    android:id="@+id/voir_plus_nom_restau"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
