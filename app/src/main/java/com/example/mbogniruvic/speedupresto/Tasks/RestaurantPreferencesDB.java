@@ -50,6 +50,7 @@ public class RestaurantPreferencesDB {
     }
 
     public void put(Restaurant restau){
+
         editor.putString(ID_KEY, restau.getId());
         editor.putString(NOM_KEY, restau.getNom());
         editor.putString(EMAIL_KEY, restau.getEmail());

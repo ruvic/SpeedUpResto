@@ -56,6 +56,7 @@ public class EditMenuDetailsActivity extends AppCompatActivity {
 
     private CategoryMenu currentCat;
     private MenuItem menu;
+    private boolean imageHasChanged=false;
     private boolean isVoirPlus;
     private ImageView menu_image;
     private List<Category> categoryList;
@@ -223,7 +224,11 @@ public class EditMenuDetailsActivity extends AppCompatActivity {
         } else {
             menuItem.setId(menu.getId());
             menuItem.setIdCat(categoryList.get(categorieField.getSelectedIndex()).getId());
-            menuItem.setImage("https://zupimages.net/up/18/28/7475.jpg");
+            if (imageHasChanged) {
+                menuItem.setImage("https://zupimages.net/up/18/28/7475.jpg");
+            }else{
+                menuItem.setImage(menu.getImage());
+            }
             menuItem.setNom(nomMenuField.getText().toString().trim());
             menuItem.setPrice(Double.valueOf(prixField.getText().toString()).doubleValue());
             menuItem.setDispo(dispoField.isChecked());
@@ -281,18 +286,14 @@ public class EditMenuDetailsActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode==1000 && resultCode==RESULT_OK && data!=null && data.getData()!=null){
-            String filePath=data.getStringExtra(FilePickerActivity.RESULT_FILE_PATH);
-            //menu_image.setImageURI(data.getData());
             Uri uri=data.getData();
             try {
                 Bitmap bitmap=MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                //menu_image.setImageURI(bitmap);
                 menu_image.setImageBitmap(bitmap);
+                imageHasChanged=true;
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            //File file=new File(data.getData());
-
             Toast.makeText(context, getRealPathFromURI(context,uri), Toast.LENGTH_LONG).show();
 
         }

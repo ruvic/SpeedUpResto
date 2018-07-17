@@ -1,5 +1,7 @@
 package com.example.mbogniruvic.speedupresto.models;
 
+import com.example.mbogniruvic.speedupresto.MainActivity;
+import com.example.mbogniruvic.speedupresto.Tasks.RestaurantPreferencesDB;
 import com.google.gson.annotations.SerializedName;
 
 public class Restaurant {
@@ -78,8 +80,21 @@ public class Restaurant {
 
     public Restaurant() {
 
+    }
 
-        this.nom = "Restaurant le Pititi";
+    public Restaurant(RestaurantPreferencesDB shDB) {
+        RestaurantPreferencesDB sharedDB=shDB;
+
+        this.id=sharedDB.getString(RestaurantPreferencesDB.ID_KEY,"");
+        this.fee_delivery=sharedDB.getLong(RestaurantPreferencesDB.FEE_DELIVERY_KEY,0);
+        this.time_delivery=sharedDB.getLong(RestaurantPreferencesDB.TIME_DELIVERY_KEY,0);
+        this.min_order=sharedDB.getInt(RestaurantPreferencesDB.MIN_ORDER_KEY,0);
+        this.latitude=sharedDB.getString(RestaurantPreferencesDB.LATITUDE_KEY,"");
+        this.longitude=sharedDB.getString(RestaurantPreferencesDB.LONGITUDE_KEY,"");
+        this.image=sharedDB.getString(RestaurantPreferencesDB.IMAGE_KEY,"");
+        this.note=sharedDB.getFloat(RestaurantPreferencesDB.NOTE_KEY,0f);
+
+        /*this.nom = "Restaurant le Pititi";
         this.image = "";
         this.note = 3f;
         this.nber_note = 185;
@@ -97,7 +112,11 @@ public class Restaurant {
         this.latitude = "latitude";
         this.longitude = "longitude";
         this.bio = "bio";
-        this.state = true;
+        this.state = true;*/
+    }
+
+    public Restaurant(String id) {
+        this.id = id;
     }
 
     public String getCode() {

@@ -102,7 +102,6 @@ public class AddMenuActivity extends AppCompatActivity {
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(Intent.createChooser(intent, "select picture"), 1000);
-                imageHasChange=true;
             }
         });
 
@@ -182,6 +181,7 @@ public class AddMenuActivity extends AppCompatActivity {
             try {
                 Bitmap bitmap= MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
                 menuImageField.setImageBitmap(bitmap);
+                imageHasChange=true;
             } catch (IOException e) {
                 e.printStackTrace();
             }

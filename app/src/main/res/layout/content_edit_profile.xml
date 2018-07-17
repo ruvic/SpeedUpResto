@@ -17,14 +17,14 @@
             android:background="@color/white">
 
             <ImageView
-                android:id="@+id/voir_plus_image_menu"
+                android:id="@+id/edit_prof_image"
                 android:layout_width="match_parent"
                 android:layout_height="170dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/ic_image_empty"
                 android:foreground="#20000000"/>
 
-            <RelativeLayout
+            <!--<RelativeLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="65dp"
@@ -33,7 +33,7 @@
                 android:layout_gravity="bottom">
 
                 <TextView
-                    android:id="@+id/prof_resto"
+                    android:id="@+id/edit_prof_resto_nom"
                     android:textColor="@color/white"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -43,12 +43,12 @@
                     android:textStyle="bold"/>
 
                 <TextView
-                    android:layout_below="@id/prof_resto"
+                    android:layout_below="@id/edit_prof_resto_nom"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="15sp"
                     android:textColor="@color/white"
-                    android:id="@+id/prof_local"
+                    android:id="@+id/edit_prof_local"
                     android:gravity="center"
                     android:text="Essos, Yaoundé" />
 
@@ -62,9 +62,10 @@
                     android:text="Essos, Yaoundé" />
 
 
-            </RelativeLayout>
+            </RelativeLayout>-->
 
             <ImageButton
+                android:id="@+id/edit_prof_load_image"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_gravity="bottom|end"
@@ -86,11 +87,10 @@
             <EditText
                 android:drawableLeft="@drawable/ic_home_white_24dp"
                 android:drawableTint="@color/colorPrimaryDark"
-                android:id="@+id/edit_nom_restau"
+                android:id="@+id/edit_prof_edit_nom_restau"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:hint="Nom du restaurant"
-                android:text="Restaurant Tchop Tchop"
                 android:inputType="text"
                 android:textCursorDrawable="@null"
                 android:textSize="@dimen/slide_title_middle"
@@ -103,12 +103,30 @@
                 android:paddingBottom="@dimen/appbar_padding_top" />
 
             <EditText
+                android:drawableLeft="@drawable/ic_monetization_on_black_24dp"
+                android:drawableTint="@color/colorPrimaryDark"
+                android:id="@+id/edit_prof_min_order"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="Montant minimum de livraison"
+                android:inputType="number"
+                android:textCursorDrawable="@null"
+                android:textSize="@dimen/slide_title_middle"
+                android:textColor="@color/gris_mat"
+                android:drawablePadding="@dimen/fab_margin"
+                android:layout_marginTop="@dimen/appbar_padding_top"
+                android:background="@drawable/rounded_rect_empty"
+                android:paddingTop="@dimen/appbar_padding_top"
+                android:paddingLeft="@dimen/fab_margin"
+                android:paddingBottom="@dimen/appbar_padding_top" />
+
+            <EditText
+                android:id="@+id/edit_prof_desc"
                 android:drawableLeft="@drawable/ic_description_white_24dp"
                 android:drawableTint="@color/colorPrimaryDark"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:hint="Description"
-                android:text="Ce restaurant contient les meilleur plat de la ville et est luxueux."
                 android:lines="5"
                 android:textCursorDrawable="@null"
                 android:textSize="@dimen/slide_title_middle"
@@ -155,14 +173,13 @@
             </LinearLayout>
 
             <EditText
-                android:id="@+id/edit_phone"
+                android:id="@+id/edit_prof_phone"
                 android:drawableLeft="@drawable/ic_phone_white_24dp"
                 android:drawableTint="@color/colorPrimaryDark"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:hint="Nom du restaurant"
-                android:inputType="text"
-                android:text="695 71 56 81 / 671 03 05 22"
+                android:hint="Mobile"
+                android:inputType="number"
                 android:textCursorDrawable="@null"
                 android:textSize="@dimen/slide_title_middle"
                 android:textColor="@color/gris_mat"
@@ -174,13 +191,12 @@
                 android:paddingBottom="@dimen/appbar_padding_top" />
 
             <EditText
-                android:id="@+id/edit_email"
+                android:id="@+id/edit_prof_email"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:drawableLeft="@drawable/ic_mail_white_profile_24dp"
                 android:drawableTint="@color/colorPrimaryDark"
                 android:hint="Email"
-                android:text="tchoptchop@gmail.com"
                 android:inputType="textEmailAddress"
                 android:textCursorDrawable="@null"
                 android:textSize="@dimen/slide_title_middle"
@@ -227,7 +243,43 @@
 
             </LinearLayout>
 
-            <FrameLayout
+            <EditText
+                android:id="@+id/edit_prof_ville"
+                android:drawableLeft="@drawable/ic_location_city_white_24dp"
+                android:drawableTint="@color/colorPrimaryDark"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="Ville"
+                android:inputType="text"
+                android:textCursorDrawable="@null"
+                android:textSize="@dimen/slide_title_middle"
+                android:textColor="@color/gris_mat"
+                android:drawablePadding="@dimen/fab_margin"
+                android:layout_marginTop="@dimen/appbar_padding_top"
+                android:background="@drawable/rounded_rect_empty"
+                android:paddingTop="@dimen/appbar_padding_top"
+                android:paddingLeft="@dimen/fab_margin"
+                android:paddingBottom="@dimen/appbar_padding_top" />
+
+            <EditText
+                android:id="@+id/edit_prof_quartier"
+                android:drawableLeft="@drawable/ic_place_white_24dp"
+                android:drawableTint="@color/colorPrimaryDark"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="Quartier"
+                android:inputType="text"
+                android:textCursorDrawable="@null"
+                android:textSize="@dimen/slide_title_middle"
+                android:textColor="@color/gris_mat"
+                android:drawablePadding="@dimen/fab_margin"
+                android:layout_marginTop="@dimen/appbar_padding_top"
+                android:background="@drawable/rounded_rect_empty"
+                android:paddingTop="@dimen/appbar_padding_top"
+                android:paddingLeft="@dimen/fab_margin"
+                android:paddingBottom="@dimen/appbar_padding_top" />
+
+            <!--<FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
                 android:layout_marginTop="@dimen/appbar_padding_top"
@@ -249,13 +301,14 @@
                     />
 
                 <com.jaredrummler.materialspinner.MaterialSpinner
-                    android:id="@+id/edit_ville"
+                    android:id="@+id/edit_prof_ville"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:drawableLeft="@drawable/ic_location_city_white_24dp"
                     android:drawableTint="@color/colorPrimaryDark"
                     android:layout_marginLeft="36dp"
                     android:paddingTop="0dp"
+                    android:textColor="@color/gris_mat"
                     android:paddingBottom="0dp"
                     android:layout_marginTop="0dp"
                     android:layout_marginBottom="0dp"
@@ -288,10 +341,11 @@
                 <com.jaredrummler.materialspinner.MaterialSpinner
                     android:drawableLeft="@drawable/ic_place_white_24dp"
                     android:drawableTint="@color/colorPrimaryDark"
-                    android:id="@+id/edit_quartier"
+                    android:id="@+id/edit_prof_quartier"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:paddingTop="0dp"
+                    android:textColor="@color/gris_mat"
                     android:layout_marginLeft="36dp"
                     android:paddingBottom="0dp"
                     android:layout_marginTop="0dp"
@@ -299,7 +353,7 @@
                     app:ms_hint="Choisir une catégorie"
                     app:ms_dropdown_max_height="180dp" />
 
-            </FrameLayout>
+            </FrameLayout>-->
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -310,7 +364,7 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/cancel_cmd_btn"
+                    android:id="@+id/cancel_edit_prof_btn"
                     android:layout_width="120dp"
                     android:layout_height="wrap_content"
                     android:text="@string/annuler"
@@ -324,7 +378,7 @@
                     android:background="@drawable/rounded_button_plein_cancel" />
 
                 <Button
-                    android:id="@+id/mark_cmd_btn"
+                    android:id="@+id/edit_prof_edit_btn"
                     android:layout_width="120dp"
                     android:layout_height="wrap_content"
                     android:text="@string/modifier"

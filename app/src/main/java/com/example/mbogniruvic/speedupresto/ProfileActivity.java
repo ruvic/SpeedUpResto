@@ -134,4 +134,15 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+        if(getIntent().getIntExtra(EditProfileActivity.FROM_EDIT_PROFILE_TAG,0)==1){
+            Intent intent=new Intent(ProfileActivity.this, MainActivity.class);
+            startActivity(intent);
+        }else {
+            super.onBackPressed();
+        }
+
+    }
 }

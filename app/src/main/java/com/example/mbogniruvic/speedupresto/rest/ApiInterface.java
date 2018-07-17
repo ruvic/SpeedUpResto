@@ -8,6 +8,7 @@ import com.example.mbogniruvic.speedupresto.models.CreateMenuItemResponse;
 import com.example.mbogniruvic.speedupresto.models.MenuItem;
 import com.example.mbogniruvic.speedupresto.models.RestaurantResponse;
 import com.example.mbogniruvic.speedupresto.models.UpdateMenuitemResponse;
+import com.example.mbogniruvic.speedupresto.models.UpdateRestaurantResponse;
 import com.example.mbogniruvic.speedupresto.models.UserResponse;
 
 import retrofit2.Call;
@@ -65,8 +66,24 @@ public interface ApiInterface {
     @GET("users/{userId}")
     Call<UserResponse> getUserWithSingleId(@Path("userId") String userId);
 
-
-
+    @PUT("restaurants/{restaurantId}")
+    @FormUrlEncoded
+    Call<UpdateRestaurantResponse> updateRestaurant(
+            @Path("restaurantId") String itemMenuId,
+            @Field("nom") String nom,
+            @Field("email") String email,
+            @Field("city") String city,
+            @Field("phone") String phone,
+            @Field("fee_delivery") long fee_delivery,
+            @Field("min_order") int min_order,
+            @Field("time_delivery") long time_delivery,
+            @Field("image") String image,
+            @Field("quartier") String quartier,
+            @Field("bio") String bio,
+            @Field("latitude") String latitude,
+            @Field("longitude") String longitude,
+            @Field("note") float note
+    );
 
 
 
