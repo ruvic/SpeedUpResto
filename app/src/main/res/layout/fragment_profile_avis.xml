@@ -4,13 +4,13 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <!-- TODO: Update blank fragment layout -->
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerV_avis"
+            android:visibility="invisible"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/fab_margin"
-            android:visibility="gone" />
+            android:visibility="visible" />
 
         <TextView
             android:id="@+id/empty_review"
@@ -31,7 +31,10 @@
             android:layout_margin="24dp"
             android:gravity="center"
             android:layout_gravity="bottom"
-            android:visibility="gone" />
+            android:visibility="invisible" />
+
+
+
 
     </FrameLayout>
 </ScrollView>

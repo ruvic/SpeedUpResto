@@ -2,6 +2,7 @@ package com.example.mbogniruvic.speedupresto;
 
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -23,6 +24,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.mbogniruvic.speedupresto.Tasks.RestaurantPreferencesDB;
 import com.example.mbogniruvic.speedupresto.models.Category;
 import com.example.mbogniruvic.speedupresto.models.CategoryResponse;
 import com.example.mbogniruvic.speedupresto.models.CreateMenuItemResponse;
@@ -48,7 +50,9 @@ public class AddMenuActivity extends AppCompatActivity {
     private  Toolbar toolbar;
     private Context context;
     private List<Category> categoryList;
-    boolean imageHasChange=false;
+    private boolean imageHasChange=false;
+    private boolean hasChooseCategorie=false;
+    private RestaurantPreferencesDB sharedDB;
 
     private ImageView menuImageField;
     private ImageButton loadImageView;
@@ -89,10 +93,10 @@ public class AddMenuActivity extends AppCompatActivity {
         cancelBtn=(Button)findViewById(R.id.add_menu_cancel_btn);
 
         //init field
+        sharedDB=MainActivity.shareDB;
         getAllCategories();
 
         dispoField.setChecked(true);
-
 
         //events
         loadImageView.setOnClickListener(new View.OnClickListener() {
@@ -102,6 +106,13 @@ public class AddMenuActivity extends AppCompatActivity {
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(Intent.createChooser(intent, "select picture"), 1000);
+            }
+        });
+
+        categorieField.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(MaterialSpinner view, int position, long id, Object item) {
+                hasChooseCategorie=true;
             }
         });
 
@@ -128,19 +139,24 @@ public class AddMenuActivity extends AppCompatActivity {
         addBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 MenuItem menuItem=getAllDataEntries();
 
                 if(menuItem!=null){
+                    final ProgressDialog pd = new ProgressDialog(context);
+                    pd.setTitle("Ajout d'un menu...");
+                    pd.setMessage("Veuillez patientez.");
+                    pd.setCancelable(false);
+                    pd.show();
 
                     ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
-
                     Call<CreateMenuItemResponse> call=apiService.createMenuItem(
                         menuItem.getNom(),
                         menuItem.getImage(),
                         menuItem.getPrice(),
                         menuItem.getDesc(),
                         menuItem.getIdCat(),
-                        "5b060369244f78388a78f157",
+                        sharedDB.getString(RestaurantPreferencesDB.ID_KEY,""),
                         menuItem.isDispo()
                     );
 
@@ -150,6 +166,7 @@ public class AddMenuActivity extends AppCompatActivity {
                         public void onResponse(Call<CreateMenuItemResponse> call, Response<CreateMenuItemResponse> response) {
                             if(response.body().getError().equals("false")){
                                 Toast.makeText(context, "Menu créé avec succès", Toast.LENGTH_SHORT).show();
+                                pd.dismiss();
                                 Intent intent=new Intent(AddMenuActivity.this, MenuActivity.class);
                                 startActivity(intent);
                             }else{
@@ -241,12 +258,17 @@ public class AddMenuActivity extends AppCompatActivity {
             Toast.makeText(context, "Tous les champs doivent être remplis", Toast.LENGTH_SHORT).show();
         } else {
             if (imageHasChange) {
-                menuItem.setIdCat(categoryList.get(categorieField.getSelectedIndex()).getId());
-                menuItem.setImage("https://zupimages.net/up/18/28/nv2c.jpg");
-                menuItem.setNom(nomMenuField.getText().toString().trim());
-                menuItem.setPrice(Double.valueOf(prixField.getText().toString()).doubleValue());
-                menuItem.setDispo(dispoField.isChecked());
-                menuItem.setDesc(descField.getText().toString());
+                if (hasChooseCategorie) {
+                    menuItem.setIdCat(categoryList.get(categorieField.getSelectedIndex()).getId());
+                    menuItem.setImage("https://zupimages.net/up/18/29/379z.jpg");
+                    menuItem.setNom(nomMenuField.getText().toString().trim());
+                    menuItem.setPrice(Double.valueOf(prixField.getText().toString()).doubleValue());
+                    menuItem.setDispo(dispoField.isChecked());
+                    menuItem.setDesc(descField.getText().toString());
+                } else {
+                    menuItem=null;
+                    Toast.makeText(context, "Veuillez choisir une catégorie pour le menu", Toast.LENGTH_SHORT).show();
+                }
             } else {
                 menuItem=null;
                 Toast.makeText(context, "Veuillez charger une image pour le menu", Toast.LENGTH_SHORT).show();

@@ -1,5 +1,6 @@
 package com.example.mbogniruvic.speedupresto;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -129,6 +130,13 @@ public class EditProfileActivity extends AppCompatActivity {
         editBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                final ProgressDialog pd = new ProgressDialog(context);
+                pd.setTitle("Modification...");
+                pd.setMessage("Veuillez patientez.");
+                pd.setCancelable(false);
+                pd.show();
+
                 ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
                 Restaurant restau=getEditRestaurant();
                 Call<UpdateRestaurantResponse> call=apiService.updateRestaurant(
@@ -155,6 +163,7 @@ public class EditProfileActivity extends AppCompatActivity {
                         if(!response.body().isError()){
                             Restaurant r=response.body().getRestaurant();
                             sharedDB.put(r);
+                            pd.dismiss();
                             Intent intent =new Intent(EditProfileActivity.this, ProfileActivity.class);
                             intent.putExtra(FROM_EDIT_PROFILE_TAG, 1);
                             startActivity(intent);

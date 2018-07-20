@@ -29,6 +29,8 @@
     <string name="non_livre">NON LIVRE</string>
     <string name="menu_dispo">Menu disponible</string>
     <string name="menu_non_dispo">Menu indisponible</string>
+    <string name="conn_error_label">ERREUR DE CONNECTION</string>
+    <string name="conn_error_desc">Veuillez verifier votre connection internet et appuyer sur le bouton rafraîchir</string>
 
 
 </resources>

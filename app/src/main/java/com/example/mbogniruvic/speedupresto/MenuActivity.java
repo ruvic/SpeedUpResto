@@ -1,5 +1,6 @@
 package com.example.mbogniruvic.speedupresto;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -14,11 +15,14 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,9 +62,12 @@ public class MenuActivity extends AppCompatActivity {
     private TextView nomRestauView;
     private TextView nbCategorieField;
     private TextView nbMenuField;
+    private RelativeLayout progressBarLayout;
+    private RelativeLayout menuErrorConnectionLayout;
 
 
 
+    @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,6 +90,8 @@ public class MenuActivity extends AppCompatActivity {
         nomRestauView=(TextView)findViewById(R.id.nom_restau);
         nbCategorieField=(TextView) findViewById(R.id.nbCategorie);
         nbMenuField=(TextView)findViewById(R.id.nbMenus);
+        progressBarLayout=(RelativeLayout) findViewById(R.id.menu_progress_bar);
+        menuErrorConnectionLayout=(RelativeLayout)findViewById(R.id.menu_connecture_error);
 
         shareDB=MainActivity.shareDB;
         new DownLoadImageTask(logoRestauview).execute(shareDB.getString(RestaurantPreferencesDB.IMAGE_KEY, ""));
@@ -136,6 +145,24 @@ public class MenuActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(android.view.MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.action_refresh :
+                finish();
+                startActivity(getIntent());
+                break;
+            default:break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     public static void showAddCategorieDialog(final Context context, Activity activity) {
 
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
@@ -173,48 +200,47 @@ public class MenuActivity extends AppCompatActivity {
     private void prepareDatas() {
 
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
-        Call<CategoryMenuResponse> call=apiService.getMenusByCategories("5b060369244f78388a78f157");
+        Call<CategoryMenuResponse> call=apiService.getMenusByCategories(
+                shareDB.getString(RestaurantPreferencesDB.ID_KEY,"")
+        );
 
         call.enqueue(new Callback<CategoryMenuResponse>() {
 
             @Override
             public void onResponse(Call<CategoryMenuResponse>call, Response<CategoryMenuResponse> response) {
-                categoryList = response.body().getResult();
+                if (!response.body().isError()) {
+                    categoryList = response.body().getResult();
 
-                if(categoryList!=null && categoryList.size()!=0){
+                    if(categoryList!=null && categoryList.size()!=0){
 
-                    recyclerView=(RecyclerView)findViewById(R.id.recyclerV_categorie);
-                    mAdapter = new CategoriesAdapters(categoryList);
-                    RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
-                    recyclerView.setLayoutManager(mLayoutManager);
-                    recyclerView.setItemAnimator(new DefaultItemAnimator());
-                    recyclerView.setAdapter(mAdapter);
+                        recyclerView=(RecyclerView)findViewById(R.id.recyclerV_categorie);
+                        mAdapter = new CategoriesAdapters(categoryList);
+                        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
+                        recyclerView.setLayoutManager(mLayoutManager);
+                        recyclerView.setItemAnimator(new DefaultItemAnimator());
+                        recyclerView.setAdapter(mAdapter);
 
-                    int nbCat=categoryList.size();
-                    int nbMenu=0;
+                        int nbCat=categoryList.size();
+                        int nbMenu=0;
 
-                    for (int i=0; i<nbCat; i++){
-                        nbMenu+=categoryList.get(i).getMenus().size();
+                        for (int i=0; i<nbCat; i++){
+                            nbMenu+=categoryList.get(i).getMenus().size();
+                        }
+
+
+                        nbCategorieField.setText(format(nbCat));
+                        nbMenuField.setText(format(nbMenu));
+
+                        progressBarLayout.setVisibility(View.GONE);
+                        recyclerView.setVisibility(View.VISIBLE);
+
+                    }else if(categoryList==null){
+                        Toast.makeText(context, "Liste null", Toast.LENGTH_SHORT).show();
+                    }else{
+                        Toast.makeText(context, "Liste vide", Toast.LENGTH_SHORT).show();
                     }
-
-
-                    nbCategorieField.setText(format(nbCat));
-                    nbMenuField.setText(format(nbMenu));
-
-
-
-                    /*String result="";
-
-                    for (CategoryMenu cat: categoryList) {
-                        result+=cat.toString()+"\n";
-                    }
-
-                    Toast.makeText(context, result, Toast.LENGTH_SHORT).show();*/
-
-                }else if(categoryList==null){
-                    Toast.makeText(context, "Liste null", Toast.LENGTH_SHORT).show();
-                }else{
-                    Toast.makeText(context, "Liste vide", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -223,7 +249,9 @@ public class MenuActivity extends AppCompatActivity {
             public void onFailure(Call<CategoryMenuResponse>call, Throwable t) {
                 // Log error here since request failed
                 //Log.e(TAG, t.toString());
-                Toast.makeText(context, t.toString(), Toast.LENGTH_SHORT).show();
+                progressBarLayout.setVisibility(View.GONE);
+                menuErrorConnectionLayout.setVisibility(View.VISIBLE);
+                //Toast.makeText(context, t.toString(), Toast.LENGTH_SHORT).show();
             }
         });
 

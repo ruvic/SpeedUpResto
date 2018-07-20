@@ -2,6 +2,7 @@ package com.example.mbogniruvic.speedupresto;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -30,6 +31,7 @@ import android.widget.Toast;
 
 import com.example.mbogniruvic.speedupresto.Adapters.CategoriesAdapters;
 import com.example.mbogniruvic.speedupresto.Tasks.DownLoadImageTask;
+import com.example.mbogniruvic.speedupresto.Tasks.RestaurantPreferencesDB;
 import com.example.mbogniruvic.speedupresto.models.Category;
 import com.example.mbogniruvic.speedupresto.models.CategoryMenu;
 import com.example.mbogniruvic.speedupresto.models.CategoryMenuResponse;
@@ -58,6 +60,7 @@ public class EditMenuDetailsActivity extends AppCompatActivity {
     private MenuItem menu;
     private boolean imageHasChanged=false;
     private boolean isVoirPlus;
+    private RestaurantPreferencesDB sharedDB;
     private ImageView menu_image;
     private List<Category> categoryList;
     private MaterialSpinner categorieField;
@@ -77,6 +80,7 @@ public class EditMenuDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit_menu_details);
 
         context=this;
+        sharedDB=MainActivity.shareDB;
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -168,6 +172,12 @@ public class EditMenuDetailsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+                final ProgressDialog pd = new ProgressDialog(context);
+                pd.setTitle("Modification d'un menu...");
+                pd.setMessage("Veuillez patientez.");
+                pd.setCancelable(false);
+                pd.show();
+
                 ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
                 MenuItem editMenu=getEditMenuInformation();
 
@@ -180,7 +190,7 @@ public class EditMenuDetailsActivity extends AppCompatActivity {
                             editMenu.getPrice(),
                             editMenu.getDesc(),
                             editMenu.getIdCat(),
-                            "5b060369244f78388a78f157",
+                            sharedDB.getString(RestaurantPreferencesDB.ID_KEY,""),
                             editMenu.isDispo()
                     );
 
@@ -192,6 +202,7 @@ public class EditMenuDetailsActivity extends AppCompatActivity {
                                 menu=response.body().getMenu();
                                 Toast.makeText(context, "Modification effectuée avec succès", Toast.LENGTH_SHORT).show();
 
+                                pd.dismiss();
                                 Intent intent=new Intent(EditMenuDetailsActivity.this, MenuActivity.class);
                                 startActivity(intent);
 

@@ -10,6 +10,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mbogniruvic.speedupresto.Adapters.CommandesAdapter;
@@ -36,6 +38,9 @@ public class ProfileAvisFragment extends Fragment {
     private RestaurantPreferencesDB sharedDB;
     private Context context;
     private View view;
+    private RecyclerView recyclerView;
+    private ProgressBar progressBar;
+    private TextView emptyText;
 
     public ProfileAvisFragment() {
         // Required empty public constructor
@@ -54,6 +59,12 @@ public class ProfileAvisFragment extends Fragment {
         sharedDB= MainActivity.shareDB;
         context=getContext();
         view=rootView;
+
+        //get Adress
+        recyclerView=(RecyclerView)view.findViewById(R.id.recyclerV_avis);
+        progressBar=(ProgressBar) view.findViewById(R.id.progress_review);
+        emptyText=(TextView) view.findViewById(R.id.empty_review);
+
         String restauID=sharedDB.getString(RestaurantPreferencesDB.ID_KEY, "");
 
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
@@ -63,24 +74,39 @@ public class ProfileAvisFragment extends Fragment {
 
             @Override
             public void onResponse(Call<AllRestauReviewsResponse> call, Response<AllRestauReviewsResponse> response) {
+
                 if(!response.body().isError()){
 
                     reviewsList=response.body().getReviews();
-                    RecyclerView recyclerView=(RecyclerView)view.findViewById(R.id.recyclerV_avis);
-                    RecyclerViewAvisItemsAdapter mAdapter = new RecyclerViewAvisItemsAdapter(reviewsList);
-                    RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
-                    recyclerView.setLayoutManager(mLayoutManager);
-                    recyclerView.setItemAnimator(new DefaultItemAnimator());
-                    recyclerView.setAdapter(mAdapter);
+
+                    if (reviewsList.size()!=0) {
+                        RecyclerViewAvisItemsAdapter mAdapter = new RecyclerViewAvisItemsAdapter(reviewsList);
+                        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
+                        recyclerView.setLayoutManager(mLayoutManager);
+                        recyclerView.setItemAnimator(new DefaultItemAnimator());
+                        recyclerView.setAdapter(mAdapter);
+
+                        progressBar.setVisibility(View.INVISIBLE);
+                        recyclerView.setVisibility(View.VISIBLE);
+
+                    } else {
+                        progressBar.setVisibility(View.INVISIBLE);
+                        recyclerView.setVisibility(View.INVISIBLE);
+                        emptyText.setVisibility(View.VISIBLE);
+                    }
 
                 }else {
                     Toast.makeText(context, "Erreur de chargement des avis", Toast.LENGTH_SHORT).show();
                 }
+
             }
 
             @Override
             public void onFailure(Call<AllRestauReviewsResponse> call, Throwable t) {
                 Toast.makeText(context, t.toString(), Toast.LENGTH_SHORT).show();
+                emptyText.setVisibility(View.VISIBLE);
+                recyclerView.setVisibility(View.INVISIBLE);
+                progressBar.setVisibility(View.INVISIBLE);
             }
         });
 

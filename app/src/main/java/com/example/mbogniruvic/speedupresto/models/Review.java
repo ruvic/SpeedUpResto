@@ -11,7 +11,7 @@ public class Review {
     @SerializedName("menuID")
     private String idMenu;
     @SerializedName("userID")
-    private String idUser;
+    private User idUser;
     @SerializedName("note")
     private float note;
     @SerializedName("comment")
@@ -19,22 +19,6 @@ public class Review {
     @SerializedName("updatedAt")
     private String date;
 
-
-    public Review(String id, String idRest, String idMenu, String idUser, float note, String comment, String date) {
-        this.id = id;
-        this.idRest = idRest;
-        this.idMenu = idMenu;
-        this.idUser = idUser;
-        this.note = note;
-        this.comment = comment;
-        this.date = date;
-    }
-
-    public Review() {
-
-    }
-
-    
 
     public String getId() {
         return id;
@@ -60,11 +44,11 @@ public class Review {
         this.idMenu = idMenu;
     }
 
-    public String getIdUser() {
+    public User getIdUser() {
         return idUser;
     }
 
-    public void setIdUser(String idUser) {
+    public void setIdUser(User idUser) {
         this.idUser = idUser;
     }
 
@@ -89,6 +73,17 @@ public class Review {
     }
 
     public void setDate(String date) {
+        this.date = date;
+    }
+
+    public Review(String id, String idRest, String idMenu, User idUser, float note, String comment, String date) {
+
+        this.id = id;
+        this.idRest = idRest;
+        this.idMenu = idMenu;
+        this.idUser = idUser;
+        this.note = note;
+        this.comment = comment;
         this.date = date;
     }
 }

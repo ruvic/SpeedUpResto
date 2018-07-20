@@ -132,8 +132,8 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_refresh) {
-            /*Intent intent = new Intent(MainActivity.this, RefreshActivity.class);
-            startActivity(intent);*/
+            finish();
+            startActivity(getIntent());
             return true;
         }
 

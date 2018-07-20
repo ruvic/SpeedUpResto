@@ -57,7 +57,7 @@ public class RecyclerViewAvisItemsAdapter extends RecyclerView.Adapter<RecyclerV
     public void onBindViewHolder(RecyclerViewAvisItemsAdapter.MyViewHolder holder, int position) {
         Review review= reviewsList.get(position);
 
-        holder.nomReview.setText("Paul Xavier");
+        holder.nomReview.setText(review.getIdUser().getFirstName() +" "+review.getIdUser().getLastName());
         holder.descriptionView.setText(review.getComment());
 
     }

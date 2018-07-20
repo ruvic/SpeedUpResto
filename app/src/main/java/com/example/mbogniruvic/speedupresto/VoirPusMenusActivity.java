@@ -7,6 +7,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -75,6 +76,24 @@ public class VoirPusMenusActivity extends AppCompatActivity {
         nomCatView.setText(currentCat.getCategorie());
         nbMenusView.setText(MenuActivity.format(currentCat.getMenus().size()));
         
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(android.view.MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.action_refresh :
+                finish();
+                startActivity(getIntent());
+                break;
+            default:break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }
