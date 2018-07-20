@@ -21,11 +21,13 @@ import android.widget.Toast;
 import com.example.mbogniruvic.speedupresto.Fragments.LivreFragment;
 import com.example.mbogniruvic.speedupresto.Fragments.NonLivreFragment;
 import com.example.mbogniruvic.speedupresto.Fragments.RefuseFragment;
-import com.example.mbogniruvic.speedupresto.Tasks.RestaurantPreferencesDB;
+import com.example.mbogniruvic.speedupresto.Utils.ConnectionStatus;
+import com.example.mbogniruvic.speedupresto.Utils.RestaurantPreferencesDB;
 import com.example.mbogniruvic.speedupresto.models.Restaurant;
 import com.example.mbogniruvic.speedupresto.models.RestaurantResponse;
 import com.example.mbogniruvic.speedupresto.rest.ApiClient;
 import com.example.mbogniruvic.speedupresto.rest.ApiInterface;
+import com.example.mbogniruvic.speedupresto.sqlite.DatabaseHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +46,7 @@ public class MainActivity extends AppCompatActivity
     private String restauID="5b060369244f78388a78f157";
     public static RestaurantPreferencesDB shareDB;
     private Restaurant restaurant;
+    private DatabaseHelper db;
     Context context;
 
     @Override
@@ -73,6 +76,9 @@ public class MainActivity extends AppCompatActivity
         //get Restaurant profile from Databases
 
         getRestaurantProfile();
+
+
+        db=new DatabaseHelper(getApplicationContext());
 
 
 
@@ -150,6 +156,15 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_home) {
             intent=new Intent(MainActivity.this, MainActivity.class);
         } else if (id == R.id.nav_menu) {
+
+            /*if (ConnectionStatus.getInstance(getApplicationContext()).isOnline()) {
+
+                Toast.makeText(getApplicationContext(), "WiFi/Mobile Networks Connected!", Toast.LENGTH_SHORT).show();
+            } else {
+
+                Toast.makeText(getApplicationContext(), "Ooops! No WiFi/Mobile Networks Connected!", Toast.LENGTH_SHORT).show();
+            }*/
+
             intent=new Intent(MainActivity.this, MenuActivity.class);
         } else if (id == R.id.nav_profile) {
             intent=new Intent(MainActivity.this, ProfileActivity.class);

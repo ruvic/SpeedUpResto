@@ -11,16 +11,13 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.mbogniruvic.speedupresto.Adapters.CategorieItemsAdapter;
-import com.example.mbogniruvic.speedupresto.Adapters.CategoriesAdapters;
 import com.example.mbogniruvic.speedupresto.Tasks.DownLoadImageTask;
-import com.example.mbogniruvic.speedupresto.Tasks.RestaurantPreferencesDB;
+import com.example.mbogniruvic.speedupresto.Utils.RestaurantPreferencesDB;
 import com.example.mbogniruvic.speedupresto.models.CategoryMenu;
 import com.example.mbogniruvic.speedupresto.models.MenuItem;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class VoirPusMenusActivity extends AppCompatActivity {

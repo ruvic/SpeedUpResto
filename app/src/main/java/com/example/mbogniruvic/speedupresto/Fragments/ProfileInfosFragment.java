@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.example.mbogniruvic.speedupresto.MainActivity;
 import com.example.mbogniruvic.speedupresto.R;
-import com.example.mbogniruvic.speedupresto.Tasks.RestaurantPreferencesDB;
+import com.example.mbogniruvic.speedupresto.Utils.RestaurantPreferencesDB;
 
 public class ProfileInfosFragment extends Fragment {
 

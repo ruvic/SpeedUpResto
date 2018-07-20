@@ -40,6 +40,33 @@ public class MenuItem implements Parcelable {
     private boolean isDispo;
 
     private String nomCat;
+    private String timestamps;
+
+    //SQLite attributes
+    public static final String TABLE_NAME = "MenuItem";
+    private int idTable;
+
+    public static final String COLUMN_ID = "id";
+    public static final String COLUMN_CAT_ID = "catID";
+    public static final String COLUMN_NOM = "nom";
+    public static final String COLUMN_IMAGE = "image";
+    public static final String COLUMN_PRICE = "price";
+    public static final String COLUMN_DESC = "desc";
+    public static final String COLUMN_DISP = "disponible";
+    public static final String COLUMN_TIMESTAMP = "timestamp";
+
+    public static final String CREATE_TABLE =
+            "CREATE TABLE " + TABLE_NAME + "("
+                    + COLUMN_ID + " TEXT PRIMARY KEY,"
+                    + COLUMN_CAT_ID + " TEXT,"
+                    + COLUMN_NOM + " TEXT,"
+                    + COLUMN_IMAGE + " TEXT,"
+                    + COLUMN_PRICE + " REAL,"
+                    + COLUMN_DESC + " TEXT,"
+                    + COLUMN_DISP + " NUMERIC,"
+                    + COLUMN_TIMESTAMP + " DATETIME DEFAULT CURRENT_TIMESTAMP, "
+                    + " FOREIGN KEY ("+COLUMN_CAT_ID+") REFERENCES "+Category.TABLE_NAME+"("+Category.COLUMN_ID+")"
+                    + ")";
 
 
     public MenuItem(String id, String idCat, String image, String nom,

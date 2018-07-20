@@ -15,12 +15,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.mbogniruvic.speedupresto.Fragments.ProfileAvisFragment;
 import com.example.mbogniruvic.speedupresto.Fragments.ProfileInfosFragment;
 import com.example.mbogniruvic.speedupresto.Tasks.DownLoadImageTask;
-import com.example.mbogniruvic.speedupresto.Tasks.RestaurantPreferencesDB;
+import com.example.mbogniruvic.speedupresto.Utils.RestaurantPreferencesDB;
 
 import java.util.ArrayList;
 import java.util.List;

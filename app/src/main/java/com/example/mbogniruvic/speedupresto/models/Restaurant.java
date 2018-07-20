@@ -1,7 +1,6 @@
 package com.example.mbogniruvic.speedupresto.models;
 
-import com.example.mbogniruvic.speedupresto.MainActivity;
-import com.example.mbogniruvic.speedupresto.Tasks.RestaurantPreferencesDB;
+import com.example.mbogniruvic.speedupresto.Utils.RestaurantPreferencesDB;
 import com.google.gson.annotations.SerializedName;
 
 public class Restaurant {

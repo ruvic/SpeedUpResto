@@ -1,4 +1,4 @@
-package com.example.mbogniruvic.speedupresto.Tasks;
+package com.example.mbogniruvic.speedupresto.Utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;

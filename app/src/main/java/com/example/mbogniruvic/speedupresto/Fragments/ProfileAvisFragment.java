@@ -14,18 +14,15 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.mbogniruvic.speedupresto.Adapters.CommandesAdapter;
 import com.example.mbogniruvic.speedupresto.Adapters.RecyclerViewAvisItemsAdapter;
 import com.example.mbogniruvic.speedupresto.MainActivity;
 import com.example.mbogniruvic.speedupresto.R;
-import com.example.mbogniruvic.speedupresto.Tasks.RestaurantPreferencesDB;
+import com.example.mbogniruvic.speedupresto.Utils.RestaurantPreferencesDB;
 import com.example.mbogniruvic.speedupresto.models.AllRestauReviewsResponse;
-import com.example.mbogniruvic.speedupresto.models.RestaurantResponse;
 import com.example.mbogniruvic.speedupresto.models.Review;
 import com.example.mbogniruvic.speedupresto.rest.ApiClient;
 import com.example.mbogniruvic.speedupresto.rest.ApiInterface;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;

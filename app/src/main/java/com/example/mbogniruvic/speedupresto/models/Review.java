@@ -20,6 +20,45 @@ public class Review {
     private String date;
 
 
+    //SQLite attributes
+    public static final String TABLE_NAME = "Review";
+    private int idTable;
+
+    public static final String COLUMN_ID = "id";
+    public static final String COLUMN_FIRST_NAME = "firstName";
+    public static final String COLUMN_LAST_NAME= "lastName";
+    public static final String COLUMN_NOTE = "note";
+    public static final String COLUMN_COMMENT = "comment";
+    public static final String COLUMN_DATE = "date";
+    public static final String COLUMN_TIMESTAMP = "timestamp";
+
+    public static final String CREATE_TABLE =
+            "CREATE TABLE " + TABLE_NAME + "("
+                    + COLUMN_ID + " TEXT PRIMARY KEY,"
+                    + COLUMN_FIRST_NAME + " TEXT,"
+                    + COLUMN_LAST_NAME + " TEXT,"
+                    + COLUMN_NOTE + " REAL,"
+                    + COLUMN_COMMENT + " TEXT,"
+                    + COLUMN_DATE + " TEXT,"
+                    + COLUMN_TIMESTAMP + " DATETIME DEFAULT CURRENT_TIMESTAMP "
+                    + ")";
+
+
+    public Review(String id, String idRest, String idMenu, User idUser, float note, String comment, String date) {
+
+        this.id = id;
+        this.idRest = idRest;
+        this.idMenu = idMenu;
+        this.idUser = idUser;
+        this.note = note;
+        this.comment = comment;
+        this.date = date;
+    }
+
+    public Review() {
+        this.idUser=new User();
+    }
+
     public String getId() {
         return id;
     }
@@ -76,14 +115,5 @@ public class Review {
         this.date = date;
     }
 
-    public Review(String id, String idRest, String idMenu, User idUser, float note, String comment, String date) {
 
-        this.id = id;
-        this.idRest = idRest;
-        this.idMenu = idMenu;
-        this.idUser = idUser;
-        this.note = note;
-        this.comment = comment;
-        this.date = date;
-    }
 }
