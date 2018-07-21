@@ -31,6 +31,8 @@
     <string name="menu_non_dispo">Menu indisponible</string>
     <string name="conn_error_label">ERREUR DE CONNECTION</string>
     <string name="conn_error_desc">Veuillez verifier votre connection internet et appuyer sur le bouton rafraîchir</string>
+    <string name="conn_error_not">Vous devez être connecté à Internet.</string>
+    <string name="fill_all_field">Veuillez remplir tous les champs.</string>
 
 
 </resources>

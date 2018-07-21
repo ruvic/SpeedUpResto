@@ -1,6 +1,7 @@
 package com.example.mbogniruvic.speedupresto;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -24,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.mbogniruvic.speedupresto.Tasks.DownLoadImageTask;
+import com.example.mbogniruvic.speedupresto.Utils.ConnectionStatus;
 import com.example.mbogniruvic.speedupresto.Utils.RestaurantPreferencesDB;
 import com.example.mbogniruvic.speedupresto.models.Category;
 import com.example.mbogniruvic.speedupresto.models.CategoryMenu;
@@ -32,6 +34,7 @@ import com.example.mbogniruvic.speedupresto.models.MenuItem;
 import com.example.mbogniruvic.speedupresto.models.UpdateMenuitemResponse;
 import com.example.mbogniruvic.speedupresto.rest.ApiClient;
 import com.example.mbogniruvic.speedupresto.rest.ApiInterface;
+import com.example.mbogniruvic.speedupresto.sqlite.DatabaseHelper;
 import com.jaredrummler.materialspinner.MaterialSpinner;
 
 import java.io.IOException;
@@ -49,6 +52,7 @@ public class EditMenuDetailsActivity extends AppCompatActivity {
     private boolean imageHasChanged=false;
     private boolean isVoirPlus;
     private RestaurantPreferencesDB sharedDB;
+    private DatabaseHelper db;
     private ImageView menu_image;
     private List<Category> categoryList;
     private MaterialSpinner categorieField;
@@ -69,6 +73,8 @@ public class EditMenuDetailsActivity extends AppCompatActivity {
 
         context=this;
         sharedDB=MainActivity.shareDB;
+        db=new DatabaseHelper(context);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -160,54 +166,61 @@ public class EditMenuDetailsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                final ProgressDialog pd = new ProgressDialog(context);
-                pd.setTitle("Modification d'un menu...");
-                pd.setMessage("Veuillez patientez.");
-                pd.setCancelable(false);
-                pd.show();
-
                 ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
                 MenuItem editMenu=getEditMenuInformation();
 
                 if (editMenu!=null) {
 
-                    Call<UpdateMenuitemResponse> call=apiService.updateMenuItem(
-                            editMenu.getId(),
-                            editMenu.getNom(),
-                            editMenu.getImage(),
-                            editMenu.getPrice(),
-                            editMenu.getDesc(),
-                            editMenu.getIdCat(),
-                            sharedDB.getString(RestaurantPreferencesDB.ID_KEY,""),
-                            editMenu.isDispo()
-                    );
+                    if (ConnectionStatus.getInstance(context).isOnline()) {
 
-                    call.enqueue(new Callback<UpdateMenuitemResponse>() {
-                        @Override
-                        public void onResponse(Call<UpdateMenuitemResponse> call, Response<UpdateMenuitemResponse> response) {
+                        final ProgressDialog pd = new ProgressDialog(context);
+                        pd.setTitle("Modification d'un menu...");
+                        pd.setMessage("Veuillez patientez.");
+                        pd.setCancelable(false);
+                        pd.show();
 
-                            if(response.body().getError().equals("false")){
-                                menu=response.body().getMenu();
-                                Toast.makeText(context, "Modification effectuée avec succès", Toast.LENGTH_SHORT).show();
+                        Call<UpdateMenuitemResponse> call=apiService.updateMenuItem(
+                                editMenu.getId(),
+                                editMenu.getNom(),
+                                editMenu.getImage(),
+                                editMenu.getPrice(),
+                                editMenu.getDesc(),
+                                editMenu.getIdCat(),
+                                sharedDB.getString(RestaurantPreferencesDB.ID_KEY,""),
+                                editMenu.isDispo()
+                        );
 
-                                pd.dismiss();
-                                Intent intent=new Intent(EditMenuDetailsActivity.this, MenuActivity.class);
-                                startActivity(intent);
+                        call.enqueue(new Callback<UpdateMenuitemResponse>() {
+                            @Override
+                            public void onResponse(Call<UpdateMenuitemResponse> call, Response<UpdateMenuitemResponse> response) {
 
-                            }else {
-                                Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
+                                if(response.body().getError().equals("false")){
+                                    menu=response.body().getMenu();
+                                    Toast.makeText(context, "Modification effectuée avec succès", Toast.LENGTH_SHORT).show();
+
+                                    pd.dismiss();
+                                    Intent intent=new Intent(EditMenuDetailsActivity.this, MenuActivity.class);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    startActivity(intent);
+
+                                }else {
+                                    Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
+                                }
+
                             }
 
-                        }
-
-                        @Override
-                        public void onFailure(Call<UpdateMenuitemResponse> call, Throwable t) {
-                            Toast.makeText(context , t.toString(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                            @Override
+                            public void onFailure(Call<UpdateMenuitemResponse> call, Throwable t) {
+                                pd.dismiss();
+                                Toast.makeText(context , getString(R.string.conn_error_not), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    } else {
+                        Toast.makeText(context, getString(R.string.conn_error_not), Toast.LENGTH_SHORT).show();
+                    }
 
                 } else {
-                    Toast.makeText(context, "Veuillez remplir tous les champs", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, getString(R.string.fill_all_field), Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -250,18 +263,7 @@ public class EditMenuDetailsActivity extends AppCompatActivity {
 
                 if(categoryList!=null && categoryList.size()!=0){
 
-                    List<String> listCategorie=new ArrayList<>();
-                    int init=0;
-                    for (int i=0 ; i<categoryList.size(); i++){
-                        String titre=categoryList.get(i).getTitre();
-                        listCategorie.add(titre);
-                        if(titre.trim().equals(currentCat.getCategorie().trim())){
-                            init=i;
-                        }
-                    }
-
-                    categorieField.setItems(listCategorie);
-                    categorieField.setSelectedIndex(init);
+                    initCategoryField();
 
                 }else if(categoryList==null){
                     Toast.makeText(context, "Liste null", Toast.LENGTH_SHORT).show();
@@ -273,11 +275,29 @@ public class EditMenuDetailsActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<CategoryResponse>call, Throwable t) {
-                Toast.makeText(context, t.toString(), Toast.LENGTH_SHORT).show();
+
+                categoryList=db.getAllCategories();
+                initCategoryField();
+
             }
 
         });
 
+    }
+
+    private void initCategoryField() {
+        List<String> listCategorie=new ArrayList<>();
+        int init=0;
+        for (int i=0 ; i<categoryList.size(); i++){
+            String titre=categoryList.get(i).getTitre();
+            listCategorie.add(titre);
+            if(titre.trim().equals(currentCat.getCategorie().trim())){
+                init=i;
+            }
+        }
+
+        categorieField.setItems(listCategorie);
+        categorieField.setSelectedIndex(init);
     }
 
     @Override

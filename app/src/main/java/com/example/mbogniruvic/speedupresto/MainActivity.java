@@ -21,8 +21,11 @@ import android.widget.Toast;
 import com.example.mbogniruvic.speedupresto.Fragments.LivreFragment;
 import com.example.mbogniruvic.speedupresto.Fragments.NonLivreFragment;
 import com.example.mbogniruvic.speedupresto.Fragments.RefuseFragment;
+import com.example.mbogniruvic.speedupresto.Tasks.StoreAllCategoriesTask;
 import com.example.mbogniruvic.speedupresto.Utils.ConnectionStatus;
 import com.example.mbogniruvic.speedupresto.Utils.RestaurantPreferencesDB;
+import com.example.mbogniruvic.speedupresto.models.Category;
+import com.example.mbogniruvic.speedupresto.models.CategoryResponse;
 import com.example.mbogniruvic.speedupresto.models.Restaurant;
 import com.example.mbogniruvic.speedupresto.models.RestaurantResponse;
 import com.example.mbogniruvic.speedupresto.rest.ApiClient;
@@ -77,10 +80,12 @@ public class MainActivity extends AppCompatActivity
 
         getRestaurantProfile();
 
-
+        shareDB=new RestaurantPreferencesDB(context);
         db=new DatabaseHelper(getApplicationContext());
+        //db.dropDatabase();
+        //Toast.makeText(context, "Suppression reussie", Toast.LENGTH_SHORT).show();
 
-
+        getAllCategories();
 
     }
 
@@ -96,7 +101,6 @@ public class MainActivity extends AppCompatActivity
                 if(!response.body().isError()){
                     restaurant=response.body().getRestaurant();
 
-                    shareDB=new RestaurantPreferencesDB(context);
                     shareDB.put(restaurant);
                     Toast.makeText(context, "Infos chargé avec succès", Toast.LENGTH_SHORT).show();
                 }else{
@@ -108,6 +112,38 @@ public class MainActivity extends AppCompatActivity
             public void onFailure(Call<RestaurantResponse> call, Throwable t) {
                 Toast.makeText(context, t.toString(), Toast.LENGTH_SHORT).show();
             }
+        });
+
+    }
+
+    private void getAllCategories() {
+
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+        Call<CategoryResponse> call=apiService.getAllCategories();
+
+        call.enqueue(new Callback<CategoryResponse>() {
+
+            @Override
+            public void onResponse(Call<CategoryResponse>call, Response<CategoryResponse> response) {
+                List<Category> categoryList = response.body().getResults();
+
+                if(categoryList!=null && categoryList.size()!=0){
+
+                    new StoreAllCategoriesTask(db, context).execute(categoryList);
+
+                }else if(categoryList==null){
+                    Toast.makeText(context, "Liste null", Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(context, "Liste vide", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<CategoryResponse>call, Throwable t) {
+                Toast.makeText(context, t.toString(), Toast.LENGTH_SHORT).show();
+            }
+
         });
 
     }
@@ -138,8 +174,8 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_refresh) {
-            finish();
-            startActivity(getIntent());
+            Intent intent=getIntent();
+            startActivity(intent);
             return true;
         }
 
@@ -155,16 +191,8 @@ public class MainActivity extends AppCompatActivity
         Intent intent=null;
         if (id == R.id.nav_home) {
             intent=new Intent(MainActivity.this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NO_ANIMATION);
         } else if (id == R.id.nav_menu) {
-
-            /*if (ConnectionStatus.getInstance(getApplicationContext()).isOnline()) {
-
-                Toast.makeText(getApplicationContext(), "WiFi/Mobile Networks Connected!", Toast.LENGTH_SHORT).show();
-            } else {
-
-                Toast.makeText(getApplicationContext(), "Ooops! No WiFi/Mobile Networks Connected!", Toast.LENGTH_SHORT).show();
-            }*/
-
             intent=new Intent(MainActivity.this, MenuActivity.class);
         } else if (id == R.id.nav_profile) {
             intent=new Intent(MainActivity.this, ProfileActivity.class);

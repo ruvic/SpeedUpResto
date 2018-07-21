@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CategoryMenu implements Parcelable {
@@ -63,7 +64,7 @@ public class CategoryMenu implements Parcelable {
 
 
     public CategoryMenu() {
-        this.categorie = "Offres & Bons Plans";
+        this.setMenus(new ArrayList<MenuItem>());
     }
 
     public CategoryMenu(String categorie) {

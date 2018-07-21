@@ -93,6 +93,7 @@ public class MenuDetailsActivity extends AppCompatActivity {
                 intent.putExtra(MenuDetailsActivity.CAT_CURRENT_TAG, currentCat);
                 intent.putExtra(MenuDetailsActivity.MENU_ITEM_VOIR_PLUS_TAG, isVoirPlus);
                 startActivity(intent);
+
                 break;
             default: break;
         }

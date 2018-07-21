@@ -19,6 +19,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.mbogniruvic.speedupresto.Utils.ConnectionStatus;
 import com.example.mbogniruvic.speedupresto.Utils.RestaurantPreferencesDB;
 import com.example.mbogniruvic.speedupresto.models.Category;
 import com.example.mbogniruvic.speedupresto.models.CategoryResponse;
@@ -26,6 +27,7 @@ import com.example.mbogniruvic.speedupresto.models.CreateMenuItemResponse;
 import com.example.mbogniruvic.speedupresto.models.MenuItem;
 import com.example.mbogniruvic.speedupresto.rest.ApiClient;
 import com.example.mbogniruvic.speedupresto.rest.ApiInterface;
+import com.example.mbogniruvic.speedupresto.sqlite.DatabaseHelper;
 import com.jaredrummler.materialspinner.MaterialSpinner;
 
 import java.io.IOException;
@@ -44,6 +46,7 @@ public class AddMenuActivity extends AppCompatActivity {
     private boolean imageHasChange=false;
     private boolean hasChooseCategorie=false;
     private RestaurantPreferencesDB sharedDB;
+    private DatabaseHelper db;
 
     private ImageView menuImageField;
     private ImageButton loadImageView;
@@ -85,6 +88,8 @@ public class AddMenuActivity extends AppCompatActivity {
 
         //init field
         sharedDB=MainActivity.shareDB;
+        db=new DatabaseHelper(context);
+
         getAllCategories();
 
         dispoField.setChecked(true);
@@ -134,43 +139,52 @@ public class AddMenuActivity extends AppCompatActivity {
                 MenuItem menuItem=getAllDataEntries();
 
                 if(menuItem!=null){
-                    final ProgressDialog pd = new ProgressDialog(context);
-                    pd.setTitle("Ajout d'un menu...");
-                    pd.setMessage("Veuillez patientez.");
-                    pd.setCancelable(false);
-                    pd.show();
 
-                    ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
-                    Call<CreateMenuItemResponse> call=apiService.createMenuItem(
-                        menuItem.getNom(),
-                        menuItem.getImage(),
-                        menuItem.getPrice(),
-                        menuItem.getDesc(),
-                        menuItem.getIdCat(),
-                        sharedDB.getString(RestaurantPreferencesDB.ID_KEY,""),
-                        menuItem.isDispo()
-                    );
+                    if (ConnectionStatus.getInstance(context).isOnline()) {
 
-                    call.enqueue(new Callback<CreateMenuItemResponse>() {
+                        final ProgressDialog pd = new ProgressDialog(context);
+                        pd.setTitle("Ajout d'un menu...");
+                        pd.setMessage("Veuillez patientez.");
+                        pd.setCancelable(false);
+                        pd.show();
 
-                        @Override
-                        public void onResponse(Call<CreateMenuItemResponse> call, Response<CreateMenuItemResponse> response) {
-                            if(response.body().getError().equals("false")){
-                                Toast.makeText(context, "Menu créé avec succès", Toast.LENGTH_SHORT).show();
-                                pd.dismiss();
-                                Intent intent=new Intent(AddMenuActivity.this, MenuActivity.class);
-                                startActivity(intent);
-                            }else{
-                                Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
+                        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+                        Call<CreateMenuItemResponse> call=apiService.createMenuItem(
+                            menuItem.getNom(),
+                            menuItem.getImage(),
+                            menuItem.getPrice(),
+                            menuItem.getDesc(),
+                            menuItem.getIdCat(),
+                            sharedDB.getString(RestaurantPreferencesDB.ID_KEY,""),
+                            menuItem.isDispo()
+                        );
+
+                        call.enqueue(new Callback<CreateMenuItemResponse>() {
+
+                            @Override
+                            public void onResponse(Call<CreateMenuItemResponse> call, Response<CreateMenuItemResponse> response) {
+                                if(response.body().getError().equals("false")){
+                                    Toast.makeText(context, "Menu créé avec succès", Toast.LENGTH_SHORT).show();
+                                    pd.dismiss();
+                                    Intent intent=new Intent(AddMenuActivity.this, MenuActivity.class);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    startActivity(intent);
+                                }else{
+                                    pd.dismiss();
+                                    Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
+                                }
                             }
-                        }
 
-                        @Override
-                        public void onFailure(Call<CreateMenuItemResponse> call, Throwable t) {
-                            Toast.makeText(context, t.toString(), Toast.LENGTH_LONG).show();
-                        }
+                            @Override
+                            public void onFailure(Call<CreateMenuItemResponse> call, Throwable t) {
+                                pd.dismiss();
+                                Toast.makeText(context, getString(R.string.conn_error_not), Toast.LENGTH_LONG).show();
+                            }
 
-                    });
+                        });
+                    } else {
+                        Toast.makeText(context, getString(R.string.conn_error_not), Toast.LENGTH_LONG).show();
+                    }
 
                 }
 
@@ -212,14 +226,7 @@ public class AddMenuActivity extends AppCompatActivity {
 
                 if(categoryList!=null && categoryList.size()!=0){
 
-                    List<String> listCategorie=new ArrayList<>();
-
-                    for (int i=0 ; i<categoryList.size(); i++){
-                        String titre=categoryList.get(i).getTitre();
-                        listCategorie.add(titre);
-                    }
-
-                    categorieField.setItems(listCategorie);
+                    initCategorieField();
 
                 }else if(categoryList==null){
                     Toast.makeText(context, "Liste null", Toast.LENGTH_SHORT).show();
@@ -231,11 +238,25 @@ public class AddMenuActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<CategoryResponse>call, Throwable t) {
-                Toast.makeText(context, t.toString(), Toast.LENGTH_SHORT).show();
+
+                categoryList = db.getAllCategories();
+                initCategorieField();
+
             }
 
         });
 
+    }
+
+    private void initCategorieField() {
+        List<String> listCategorie=new ArrayList<>();
+
+        for (int i=0 ; i<categoryList.size(); i++){
+            String titre=categoryList.get(i).getTitre();
+            listCategorie.add(titre);
+        }
+
+        categorieField.setItems(listCategorie);
     }
 
     private MenuItem getAllDataEntries(){

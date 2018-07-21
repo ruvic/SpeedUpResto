@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.widget.Toast;
 
 import com.example.mbogniruvic.speedupresto.models.Category;
 import com.example.mbogniruvic.speedupresto.models.Commande;
@@ -19,11 +20,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // Database Version
     private static final int DATABASE_VERSION = 1;
 
+    private Context context;
+
     // Database Name
-    private static final String DATABASE_NAME = "speedUpRestau_db";
+    private static final String DATABASE_NAME = "speedUpResto_db";
 
     public DatabaseHelper(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        this.context=context;
     }
 
     @Override
@@ -45,23 +49,41 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    public void dropDatabase(){
+        context.deleteDatabase(DATABASE_NAME);
+    }
+
     /**
      * Méthode pour la gestion revues
      * */
     public void createReview(Review review){
 
-        SQLiteDatabase db = this.getWritableDatabase();
+        if (!isReviewExist(review)) {
+            SQLiteDatabase db = this.getWritableDatabase();
 
-        ContentValues values = new ContentValues();
-        values.put(Review.COLUMN_ID, review.getId());
-        values.put(Review.COLUMN_FIRST_NAME, review.getIdUser().getFirstName());
-        values.put(Review.COLUMN_LAST_NAME, review.getIdUser().getLastName());
-        values.put(Review.COLUMN_NOTE, review.getNote());
-        values.put(Review.COLUMN_COMMENT, review.getComment());
-        values.put(Review.COLUMN_DATE, review.getDate());
+            ContentValues values = new ContentValues();
+            values.put(Review.COLUMN_ID, review.getId());
+            values.put(Review.COLUMN_FIRST_NAME, review.getIdUser().getFirstName());
+            values.put(Review.COLUMN_LAST_NAME, review.getIdUser().getLastName());
+            values.put(Review.COLUMN_NOTE, review.getNote());
+            values.put(Review.COLUMN_COMMENT, review.getComment());
+            values.put(Review.COLUMN_DATE, review.getDate());
 
-        // insert row
-        db.insert(Review.TABLE_NAME, null, values);
+            // insert row
+            db.insert(Review.TABLE_NAME, null, values);
+        }
+
+    }
+
+    private boolean isReviewExist(Review review){
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selectQuery = "SELECT  * FROM " + Review.TABLE_NAME + " WHERE "
+                + Review.COLUMN_ID +"="+"'"+review.getId()+"'";
+
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        return  c!=null && c.moveToFirst();
 
     }
 
@@ -117,7 +139,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * Méthode de gestion des catégories
      */
 
-    public void createCategory(Category cat){
+    private String createCategory(Category cat){
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -126,8 +148,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(Category.COLUMN_CODE, cat.getCode());
 
         // insert row
-        db.insert(Category.TABLE_NAME, null, values);
-
+        long id=db.insert(Category.TABLE_NAME, null, values);
+        return  id+"";
     }
 
 
@@ -158,7 +180,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(selectQuery, null);
-
         // looping through all rows and adding to list
         if (c.moveToFirst()) {
             do {
@@ -170,31 +191,38 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 list.add(cat);
             } while (c.moveToNext());
         }
-
         return  list;
     }
 
-    public boolean isCategoryExist(Category cat){
+    private boolean isCategoryExist(Category cat){
         SQLiteDatabase db = this.getReadableDatabase();
 
         String selectQuery = "SELECT  * FROM " + Category.TABLE_NAME +" " +
-                " WHERE "+Category.COLUMN_ID+"="+cat.getId();
+                " WHERE "+Category.COLUMN_ID+"="+"'"+cat.getId()+"'";
 
         Cursor c = db.rawQuery(selectQuery, null);
 
-        return c!=null;
+        return c!=null && c.moveToFirst();
     }
 
-    public long updateCategorie(Category cat){
-        SQLiteDatabase db = this.getWritableDatabase();
+    public String updateCategorie(Category cat){
 
-        ContentValues values = new ContentValues();
-        values.put(Category.COLUMN_CODE, cat.getCode());
-        values.put(Category.COLUMN_TITRE, cat.getTitre());
+        if(isCategoryExist(cat)){
+            SQLiteDatabase db = this.getWritableDatabase();
 
-        // updating row
-        return db.update(Category.TABLE_NAME, values, Category.COLUMN_ID + " = ?",
-                new String[] { String.valueOf(cat.getId()) });
+            ContentValues values = new ContentValues();
+            values.put(Category.COLUMN_CODE, cat.getCode());
+            values.put(Category.COLUMN_TITRE, cat.getTitre());
+
+            // updating row
+            long id=db.update(Category.TABLE_NAME, values, Category.COLUMN_ID + " = ?",
+                    new String[] { String.valueOf(cat.getId()) });
+            return  id+"";
+        }else{
+            String id=createCategory(cat);
+            return id+"";
+
+        }
 
     }
 
@@ -202,7 +230,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * Méthode pour la gestion des menuItems
      */
 
-    public void createMenuItem(MenuItem menu){
+    private long createMenuItem(MenuItem menu){
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -215,7 +243,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(MenuItem.COLUMN_DISP, (menu.isDispo())?1:0);
 
         // insert row
-        db.insert(MenuItem.TABLE_NAME, null, values);
+        return db.insert(MenuItem.TABLE_NAME, null, values);
     }
 
     public MenuItem getRecentMenuItem(){
@@ -242,6 +270,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    private boolean isMenuItemExist(MenuItem menu){
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selectQuery = "SELECT  * FROM " + MenuItem.TABLE_NAME +" " +
+                " WHERE "+MenuItem.COLUMN_ID+"="+"'"+menu.getId()+"'";
+
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        return c!=null && c.moveToFirst();
+    }
+
     public List<MenuItem> getAllMenuItems(){
 
         List<MenuItem> list = new ArrayList<MenuItem>();
@@ -257,6 +296,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 MenuItem menu=new MenuItem();
                 menu.setId(c.getString(c.getColumnIndex(MenuItem.COLUMN_ID)));
                 menu.setIdCat(c.getString(c.getColumnIndex(MenuItem.COLUMN_CAT_ID)));
+                menu.setIdCat(c.getString(c.getColumnIndex(MenuItem.COLUMN_CAT_ID)));
                 menu.setNom(c.getString(c.getColumnIndex(MenuItem.COLUMN_NOM)));
                 menu.setImage(c.getString(c.getColumnIndex(MenuItem.COLUMN_IMAGE)));
                 menu.setPrice(c.getDouble(c.getColumnIndex(MenuItem.COLUMN_PRICE)));
@@ -271,20 +311,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public long updateMenuItem(MenuItem menu){
-        SQLiteDatabase db = this.getWritableDatabase();
 
-        ContentValues values = new ContentValues();
-        values.put(MenuItem.COLUMN_ID, menu.getId());
-        values.put(MenuItem.COLUMN_CAT_ID, menu.getIdCat());
-        values.put(MenuItem.COLUMN_NOM, menu.getNom());
-        values.put(MenuItem.COLUMN_IMAGE, menu.getImage());
-        values.put(MenuItem.COLUMN_PRICE, menu.getPrice());
-        values.put(MenuItem.COLUMN_DESC, menu.getDesc());
-        values.put(MenuItem.COLUMN_DISP, (menu.isDispo())?1:0);
+        if (isMenuItemExist(menu)) {
+            SQLiteDatabase db = this.getWritableDatabase();
 
-        // updating row
-        return db.update(MenuItem.TABLE_NAME, values, MenuItem.COLUMN_ID + " = ?",
-                new String[] { String.valueOf(menu.getId()) });
+            ContentValues values = new ContentValues();
+            values.put(MenuItem.COLUMN_ID, menu.getId());
+            values.put(MenuItem.COLUMN_CAT_ID, menu.getIdCat());
+            values.put(MenuItem.COLUMN_NOM, menu.getNom());
+            values.put(MenuItem.COLUMN_IMAGE, menu.getImage());
+            values.put(MenuItem.COLUMN_PRICE, menu.getPrice());
+            values.put(MenuItem.COLUMN_DESC, menu.getDesc());
+            values.put(MenuItem.COLUMN_DISP, (menu.isDispo())?1:0);
+
+            // updating row
+            return db.update(MenuItem.TABLE_NAME, values, MenuItem.COLUMN_ID + " = ?",
+                    new String[] { String.valueOf(menu.getId()) });
+
+        } else {
+            return createMenuItem(menu);
+        }
 
     }
 
@@ -292,7 +338,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * Methode de gestion des commandes
      */
 
-    public void createCommande(Commande cmd){
+    private void createCommande(Commande cmd){
 
     }
 

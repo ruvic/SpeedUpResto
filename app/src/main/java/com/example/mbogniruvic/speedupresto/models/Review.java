@@ -55,6 +55,16 @@ public class Review {
         this.date = date;
     }
 
+    @Override
+    public String toString() {
+        return "Review { "
+                +"id : "+this.getId()
+                +"note : "+this.getNote()
+                +"firstname : "+this.getIdUser().getFirstName()
+                +"lastname : "+this.getIdUser().getLastName()
+                +"comment : "+this.getComment();
+    }
+
     public Review() {
         this.idUser=new User();
     }

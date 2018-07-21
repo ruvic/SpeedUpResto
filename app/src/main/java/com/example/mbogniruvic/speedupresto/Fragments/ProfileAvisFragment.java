@@ -17,11 +17,13 @@ import android.widget.Toast;
 import com.example.mbogniruvic.speedupresto.Adapters.RecyclerViewAvisItemsAdapter;
 import com.example.mbogniruvic.speedupresto.MainActivity;
 import com.example.mbogniruvic.speedupresto.R;
+import com.example.mbogniruvic.speedupresto.Tasks.StoreReviewsTask;
 import com.example.mbogniruvic.speedupresto.Utils.RestaurantPreferencesDB;
 import com.example.mbogniruvic.speedupresto.models.AllRestauReviewsResponse;
 import com.example.mbogniruvic.speedupresto.models.Review;
 import com.example.mbogniruvic.speedupresto.rest.ApiClient;
 import com.example.mbogniruvic.speedupresto.rest.ApiInterface;
+import com.example.mbogniruvic.speedupresto.sqlite.DatabaseHelper;
 
 import java.util.List;
 
@@ -33,6 +35,7 @@ public class ProfileAvisFragment extends Fragment {
 
     private List<Review> reviewsList;
     private RestaurantPreferencesDB sharedDB;
+    private DatabaseHelper db;
     private Context context;
     private View view;
     private RecyclerView recyclerView;
@@ -55,6 +58,7 @@ public class ProfileAvisFragment extends Fragment {
 
         sharedDB= MainActivity.shareDB;
         context=getContext();
+        db=new DatabaseHelper(context);
         view=rootView;
 
         //get Adress
@@ -77,14 +81,10 @@ public class ProfileAvisFragment extends Fragment {
                     reviewsList=response.body().getReviews();
 
                     if (reviewsList.size()!=0) {
-                        RecyclerViewAvisItemsAdapter mAdapter = new RecyclerViewAvisItemsAdapter(reviewsList);
-                        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
-                        recyclerView.setLayoutManager(mLayoutManager);
-                        recyclerView.setItemAnimator(new DefaultItemAnimator());
-                        recyclerView.setAdapter(mAdapter);
 
-                        progressBar.setVisibility(View.INVISIBLE);
-                        recyclerView.setVisibility(View.VISIBLE);
+                        new StoreReviewsTask(context, db).execute(reviewsList);
+
+                        updateInterfaceViews();
 
                     } else {
                         progressBar.setVisibility(View.INVISIBLE);
@@ -93,22 +93,41 @@ public class ProfileAvisFragment extends Fragment {
                     }
 
                 }else {
+
                     Toast.makeText(context, "Erreur de chargement des avis", Toast.LENGTH_SHORT).show();
+
                 }
 
             }
 
             @Override
             public void onFailure(Call<AllRestauReviewsResponse> call, Throwable t) {
-                Toast.makeText(context, t.toString(), Toast.LENGTH_SHORT).show();
-                emptyText.setVisibility(View.VISIBLE);
+
+                /*emptyText.setVisibility(View.VISIBLE);
                 recyclerView.setVisibility(View.INVISIBLE);
-                progressBar.setVisibility(View.INVISIBLE);
+                progressBar.setVisibility(View.INVISIBLE);*/
+
+                reviewsList=db.getAllReviews();
+                updateInterfaceViews();
+
+
             }
         });
 
 
         return rootView;
+    }
+
+    private void updateInterfaceViews(){
+
+        RecyclerViewAvisItemsAdapter mAdapter = new RecyclerViewAvisItemsAdapter(reviewsList);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(mAdapter);
+
+        progressBar.setVisibility(View.INVISIBLE);
+        recyclerView.setVisibility(View.VISIBLE);
     }
 
 

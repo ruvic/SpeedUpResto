@@ -109,13 +109,13 @@ public class MenuItem implements Parcelable {
 
     @Override
     public String toString() {
-        String result="Id_menu : "+this.getId()+"\n"
+        String result="MenuItem { Id_menu : "+this.getId()+"\n"
                 +"nom : "+this.getNom()+"\n"
                 +"image : "+this.getImage()+"\n"
                 +"catID : "+this.getIdCat()+"\n"
                 +"price : "+this.getPrice()+"\n"
                 +"desc : "+this.getDesc()+"\n"
-                +"dispo : "+this.isDispo;
+                +"dispo : "+this.isDispo+" }";
         return result;
     }
 
