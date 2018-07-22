@@ -9,6 +9,8 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.widget.Toast;
 
+import com.example.mbogniruvic.speedupresto.MainActivity;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -83,6 +85,7 @@ public class ImagesManager {
 
             if(rootPath==null){
                 rootPath=imageUri.substring(0, imageUri.lastIndexOf("/")+1);
+                MainActivity.shareDB.putRootImagePath(rootPath);
             }
 
             stream.flush();
@@ -90,7 +93,7 @@ public class ImagesManager {
             stream.close();
 
 
-        }catch (IOException e) // Catch the exception
+        }catch (Exception e) // Catch the exception
         {
             e.printStackTrace();
             return "";

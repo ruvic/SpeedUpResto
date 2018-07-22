@@ -282,6 +282,6 @@ public class MenuActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        db.closeDB();
+        //db.closeDB();
     }
 }

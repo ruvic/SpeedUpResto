@@ -9,8 +9,10 @@ import android.os.AsyncTask;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.mbogniruvic.speedupresto.MainActivity;
 import com.example.mbogniruvic.speedupresto.Utils.ConnectionStatus;
 import com.example.mbogniruvic.speedupresto.Utils.ImagesManager;
+import com.example.mbogniruvic.speedupresto.Utils.RestaurantPreferencesDB;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -36,8 +38,8 @@ public class DownLoadImageTask extends AsyncTask<String, Void, Bitmap> {
     public DownLoadImageTask(ImageView view, String id)  {
         this.view = view;
         this.context=view.getContext();
-        this.imageUri = ImagesManager.rootPath+id+".jpg";
-        System.out.println(imageUri);
+        RestaurantPreferencesDB sharedDB= MainActivity.shareDB;
+        this.imageUri = sharedDB.getString(RestaurantPreferencesDB.ROOT_IMAGE_KEY,"")+id+".jpg";
     }
 
     @Override

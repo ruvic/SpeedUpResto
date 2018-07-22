@@ -136,7 +136,7 @@ public class AddMenuActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                MenuItem menuItem=getAllDataEntries();
+                final MenuItem menuItem=getAllDataEntries();
 
                 if(menuItem!=null){
 
@@ -164,7 +164,8 @@ public class AddMenuActivity extends AppCompatActivity {
                             @Override
                             public void onResponse(Call<CreateMenuItemResponse> call, Response<CreateMenuItemResponse> response) {
                                 if(response.body().getError().equals("false")){
-                                    Toast.makeText(context, "Menu créé avec succès", Toast.LENGTH_SHORT).show();
+                                    String t=db.updateMenuItem(menuItem);
+                                    Toast.makeText(context, "Menu créé avec succès :"+t, Toast.LENGTH_SHORT).show();
                                     pd.dismiss();
                                     Intent intent=new Intent(AddMenuActivity.this, MenuActivity.class);
                                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -272,7 +273,7 @@ public class AddMenuActivity extends AppCompatActivity {
             if (imageHasChange) {
                 if (hasChooseCategorie) {
                     menuItem.setIdCat(categoryList.get(categorieField.getSelectedIndex()).getId());
-                    menuItem.setImage("https://zupimages.net/up/18/29/379z.jpg");
+                    menuItem.setImage("https://image.ibb.co/b8PbQo/croissnt.jpg");
                     menuItem.setNom(nomMenuField.getText().toString().trim());
                     menuItem.setPrice(Double.valueOf(prixField.getText().toString()).doubleValue());
                     menuItem.setDispo(dispoField.isChecked());

@@ -239,6 +239,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         if (ConnectionStatus.getInstance(context).isOnline()) {
             imageUri=ImagesManager.saveIntoInternalStorage(context, imageUri, menu.getId());
+            if(imageUri.trim().isEmpty())
+                imageUri=menu.getImage();
         }
 
         ContentValues values = new ContentValues();

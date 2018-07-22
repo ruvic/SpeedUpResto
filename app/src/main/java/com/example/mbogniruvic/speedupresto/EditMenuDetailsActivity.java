@@ -201,7 +201,9 @@ public class EditMenuDetailsActivity extends AppCompatActivity {
 
                                 if(response.body().getError().equals("false")){
                                     menu=response.body().getMenu();
-                                    Toast.makeText(context, "Modification effectuée avec succès", Toast.LENGTH_SHORT).show();
+                                    
+                                    String t=db.updateMenuItem(menu);
+                                    Toast.makeText(context, "Modification effectuée avec succès : "+t, Toast.LENGTH_SHORT).show();
 
                                     pd.dismiss();
                                     Intent intent=new Intent(EditMenuDetailsActivity.this, MenuActivity.class);

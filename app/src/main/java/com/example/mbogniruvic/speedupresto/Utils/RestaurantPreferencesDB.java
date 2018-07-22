@@ -39,6 +39,7 @@ public class RestaurantPreferencesDB {
     public static final String PASSWORD_KEY = "PASSWORD";
     public static final String LATITUDE_KEY = "LATITUDE";
     public static final String LONGITUDE_KEY = "LONGITUDE";
+    public static final String ROOT_IMAGE_KEY = "ROOT_IMAGE";
 
 
 
@@ -95,6 +96,9 @@ public class RestaurantPreferencesDB {
         editor.clear();
     }
 
-
+    public void putRootImagePath(String path){
+        editor.putString(ROOT_IMAGE_KEY, path);
+        editor.commit();
+    }
 
 }
