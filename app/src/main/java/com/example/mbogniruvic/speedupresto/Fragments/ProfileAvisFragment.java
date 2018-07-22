@@ -142,4 +142,9 @@ public class ProfileAvisFragment extends Fragment {
         super.onDetach();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        db.closeDB();
+    }
 }

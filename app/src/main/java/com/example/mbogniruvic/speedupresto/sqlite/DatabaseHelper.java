@@ -8,6 +8,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.widget.Toast;
 
+import com.example.mbogniruvic.speedupresto.Utils.ConnectionStatus;
+import com.example.mbogniruvic.speedupresto.Utils.ImagesManager;
 import com.example.mbogniruvic.speedupresto.models.Category;
 import com.example.mbogniruvic.speedupresto.models.Commande;
 import com.example.mbogniruvic.speedupresto.models.MenuItem;
@@ -230,20 +232,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * Méthode pour la gestion des menuItems
      */
 
-    private long createMenuItem(MenuItem menu){
+    private String createMenuItem(MenuItem menu){
         SQLiteDatabase db = this.getWritableDatabase();
+
+        String imageUri=menu.getImage();
+
+        if (ConnectionStatus.getInstance(context).isOnline()) {
+            imageUri=ImagesManager.saveIntoInternalStorage(context, imageUri, menu.getId());
+        }
 
         ContentValues values = new ContentValues();
         values.put(MenuItem.COLUMN_ID, menu.getId());
         values.put(MenuItem.COLUMN_CAT_ID, menu.getIdCat());
         values.put(MenuItem.COLUMN_NOM, menu.getNom());
-        values.put(MenuItem.COLUMN_IMAGE, menu.getImage());
+        values.put(MenuItem.COLUMN_IMAGE, imageUri);
         values.put(MenuItem.COLUMN_PRICE, menu.getPrice());
         values.put(MenuItem.COLUMN_DESC, menu.getDesc());
         values.put(MenuItem.COLUMN_DISP, (menu.isDispo())?1:0);
 
         // insert row
-        return db.insert(MenuItem.TABLE_NAME, null, values);
+        db.insert(MenuItem.TABLE_NAME, null, values);
+        return imageUri;
     }
 
     public MenuItem getRecentMenuItem(){
@@ -310,24 +319,31 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return  list;
     }
 
-    public long updateMenuItem(MenuItem menu){
+    public String updateMenuItem(MenuItem menu){
 
         if (isMenuItemExist(menu)) {
             SQLiteDatabase db = this.getWritableDatabase();
+
+            String imageUri=menu.getImage();
+
+            if(ConnectionStatus.getInstance(context).isOnline()){
+                imageUri=ImagesManager.saveIntoInternalStorage(context,imageUri,menu.getId());
+            }
 
             ContentValues values = new ContentValues();
             values.put(MenuItem.COLUMN_ID, menu.getId());
             values.put(MenuItem.COLUMN_CAT_ID, menu.getIdCat());
             values.put(MenuItem.COLUMN_NOM, menu.getNom());
-            values.put(MenuItem.COLUMN_IMAGE, menu.getImage());
+            values.put(MenuItem.COLUMN_IMAGE, imageUri);
             values.put(MenuItem.COLUMN_PRICE, menu.getPrice());
             values.put(MenuItem.COLUMN_DESC, menu.getDesc());
             values.put(MenuItem.COLUMN_DISP, (menu.isDispo())?1:0);
 
             // updating row
-            return db.update(MenuItem.TABLE_NAME, values, MenuItem.COLUMN_ID + " = ?",
+            db.update(MenuItem.TABLE_NAME, values, MenuItem.COLUMN_ID + " = ?",
                     new String[] { String.valueOf(menu.getId()) });
 
+            return  imageUri;
         } else {
             return createMenuItem(menu);
         }

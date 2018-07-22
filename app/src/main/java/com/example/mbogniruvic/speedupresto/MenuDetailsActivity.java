@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mbogniruvic.speedupresto.Tasks.DownLoadImageTask;
+import com.example.mbogniruvic.speedupresto.Utils.ConnectionStatus;
 import com.example.mbogniruvic.speedupresto.models.CategoryMenu;
 import com.jaredrummler.materialspinner.MaterialSpinner;
 
@@ -59,7 +60,12 @@ public class MenuDetailsActivity extends AppCompatActivity {
         EditText descField=(EditText) findViewById(R.id.details_desc);
 
         //update field
-        new DownLoadImageTask(menu_image).execute(menu.getImage());
+        if (ConnectionStatus.getInstance(context).isOnline()) {
+            new DownLoadImageTask(menu_image).execute(menu.getImage());
+        } else {
+            new DownLoadImageTask(menu_image, menu.getId()).execute(menu.getImage());
+        }
+
         categorieField.setText(currentCat.getCategorie());
         nomMenuField.setText(menu.getNom());
         prixField.setText(menu.getPrice()+"");

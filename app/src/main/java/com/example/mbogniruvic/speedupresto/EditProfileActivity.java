@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.mbogniruvic.speedupresto.Tasks.DownLoadImageTask;
+import com.example.mbogniruvic.speedupresto.Utils.ConnectionStatus;
 import com.example.mbogniruvic.speedupresto.Utils.RestaurantPreferencesDB;
 import com.example.mbogniruvic.speedupresto.models.Restaurant;
 import com.example.mbogniruvic.speedupresto.models.UpdateRestaurantResponse;
@@ -87,7 +88,13 @@ public class EditProfileActivity extends AppCompatActivity {
 
         //init field
         sharedDB=MainActivity.shareDB;
-        new DownLoadImageTask(logoRestauView).execute(sharedDB.getString(RestaurantPreferencesDB.IMAGE_KEY, ""));
+
+        if (ConnectionStatus.getInstance(context).isOnline()) {
+            new DownLoadImageTask(logoRestauView).execute(sharedDB.getString(RestaurantPreferencesDB.IMAGE_KEY, ""));
+        } else {
+            new DownLoadImageTask(logoRestauView, sharedDB.getString(RestaurantPreferencesDB.ID_KEY,"")).execute(sharedDB.getString(RestaurantPreferencesDB.IMAGE_KEY, ""));
+        }
+
         nomRestauView.setText(sharedDB.getString(RestaurantPreferencesDB.NOM_KEY,"<nom du restaurant>"));
         descRestauView.setText(sharedDB.getString(RestaurantPreferencesDB.BIO_KEY, "<desc>"));
         minOrderView.setText(sharedDB.getInt(RestaurantPreferencesDB.MIN_ORDER_KEY, 0)+"");
@@ -121,53 +128,59 @@ public class EditProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                final ProgressDialog pd = new ProgressDialog(context);
-                pd.setTitle("Modification...");
-                pd.setMessage("Veuillez patientez.");
-                pd.setCancelable(false);
-                pd.show();
-
-                ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
                 Restaurant restau=getEditRestaurant();
-                Call<UpdateRestaurantResponse> call=apiService.updateRestaurant(
-                    restau.getId(),
-                    restau.getNom(),
-                    restau.getEmail(),
-                    restau.getCity(),
-                    restau.getPhone(),
-                    restau.getFee_delivery(),
-                    restau.getMin_order(),
-                    restau.getTime_delivery(),
-                    restau.getImage(),
-                    restau.getQuartier(),
-                    restau.getBio(),
-                    restau.getLatitude(),
-                    restau.getLongitude(),
-                    restau.getNote()
-                );
 
-                call.enqueue(new Callback<UpdateRestaurantResponse>() {
+                if (restau!=null) {
 
-                    @Override
-                    public void onResponse(Call<UpdateRestaurantResponse> call, Response<UpdateRestaurantResponse> response) {
-                        if(!response.body().isError()){
-                            Restaurant r=response.body().getRestaurant();
-                            sharedDB.put(r);
-                            pd.dismiss();
-                            Intent intent =new Intent(EditProfileActivity.this, ProfileActivity.class);
-                            intent.putExtra(FROM_EDIT_PROFILE_TAG, 1);
-                            startActivity(intent);
-                            Toast.makeText(context, "Modification effectuée avec succès", Toast.LENGTH_LONG).show();
-                        }else{
-                            Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
+                    final ProgressDialog pd = new ProgressDialog(context);
+                    pd.setTitle("Modification...");
+                    pd.setMessage("Veuillez patientez.");
+                    pd.setCancelable(false);
+                    pd.show();
+
+                    ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+                    Call<UpdateRestaurantResponse> call=apiService.updateRestaurant(
+                        restau.getId(),
+                        restau.getNom(),
+                        restau.getEmail(),
+                        restau.getCity(),
+                        restau.getPhone(),
+                        restau.getFee_delivery(),
+                        restau.getMin_order(),
+                        restau.getTime_delivery(),
+                        restau.getImage(),
+                        restau.getQuartier(),
+                        restau.getBio(),
+                        restau.getLatitude(),
+                        restau.getLongitude(),
+                        restau.getNote()
+                    );
+
+                    call.enqueue(new Callback<UpdateRestaurantResponse>() {
+
+                        @Override
+                        public void onResponse(Call<UpdateRestaurantResponse> call, Response<UpdateRestaurantResponse> response) {
+                            if(!response.body().isError()){
+                                Restaurant r=response.body().getRestaurant();
+                                sharedDB.put(r);
+                                pd.dismiss();
+                                Intent intent =new Intent(EditProfileActivity.this, ProfileActivity.class);
+                                intent.putExtra(FROM_EDIT_PROFILE_TAG, 1);
+                                startActivity(intent);
+                                Toast.makeText(context, "Modification effectuée avec succès", Toast.LENGTH_LONG).show();
+                            }else{
+                                pd.dismiss();
+                                Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onFailure(Call<UpdateRestaurantResponse> call, Throwable t) {
-                        Toast.makeText(context, t.toString(), Toast.LENGTH_LONG).show();
-                    }
-                });
+                        @Override
+                        public void onFailure(Call<UpdateRestaurantResponse> call, Throwable t) {
+                            pd.dismiss();
+                            Toast.makeText(context, getString(R.string.conn_error_not), Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
             }
         });
 
@@ -218,7 +231,7 @@ public class EditProfileActivity extends AppCompatActivity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            Toast.makeText(context, EditMenuDetailsActivity.getRealPathFromURI(context,uri), Toast.LENGTH_LONG).show();
+            //Toast.makeText(context, EditMenuDetailsActivity.getRealPathFromURI(context,uri), Toast.LENGTH_LONG).show();
 
         }
 

@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.example.mbogniruvic.speedupresto.Fragments.ProfileAvisFragment;
 import com.example.mbogniruvic.speedupresto.Fragments.ProfileInfosFragment;
 import com.example.mbogniruvic.speedupresto.Tasks.DownLoadImageTask;
+import com.example.mbogniruvic.speedupresto.Utils.ConnectionStatus;
 import com.example.mbogniruvic.speedupresto.Utils.RestaurantPreferencesDB;
 
 import java.util.ArrayList;
@@ -65,7 +66,13 @@ public class ProfileActivity extends AppCompatActivity {
 
         //init field
         shareDB=MainActivity.shareDB;
-        new DownLoadImageTask(profileImageView).execute(shareDB.getString(RestaurantPreferencesDB.IMAGE_KEY, null));
+
+        if (ConnectionStatus.getInstance(context).isOnline()) {
+            new DownLoadImageTask(profileImageView).execute(shareDB.getString(RestaurantPreferencesDB.IMAGE_KEY, null));
+        } else {
+            new DownLoadImageTask(profileImageView, shareDB.getString(RestaurantPreferencesDB.ID_KEY,"")).execute(shareDB.getString(RestaurantPreferencesDB.IMAGE_KEY, null));
+        }
+
         restoNomView.setText(shareDB.getString(RestaurantPreferencesDB.NOM_KEY, "<Nom du restaurant>"));
 
         String local=shareDB.getString(RestaurantPreferencesDB.CITY_KEY, "<city>")+" , "

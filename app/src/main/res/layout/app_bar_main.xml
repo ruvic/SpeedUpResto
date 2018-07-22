@@ -47,15 +47,17 @@
                     android:gravity="center_horizontal"
                     android:textSize="15sp"
                     android:layout_marginTop="15dp"
-                    android:layout_marginBottom="15dp"
+                    android:layout_marginBottom="40dp"
                     android:text="Liste des commandes" />
 
                 <android.support.design.widget.TabLayout
                     android:id="@+id/tabs"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/colorPrimary"
-                    app:tabIndicatorColor="@color/white"
+                    android:background="@color/white"
+                    app:tabSelectedTextColor="@color/colorPrimaryDark"
+                    app:tabTextColor="@color/gris_mat"
+                    app:tabIndicatorColor="@color/colorPrimaryDark"
                     app:tabMode="fixed"
                     app:tabGravity="fill" />
 

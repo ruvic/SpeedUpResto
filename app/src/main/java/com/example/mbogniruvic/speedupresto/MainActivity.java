@@ -2,6 +2,7 @@ package com.example.mbogniruvic.speedupresto;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -23,6 +24,7 @@ import com.example.mbogniruvic.speedupresto.Fragments.NonLivreFragment;
 import com.example.mbogniruvic.speedupresto.Fragments.RefuseFragment;
 import com.example.mbogniruvic.speedupresto.Tasks.StoreAllCategoriesTask;
 import com.example.mbogniruvic.speedupresto.Utils.ConnectionStatus;
+import com.example.mbogniruvic.speedupresto.Utils.ImagesManager;
 import com.example.mbogniruvic.speedupresto.Utils.RestaurantPreferencesDB;
 import com.example.mbogniruvic.speedupresto.models.Category;
 import com.example.mbogniruvic.speedupresto.models.CategoryResponse;
@@ -82,10 +84,12 @@ public class MainActivity extends AppCompatActivity
 
         shareDB=new RestaurantPreferencesDB(context);
         db=new DatabaseHelper(getApplicationContext());
+
         //db.dropDatabase();
         //Toast.makeText(context, "Suppression reussie", Toast.LENGTH_SHORT).show();
 
         getAllCategories();
+
 
     }
 
@@ -102,6 +106,9 @@ public class MainActivity extends AppCompatActivity
                     restaurant=response.body().getRestaurant();
 
                     shareDB.put(restaurant);
+
+                    new SaveProfileImageTask().execute();
+
                     Toast.makeText(context, "Infos chargé avec succès", Toast.LENGTH_SHORT).show();
                 }else{
                     Toast.makeText(context, "Echec du chargement des informations", Toast.LENGTH_SHORT).show();
@@ -113,6 +120,21 @@ public class MainActivity extends AppCompatActivity
                 Toast.makeText(context, t.toString(), Toast.LENGTH_SHORT).show();
             }
         });
+
+    }
+
+    class  SaveProfileImageTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            if(ConnectionStatus.getInstance(context).isOnline()){
+                ImagesManager.saveIntoInternalStorage(getApplicationContext(), restaurant.getImage(), restaurant.getId());
+            }
+
+            return null;
+        }
+
 
     }
 
@@ -174,8 +196,9 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_refresh) {
-            Intent intent=getIntent();
-            startActivity(intent);
+
+
+
             return true;
         }
 
@@ -190,8 +213,7 @@ public class MainActivity extends AppCompatActivity
 
         Intent intent=null;
         if (id == R.id.nav_home) {
-            intent=new Intent(MainActivity.this, MainActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NO_ANIMATION);
+
         } else if (id == R.id.nav_menu) {
             intent=new Intent(MainActivity.this, MenuActivity.class);
         } else if (id == R.id.nav_profile) {
@@ -246,5 +268,11 @@ public class MainActivity extends AppCompatActivity
         public CharSequence getPageTitle(int position) {
             return mFragmentTitleList.get(position);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        db.closeDB();
     }
 }

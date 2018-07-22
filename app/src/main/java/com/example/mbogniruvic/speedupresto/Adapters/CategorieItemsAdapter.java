@@ -16,6 +16,7 @@ import com.example.mbogniruvic.speedupresto.MenuActivity;
 import com.example.mbogniruvic.speedupresto.MenuDetailsActivity;
 import com.example.mbogniruvic.speedupresto.R;
 import com.example.mbogniruvic.speedupresto.Tasks.DownLoadImageTask;
+import com.example.mbogniruvic.speedupresto.Utils.ConnectionStatus;
 import com.example.mbogniruvic.speedupresto.models.CategoryMenu;
 import com.example.mbogniruvic.speedupresto.models.MenuItem;
 
@@ -83,7 +84,11 @@ public class CategorieItemsAdapter extends RecyclerView.Adapter<CategorieItemsAd
         holder.nom.setText(menu.getNom());
         holder.prix.setText(menu.getPrice()+" FCFA");
 
-        new DownLoadImageTask(holder.image_menu).execute(menu.getImage());
+        if (ConnectionStatus.getInstance(context).isOnline()) {
+            new DownLoadImageTask(holder.image_menu).execute(menu.getImage());
+        } else {
+            new DownLoadImageTask(holder.image_menu, menu.getId()).execute(menu.getImage());
+        }
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override

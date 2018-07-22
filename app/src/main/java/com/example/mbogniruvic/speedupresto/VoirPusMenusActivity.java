@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.example.mbogniruvic.speedupresto.Adapters.CategorieItemsAdapter;
 import com.example.mbogniruvic.speedupresto.Tasks.DownLoadImageTask;
+import com.example.mbogniruvic.speedupresto.Utils.ConnectionStatus;
 import com.example.mbogniruvic.speedupresto.Utils.RestaurantPreferencesDB;
 import com.example.mbogniruvic.speedupresto.models.CategoryMenu;
 import com.example.mbogniruvic.speedupresto.models.MenuItem;
@@ -52,6 +53,8 @@ public class VoirPusMenusActivity extends AppCompatActivity {
 
         currentCat=getIntent().getParcelableExtra(MenuActivity.CAT_OBJECT_TAG);
         menusList=currentCat.getMenus();
+        shareDB=MainActivity.shareDB;
+
 
         //get Adresses
         recyclerView=(RecyclerView)findViewById(R.id.recyclerV_voir_plus);
@@ -61,18 +64,27 @@ public class VoirPusMenusActivity extends AppCompatActivity {
         nbMenusView=(TextView)findViewById(R.id.voir_plus_nbMenus);
 
         //init field
+        initFields();
+        
+    }
+
+    private void initFields() {
+
         CategorieItemsAdapter mAdapter = new CategorieItemsAdapter(menusList, currentCat ,true);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
 
-        shareDB=MainActivity.shareDB;
-        new DownLoadImageTask(logoRestoView).execute(shareDB.getString(RestaurantPreferencesDB.IMAGE_KEY, ""));
+        if (ConnectionStatus.getInstance(context).isOnline()) {
+            new DownLoadImageTask(logoRestoView).execute(shareDB.getString(RestaurantPreferencesDB.IMAGE_KEY, ""));
+        } else {
+            new DownLoadImageTask(logoRestoView, shareDB.getString(RestaurantPreferencesDB.ID_KEY,"")).execute(shareDB.getString(RestaurantPreferencesDB.IMAGE_KEY, ""));
+        }
         nomRestoView.setText(shareDB.getString(RestaurantPreferencesDB.NOM_KEY, "<nom du restaurant>"));
         nomCatView.setText(currentCat.getCategorie());
         nbMenusView.setText(MenuActivity.format(currentCat.getMenus().size()));
-        
+
     }
 
     @Override
@@ -85,8 +97,9 @@ public class VoirPusMenusActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(android.view.MenuItem item) {
         switch (item.getItemId()){
             case R.id.action_refresh :
-                finish();
-                startActivity(getIntent());
+
+                initFields();
+
                 break;
             default:break;
         }

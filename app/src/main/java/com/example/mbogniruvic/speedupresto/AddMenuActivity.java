@@ -208,7 +208,7 @@ public class AddMenuActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-            Toast.makeText(context, EditMenuDetailsActivity.getRealPathFromURI(context,uri), Toast.LENGTH_LONG).show();
+            //Toast.makeText(context, EditMenuDetailsActivity.getRealPathFromURI(context,uri), Toast.LENGTH_LONG).show();
 
         }
     }
@@ -290,4 +290,9 @@ public class AddMenuActivity extends AppCompatActivity {
         return  menuItem;
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        db.closeDB();
+    }
 }

@@ -16,6 +16,7 @@ public class StoreMenusTask extends AsyncTask<List<CategoryMenu>,Void,Boolean>  
 
     private DatabaseHelper db;
     private Context context;
+    private String result="";
 
     public StoreMenusTask(DatabaseHelper db, Context context) {
         this.db = db;
@@ -31,7 +32,7 @@ public class StoreMenusTask extends AsyncTask<List<CategoryMenu>,Void,Boolean>  
 
             for (MenuItem menu : catMenu.getMenus()) {
 
-                db.updateMenuItem(menu);
+                result +="\n"+ db.updateMenuItem(menu);
 
             }
 
@@ -48,6 +49,9 @@ public class StoreMenusTask extends AsyncTask<List<CategoryMenu>,Void,Boolean>  
         for (MenuItem menu : menuItems) {
             Toast.makeText(context,menu.toString(), Toast.LENGTH_SHORT).show();
         }*/
+
+        //Toast.makeText(context, "images : "+result, Toast.LENGTH_LONG).show();
+
 
     }
 }

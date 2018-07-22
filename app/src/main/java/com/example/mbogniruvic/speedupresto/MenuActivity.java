@@ -97,22 +97,17 @@ public class MenuActivity extends AppCompatActivity {
 
         shareDB=MainActivity.shareDB;
         db=new DatabaseHelper(getApplicationContext());
+
         nomRestauView.setText(shareDB.getString(RestaurantPreferencesDB.NOM_KEY, "<nom du restaurant>"));
 
-
-        if (ConnectionStatus.getInstance(getApplicationContext()).isOnline()) {
+        if (ConnectionStatus.getInstance(context).isOnline()) {
             new DownLoadImageTask(logoRestauview).execute(shareDB.getString(RestaurantPreferencesDB.IMAGE_KEY, ""));
+        } else {
+            new DownLoadImageTask(logoRestauview, shareDB.getString(RestaurantPreferencesDB.ID_KEY,""))
+                    .execute(shareDB.getString(RestaurantPreferencesDB.IMAGE_KEY, ""));
         }
 
         prepareDatas();
-
-        /*if (ConnectionStatus.getInstance(getApplicationContext()).isOnline()) {
-
-            Toast.makeText(getApplicationContext(), "WiFi/Mobile Networks Connected!", Toast.LENGTH_SHORT).show();
-        } else {
-
-            Toast.makeText(getApplicationContext(), "Ooops! No WiFi/Mobile Networks Connected!", Toast.LENGTH_SHORT).show();
-        }*/
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.add_menu_fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -121,39 +116,6 @@ public class MenuActivity extends AppCompatActivity {
 
                 Intent intent = new Intent(MenuActivity.this, AddMenuActivity.class);
                 startActivity(intent);
-
-
-                /*View fragmentView = getLayoutInflater().inflate(R.layout.fragment_add_categorie_menu, null);
-
-                final BottomSheetDialog dialog = new BottomSheetDialog(context);
-                dialog.setContentView(fragmentView);
-                dialog.show();
-
-                LinearLayout cat=(LinearLayout)fragmentView.findViewById(R.id.add_cat);
-                LinearLayout menu=(LinearLayout)fragmentView.findViewById(R.id.add_menu);
-                LinearLayout close=(LinearLayout)fragmentView.findViewById(R.id.close);
-
-                cat.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        showAddCategorieDialog(context, (Activity) context);
-                    }
-                });
-
-                menu.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent intent = new Intent(MenuActivity.this, AddMenuActivity.class);
-                        startActivity(intent);
-                    }
-                });
-
-                close.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        dialog.hide();
-                    }
-                });*/
 
             }
         });
@@ -170,8 +132,12 @@ public class MenuActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(android.view.MenuItem item) {
         switch (item.getItemId()){
             case R.id.action_refresh :
-                Intent intent=getIntent();
-                startActivity(intent);
+
+                new DownLoadImageTask(logoRestauview).execute(shareDB.getString(RestaurantPreferencesDB.IMAGE_KEY, ""));
+                progressBarLayout.setVisibility(View.VISIBLE);
+                recyclerView.setVisibility(View.GONE);
+                prepareDatas();
+
                 break;
             default:break;
         }
@@ -232,25 +198,6 @@ public class MenuActivity extends AppCompatActivity {
 
                         updateInterfaceViews();
 
-                        /*mAdapter = new CategoriesAdapters(categoryList);
-                        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
-                        recyclerView.setLayoutManager(mLayoutManager);
-                        recyclerView.setItemAnimator(new DefaultItemAnimator());
-                        recyclerView.setAdapter(mAdapter);
-
-                        int nbCat=categoryList.size();
-                        int nbMenu=0;
-
-                        for (int i=0; i<nbCat; i++){
-                            nbMenu+=categoryList.get(i).getMenus().size();
-                        }
-
-                        nbCategorieField.setText(format(nbCat));
-                        nbMenuField.setText(format(nbMenu));
-
-                        progressBarLayout.setVisibility(View.GONE);
-                        recyclerView.setVisibility(View.VISIBLE);*/
-
                     }else if(categoryList==null){
                         Toast.makeText(context, "Liste null", Toast.LENGTH_SHORT).show();
                     }else{
@@ -271,8 +218,11 @@ public class MenuActivity extends AppCompatActivity {
                 categoryList=new ArrayList<>();
 
                 List<MenuItem> menuItems=db.getAllMenuItems();
+
                 for (int i=0; i<menuItems.size(); i++){
+
                     MenuItem menu=menuItems.get(i);
+
                     Category currentCat=db.getCategory(menu.getIdCat());
 
                     CategoryMenu catMenu=new CategoryMenu();
@@ -289,6 +239,7 @@ public class MenuActivity extends AppCompatActivity {
                     categoryList.add(catMenu);
 
                     i--;
+
                 }
 
                 updateInterfaceViews();
@@ -328,5 +279,9 @@ public class MenuActivity extends AppCompatActivity {
         return  (number<10)?"0"+number:""+number;
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        db.closeDB();
+    }
 }
