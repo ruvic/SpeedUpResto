@@ -55,7 +55,7 @@ public class RefuseFragment extends Fragment {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
 
-        prepareMovieData();
+        prepareDatas();
 
         //Gestion du clic sur un élément de la liste
         recyclerView.addOnItemTouchListener(new NonLivreFragment.RecyclerTouchListener(getContext(), recyclerView, new NonLivreFragment.RecyclerTouchListener.ClickListener() {
@@ -177,13 +177,9 @@ public class RefuseFragment extends Fragment {
         super.onDetach();
     }
 
-    private void prepareMovieData() {
+    private void prepareDatas() {
 
-        Commande cmd=null;
-        for (int i=1 ; i<25; i++){
-            cmd=new Commande(new MenuItem(i), 1, "14:21:01");
-            cmdList.add(cmd);
-        }
+
 
     }
 }

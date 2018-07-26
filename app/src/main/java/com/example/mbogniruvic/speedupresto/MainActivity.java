@@ -1,16 +1,17 @@
 package com.example.mbogniruvic.speedupresto;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -91,6 +92,8 @@ public class MainActivity extends AppCompatActivity
         getAllCategories();
 
 
+
+
     }
 
     private void getRestaurantProfile() {
@@ -130,12 +133,22 @@ public class MainActivity extends AppCompatActivity
 
             if(ConnectionStatus.getInstance(context).isOnline()){
                 ImagesManager.saveIntoInternalStorage(getApplicationContext(), restaurant.getImage(), restaurant.getId());
+
             }
 
             return null;
         }
 
+        @Override
+        protected void onPostExecute(Void aVoid) {
 
+            /*String url=shareDB.getString(RestaurantPreferencesDB.ROOT_IMAGE_KEY, "");
+            url+=shareDB.getString(RestaurantPreferencesDB.ID_KEY,"")+".jpg";
+
+            Toast.makeText(context, url, Toast.LENGTH_SHORT).show();
+            ImagesManager.uploadFile(context, url);*/
+
+        }
     }
 
     private void getAllCategories() {
@@ -195,11 +208,21 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
+
         if (id == R.id.action_refresh) {
 
 
-
             return true;
+
+        }
+
+        if (id == R.id.change_periode_range_menu) {
+
+            Dialog dialog=new Dialog(context);
+            dialog.setContentView(R.layout.change_commande_view_periode);
+            dialog.show();
+            return true;
+
         }
 
         return super.onOptionsItemSelected(item);

@@ -1,16 +1,33 @@
 package com.example.mbogniruvic.speedupresto.models;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Commande {
+
+    @SerializedName("_id")
     private String id;
+    @SerializedName("menuID")
     private MenuItem menu;
-    private int quantite;
+    @SerializedName("quantite")
+    private int qte;
+    @SerializedName("price")
     private double montant;
-    private String heure;
+    @SerializedName("createdAt")
     private String date;
+    @SerializedName("state")
+    private String etat;
+
+
+
+    private String heure;
+
+    public static  final String STATUS_EN_ATTENTE="en attente";
+    public static  final String STATUS_VALIDE="validé";
+    public static  final String STATUS_REFUSE="refusé";
+    public static  final String STATUS_LIVRE="livré";
 
     //SQLite attributes
     public static final String TABLE_NAME = "Commande";
-    private int idTable;
 
     public static final String COLUMN_ID = "id";
     public static final String COLUMN_MENU_ID = "menuID";
@@ -30,19 +47,17 @@ public class Commande {
                     + " FOREIGN KEY ("+COLUMN_MENU_ID+") REFERENCES "+MenuItem.TABLE_NAME+"("+MenuItem.COLUMN_ID+")"
                     + ")";
 
-    public Commande(MenuItem menu, int quantite, String heure) {
-        this.setMenu(menu);
-        this.setQuantite(quantite);
-        this.setMontant(menu.getPrice()*quantite);
-        this.setHeure(heure);
+    public Commande() {
     }
 
-    public Commande(String id, MenuItem menu, int quantite, String heure) {
-        this.setId(id);
-        this.setMenu(menu);
-        this.setQuantite(quantite);
-        this.setMontant(menu.getPrice()*quantite);
-        this.setHeure(heure);
+    public Commande(String id, MenuItem menu, int qte, double montant, String date, String etat) {
+
+        this.id = id;
+        this.menu = menu;
+        this.qte = qte;
+        this.montant = montant;
+        this.date = date;
+        this.etat = etat;
     }
 
 
@@ -62,20 +77,36 @@ public class Commande {
         this.menu = menu;
     }
 
-    public int getQuantite() {
-        return quantite;
+    public int getQte() {
+        return qte;
     }
 
-    public void setQuantite(int quantite) {
-        this.quantite = quantite;
+    public void setQte(int qte) {
+        this.qte = qte;
     }
 
     public double getMontant() {
         return montant;
     }
 
-    public void setMontant(double montant) {
-        this.montant = montant;
+    public void setMontant(double price) {
+        this.montant = price;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public String getEtat() {
+        return etat;
+    }
+
+    public void setEtat(String etat) {
+        this.etat = etat;
     }
 
     public String getHeure() {

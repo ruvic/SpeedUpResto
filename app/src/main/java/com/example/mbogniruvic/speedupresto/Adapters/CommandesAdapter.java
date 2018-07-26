@@ -10,8 +10,6 @@ import android.widget.TextView;
 import com.example.mbogniruvic.speedupresto.R;
 import com.example.mbogniruvic.speedupresto.models.Commande;
 
-import org.w3c.dom.Text;
-
 import java.util.List;
 
 public class CommandesAdapter extends RecyclerView.Adapter<CommandesAdapter.MyViewHolder> {
@@ -51,7 +49,7 @@ public class CommandesAdapter extends RecyclerView.Adapter<CommandesAdapter.MyVi
         Commande cmd= commandesList.get(position);
         holder.menu.setText(cmd.getMenu().getNom());
         holder.montant.setText(cmd.getMontant()+" FCFA");
-        holder.qte.setText(cmd.getQuantite()+"");
+        holder.qte.setText(cmd.getQte()+"");
         holder.heure.setText(cmd.getHeure());
     }
 

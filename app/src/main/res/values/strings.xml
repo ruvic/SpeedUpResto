@@ -23,6 +23,7 @@
 
     <string name="ajouter">AJOUTER</string>
     <string name="modifier">MODIFIER</string>
+    <string name="valider">VALIDER</string>
     <string name="annuler">ANNULER</string>
     <string name="refuser">REFUSER</string>
     <string name="livre">LIVRE</string>

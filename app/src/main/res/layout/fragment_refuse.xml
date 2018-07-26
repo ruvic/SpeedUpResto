@@ -7,8 +7,15 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerV_refuse"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scrollbars="vertical" />
+
+    <ProgressBar
+        android:id="@+id/progress_refuse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"/>
 
 </RelativeLayout>

@@ -1,25 +1,27 @@
 package com.example.mbogniruvic.speedupresto.rest;
 
 import com.example.mbogniruvic.speedupresto.models.AllRestauReviewsResponse;
-import com.example.mbogniruvic.speedupresto.models.Category;
 import com.example.mbogniruvic.speedupresto.models.CategoryMenuResponse;
 import com.example.mbogniruvic.speedupresto.models.CategoryResponse;
+import com.example.mbogniruvic.speedupresto.models.CommandeResponse;
 import com.example.mbogniruvic.speedupresto.models.CreateMenuItemResponse;
-import com.example.mbogniruvic.speedupresto.models.MenuItem;
 import com.example.mbogniruvic.speedupresto.models.RestaurantResponse;
 import com.example.mbogniruvic.speedupresto.models.UpdateMenuitemResponse;
 import com.example.mbogniruvic.speedupresto.models.UpdateRestaurantResponse;
+import com.example.mbogniruvic.speedupresto.models.UploadImageResponse;
 import com.example.mbogniruvic.speedupresto.models.UserResponse;
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
-import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
-import retrofit2.http.Query;
 
 public interface ApiInterface {
 
@@ -84,6 +86,28 @@ public interface ApiInterface {
             @Field("longitude") String longitude,
             @Field("note") float note
     );
+
+    @GET("cartItems/restau/{restauID}/day/{date}")
+    Call<CommandeResponse> getAllCommandes(
+            @Path("restauID") String restauID,
+            @Path("date") String date
+    );
+
+    @GET("cartItems/restau/{restauID}/periode/{periode}")
+    Call<CommandeResponse> getAllCommandesForPeriodes(
+            @Path("restauID") String restauID,
+            @Path("periode") String periode
+    );
+
+    @Multipart
+    @POST("upload")
+    Call<UploadImageResponse> uploadImage(
+            @Part("description") RequestBody description,
+            @Part MultipartBody.Part files
+    );
+
+
+
 
 
 

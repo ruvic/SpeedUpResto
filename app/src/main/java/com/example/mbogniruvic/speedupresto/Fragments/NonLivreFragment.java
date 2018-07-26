@@ -59,7 +59,7 @@ public class NonLivreFragment extends Fragment {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
 
-        prepareMovieData();
+        prepareDatas();
 
         //Gestion du clic sur un élément de la liste
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getContext(), recyclerView, new RecyclerTouchListener.ClickListener() {
@@ -77,7 +77,7 @@ public class NonLivreFragment extends Fragment {
 
                 title.setText(cmd.getMenu().getNom());
                 montant.setText(cmd.getMontant()+" FCFA");
-                qte.setText(cmd.getQuantite()+"");
+                qte.setText(cmd.getQte()+"");
                 heure.setText(cmd.getHeure());
 
                 final BottomSheetDialog dialog = new BottomSheetDialog(getContext());
@@ -180,13 +180,7 @@ public class NonLivreFragment extends Fragment {
         super.onDetach();
     }
 
-    private void prepareMovieData() {
-
-        Commande cmd=null;
-        for (int i=1 ; i<25; i++){
-            cmd=new Commande(new MenuItem(i), 1, "14:21:01");
-            cmdList.add(cmd);
-        }
+    private void prepareDatas() {
 
     }
 }

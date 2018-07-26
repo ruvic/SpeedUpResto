@@ -10,14 +10,23 @@ import android.provider.MediaStore;
 import android.widget.Toast;
 
 import com.example.mbogniruvic.speedupresto.MainActivity;
+import com.example.mbogniruvic.speedupresto.models.UploadImageResponse;
+import com.example.mbogniruvic.speedupresto.rest.ApiClient;
+import com.example.mbogniruvic.speedupresto.rest.ApiInterface;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -101,20 +110,7 @@ public class ImagesManager {
 
         return imageUri;
 
-        // Parse the gallery image url to uri
-        //Uri savedImageURI = Uri.parse(file.getAbsolutePath());
-
-        // Display the saved image to ImageView
-        //iv_saved.setImageURI(savedImageURI);
-
-
     }
-
-    /*public static Bitmap getBitmapFromImageUri(String imageUri, Context context){
-        Uri uri=Uri.parse(imageUri);
-        String path=getRealPathFromURI(context, uri);
-
-    }*/
 
     private static String getRealPathFromURI(Context context, Uri contentUri) {
         Cursor cursor = null;
@@ -132,4 +128,37 @@ public class ImagesManager {
             }
         }
     }
+
+    public static void uploadFile(final Context context, String url){
+
+        ApiInterface apiService = ApiClient.getImageClient().create(ApiInterface.class);
+
+        File file=new File(url);
+
+        RequestBody descriptionPart=RequestBody.create(MultipartBody.FORM, "description");
+        RequestBody fileBody=RequestBody.create(
+            MediaType.parse("multipart/form-data"), file
+        );
+        MultipartBody.Part body=MultipartBody.Part.createFormData("image", file.getName(), fileBody);
+
+        Call<UploadImageResponse> call = apiService.uploadImage(
+                descriptionPart,
+                body
+        );
+
+        call.enqueue(new Callback<UploadImageResponse>() {
+            @Override
+            public void onResponse(Call<UploadImageResponse> call,
+                                   Response<UploadImageResponse> response) {
+                Toast.makeText(context, response.body().getResult(), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Call<UploadImageResponse> call, Throwable t) {
+                Toast.makeText(context, "Upload echec", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+
 }
