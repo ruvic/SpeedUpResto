@@ -108,7 +108,8 @@ public class RefuseFragment extends Fragment {
                     btn_close.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            dialog.hide();
+                            //dialog.hide();
+                            dialog.dismiss();
                         }
                     });
                 }

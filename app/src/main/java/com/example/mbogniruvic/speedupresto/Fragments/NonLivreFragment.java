@@ -1,7 +1,9 @@
 package com.example.mbogniruvic.speedupresto.Fragments;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
@@ -203,6 +205,7 @@ public class NonLivreFragment extends Fragment {
                     @Override
                     public void onClick(View view) {
                         dialog.hide();
+                        //dialog.dismiss();
                     }
                 });
 
@@ -210,14 +213,26 @@ public class NonLivreFragment extends Fragment {
                 mark.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        updateCommande(cmd, Commande.STATUS_LIVRE, dialog);
+                        //updateCommande(cmd, Commande.STATUS_LIVRE, dialog);
+                        showAlert(
+                             getString(R.string.conf_livre_desc),
+                             cmd,
+                             Commande.STATUS_LIVRE,
+                             dialog
+                        );
                     }
                 });
 
                 cancel.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        updateCommande(cmd, Commande.STATUS_REFUSE, dialog);
+                        //updateCommande(cmd, Commande.STATUS_REFUSE, dialog);
+                        showAlert(
+                                getString(R.string.conf_refuse_desc),
+                                cmd,
+                                Commande.STATUS_REFUSE,
+                                dialog
+                        );
                     }
                 });
 
@@ -317,6 +332,30 @@ public class NonLivreFragment extends Fragment {
 
             void onLongClick(View view, int position);
         }
+    }
+
+    private void showAlert(String message, final Commande cmd, final String state, final BottomSheetDialog dial){
+        AlertDialog.Builder builder=new AlertDialog.Builder(getContext());
+        builder.setTitle("Confirmation...")
+               .setMessage(message)
+               .setPositiveButton("Oui", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                        updateCommande(cmd, state, dial);
+
+                    }
+                })
+               .setNegativeButton("Non", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                        dialog.cancel();
+
+                    }
+               });
+
+        AlertDialog alert=builder.create();
+        alert.show();
+
     }
 
     public MainActivity getMainActivity() {
