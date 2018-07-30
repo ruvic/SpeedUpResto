@@ -55,7 +55,8 @@
                 android:id="@+id/livre_image_menu"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
-                android:src="@drawable/b"
+                android:src="@drawable/ic_image_empty"
+                android:scaleType="centerCrop"
                 android:background="@drawable/rect_empty_border"
                 android:layout_marginRight="@dimen/appbar_padding_top"
                 android:layout_marginLeft="@dimen/appbar_padding_top"/>
@@ -148,7 +149,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Heure"
+                    android:text="Date"
                     android:textSize="12sp"
                     android:textColor="@color/colorPrimaryText"
                     android:layout_gravity="center"/>
@@ -157,8 +158,8 @@
                     android:id="@+id/livre_heure_menu"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
-                    android:text="14:02:08"
-                    android:textSize="@dimen/slide_title_middle"
+                    android:text="2018-03-19\n14:02:08"
+                    android:textSize= "12dp"
                     android:textColor="@color/colorPrimaryText"
                     android:textStyle="bold"
                     android:gravity="center"
@@ -191,7 +192,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Livraison effectuée le :"
+                    android:text="Commande livrée le :"
                     android:textSize="12sp"
                     android:textColor="@color/colorPrimaryText"
                     android:layout_gravity="center"/>

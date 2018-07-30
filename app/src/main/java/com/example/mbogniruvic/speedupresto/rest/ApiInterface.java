@@ -6,6 +6,7 @@ import com.example.mbogniruvic.speedupresto.models.CategoryResponse;
 import com.example.mbogniruvic.speedupresto.models.CommandeResponse;
 import com.example.mbogniruvic.speedupresto.models.CreateMenuItemResponse;
 import com.example.mbogniruvic.speedupresto.models.RestaurantResponse;
+import com.example.mbogniruvic.speedupresto.models.UpdateCommandeResponse;
 import com.example.mbogniruvic.speedupresto.models.UpdateMenuitemResponse;
 import com.example.mbogniruvic.speedupresto.models.UpdateRestaurantResponse;
 import com.example.mbogniruvic.speedupresto.models.UploadImageResponse;
@@ -87,8 +88,11 @@ public interface ApiInterface {
             @Field("note") float note
     );
 
+    @GET("cartItems")
+    Call<CommandeResponse> getAllCommandes();
+
     @GET("cartItems/restau/{restauID}/day/{date}")
-    Call<CommandeResponse> getAllCommandes(
+    Call<CommandeResponse> getAllCommandesForDate(
             @Path("restauID") String restauID,
             @Path("date") String date
     );
@@ -98,6 +102,13 @@ public interface ApiInterface {
             @Path("restauID") String restauID,
             @Path("periode") String periode
     );
+
+    @PUT("cartItems/{restauID}/state/{state}")
+    Call<UpdateCommandeResponse> updateCommande(
+            @Path("restauID") String restauID,
+            @Path("state") String state
+    );
+
 
     @Multipart
     @POST("upload")

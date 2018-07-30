@@ -18,6 +18,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mbogniruvic.speedupresto.Fragments.LivreFragment;
@@ -54,6 +56,17 @@ public class MainActivity extends AppCompatActivity
     private Restaurant restaurant;
     private DatabaseHelper db;
     Context context;
+    public static  NonLivreFragment nonLivreFragment;
+    public static  LivreFragment livreFragment;
+    public static  RefuseFragment refuseFragment;
+
+    public static LinearLayout currentDayHint;
+    public static LinearLayout dayHint;
+    public static LinearLayout periodeHint;
+    public static TextView dayText;
+    public static TextView periodeStartText;
+    public static TextView periodeEndText;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,10 +85,17 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        //getAdresses
         viewPager = (ViewPager) findViewById(R.id.viewpager);
-        setupViewPager(viewPager);
-
         tabLayout = (TabLayout) findViewById(R.id.tabs);
+        currentDayHint = (LinearLayout) findViewById(R.id.cmd_day_current_hint);
+        dayHint = (LinearLayout) findViewById(R.id.cmd_day_hint);
+        periodeHint = (LinearLayout) findViewById(R.id.cmd_periode_hint);
+        dayText = (TextView) findViewById(R.id.day);
+        periodeStartText = (TextView) findViewById(R.id.periode_start);
+        periodeEndText = (TextView) findViewById(R.id.periode_end);
+
+        setupViewPager(viewPager);
         tabLayout.setupWithViewPager(viewPager);
 
         //Store restaurant informations in sharePreference
@@ -93,8 +113,9 @@ public class MainActivity extends AppCompatActivity
 
 
 
-
     }
+
+
 
     private void getRestaurantProfile() {
 
@@ -183,6 +204,8 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -256,11 +279,17 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    private void setupViewPager(ViewPager viewPager) {
+    public void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new NonLivreFragment(), "NON LIVRE");
-        adapter.addFragment(new LivreFragment(), "LIVRE");
-        adapter.addFragment(new RefuseFragment(), "REFUSE");
+
+        nonLivreFragment=new NonLivreFragment();
+        nonLivreFragment.setMainActivity(this);
+        livreFragment=new LivreFragment();
+        refuseFragment=new RefuseFragment();
+
+        adapter.addFragment(nonLivreFragment, "NON LIVRE");
+        adapter.addFragment(livreFragment, "LIVRE");
+        adapter.addFragment(refuseFragment, "REFUSE");
         viewPager.setAdapter(adapter);
     }
 
@@ -298,4 +327,10 @@ public class MainActivity extends AppCompatActivity
         super.onDestroy();
         db.closeDB();
     }
+
+    public ViewPager getViewPager() {
+        return viewPager;
+    }
+
+
 }

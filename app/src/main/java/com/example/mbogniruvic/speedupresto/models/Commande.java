@@ -14,12 +14,18 @@ public class Commande {
     private double montant;
     @SerializedName("createdAt")
     private String date;
+    @SerializedName("updatedAt")
+    private String dateMaj;
     @SerializedName("state")
     private String etat;
-
-
+    @SerializedName("cartID")
+    private String cartID;
 
     private String heure;
+    private String jour;
+
+
+
 
     public static  final String STATUS_EN_ATTENTE="en attente";
     public static  final String STATUS_VALIDE="validé";
@@ -50,7 +56,7 @@ public class Commande {
     public Commande() {
     }
 
-    public Commande(String id, MenuItem menu, int qte, double montant, String date, String etat) {
+    public Commande(String id, MenuItem menu, int qte, double montant, String date, String etat, String cartID) {
 
         this.id = id;
         this.menu = menu;
@@ -58,8 +64,8 @@ public class Commande {
         this.montant = montant;
         this.date = date;
         this.etat = etat;
+        this.cartID = cartID;
     }
-
 
     public String getId() {
         return id;
@@ -89,8 +95,8 @@ public class Commande {
         return montant;
     }
 
-    public void setMontant(double price) {
-        this.montant = price;
+    public void setMontant(double montant) {
+        this.montant = montant;
     }
 
     public String getDate() {
@@ -109,11 +115,38 @@ public class Commande {
         this.etat = etat;
     }
 
+    public String getCartID() {
+        return cartID;
+    }
+
+    public void setCartID(String cartID) {
+        this.cartID = cartID;
+    }
+
     public String getHeure() {
-        return heure;
+        String heure =date.split("T")[1];
+        return heure.split("\\.")[0];
     }
 
     public void setHeure(String heure) {
         this.heure = heure;
+    }
+
+    public String getJour() {
+        return date.split("T")[0];
+    }
+
+    public void setJour(String jour) {
+        this.jour = jour;
+    }
+
+    public String getDateMaj() {
+        String jour=dateMaj.split("T")[0];
+        String heure=(dateMaj.split("T")[1]).split("\\.")[0];
+        return jour+" à "+heure;
+    }
+
+    public void setDateMaj(String dateMaj) {
+        this.dateMaj = dateMaj;
     }
 }
