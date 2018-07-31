@@ -263,20 +263,31 @@ public class NonLivreFragment extends Fragment {
                     new DownLoadImageTask(imgView, cmd.getMenu().getId()).execute(cmd.getMenu().getImage());
                 }
 
-                final BottomSheetDialog dialog = new BottomSheetDialog(getContext());
-                dialog.setContentView(detailsview);
-                dialog.show();
+                final BottomSheetDialog[] dialog = {new BottomSheetDialog(getContext())};
+                dialog[0].setContentView(detailsview);
+                dialog[0].show();
 
                 ImageView btn_close=(ImageView) detailsview.findViewById(R.id.close_menu);
+
+                dialog[0].setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialogInterface) {
+                        dialog[0] =null;
+                    }
+                });
 
                 btn_close.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         //dialog.hide();
-                        dialog.dismiss();
-                        dialog.cancel();
+                        if (dialog[0].isShowing()) {
+                            dialog[0].dismiss();
+                        }
+
                     }
                 });
+
+
 
 
                 mark.setOnClickListener(new View.OnClickListener() {
@@ -287,7 +298,7 @@ public class NonLivreFragment extends Fragment {
                              getString(R.string.conf_livre_desc),
                              cmd,
                              Commande.STATUS_LIVRE,
-                             dialog
+                                dialog[0]
                         );
                     }
                 });
@@ -300,7 +311,7 @@ public class NonLivreFragment extends Fragment {
                                 getString(R.string.conf_refuse_desc),
                                 cmd,
                                 Commande.STATUS_REFUSE,
-                                dialog
+                                dialog[0]
                         );
                     }
                 });

@@ -1,9 +1,12 @@
 package com.example.mbogniruvic.speedupresto.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.example.mbogniruvic.speedupresto.Utils.RestaurantPreferencesDB;
 import com.google.gson.annotations.SerializedName;
 
-public class Restaurant {
+public class Restaurant implements Parcelable {
 
     @SerializedName("_id")
     private String id;
@@ -81,6 +84,8 @@ public class Restaurant {
 
     }
 
+
+
     public Restaurant(RestaurantPreferencesDB shDB) {
         RestaurantPreferencesDB sharedDB=shDB;
 
@@ -93,30 +98,43 @@ public class Restaurant {
         this.image=sharedDB.getString(RestaurantPreferencesDB.IMAGE_KEY,"");
         this.note=sharedDB.getFloat(RestaurantPreferencesDB.NOTE_KEY,0f);
 
-        /*this.nom = "Restaurant le Pititi";
-        this.image = "";
-        this.note = 3f;
-        this.nber_note = 185;
-        this.min_order = 2500;
-        this.fee_delivery = 500;
-        this.time_delivery = 120;
-        this.city = "city";
-        this.quartier = "quartier";
-        this.id = "identifiant";
-
-        this.code = "CODE";
-
-        this.email = "";
-        this.phone = "69";
-        this.latitude = "latitude";
-        this.longitude = "longitude";
-        this.bio = "bio";
-        this.state = true;*/
     }
 
     public Restaurant(String id) {
         this.id = id;
     }
+
+    protected Restaurant(Parcel in) {
+        id = in.readString();
+        nom = in.readString();
+        code = in.readString();
+        image = in.readString();
+        note = in.readFloat();
+        email = in.readString();
+        city = in.readString();
+        quartier = in.readString();
+        phone = in.readString();
+        nber_note = in.readLong();
+        min_order = in.readInt();
+        fee_delivery = in.readLong();
+        time_delivery = in.readLong();
+        latitude = in.readString();
+        longitude = in.readString();
+        bio = in.readString();
+        state = in.readInt()==1;
+    }
+
+    public static final Creator<Restaurant> CREATOR = new Creator<Restaurant>() {
+        @Override
+        public Restaurant createFromParcel(Parcel in) {
+            return new Restaurant(in);
+        }
+
+        @Override
+        public Restaurant[] newArray(int size) {
+            return new Restaurant[size];
+        }
+    };
 
     public String getCode() {
         return code;
@@ -291,5 +309,30 @@ public class Restaurant {
                 ", bio='" + bio + '\'' +
                 ", state=" + state +
                 '}';
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(id);
+        parcel.writeString(nom);
+        parcel.writeString(code);
+        parcel.writeString(image);
+        parcel.writeFloat(note);
+        parcel.writeString(email);
+        parcel.writeString(city);
+        parcel.writeString(quartier);
+        parcel.writeString(phone);
+        parcel.writeLong(nber_note);
+        parcel.writeInt(min_order);
+        parcel.writeLong(fee_delivery);
+        parcel.writeLong(time_delivery);
+        parcel.writeString(latitude);
+        parcel.writeString(longitude);
+        parcel.writeInt(state?1:0);
     }
 }

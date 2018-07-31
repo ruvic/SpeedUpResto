@@ -2,9 +2,21 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.mbogniruvic.speedupresto">
 
+    <uses-sdk
+        android:minSdkVersion="7"
+        android:targetSdkVersion="17" />
+
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <!-- To auto-complete the email text field in the login form with the user's emails -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_PROFILE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.READ_CALL_LOG" />
 
     <application
         android:allowBackup="true"
@@ -14,10 +26,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait"
+            android:name=".SplashScreen"
             android:configChanges="orientation"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,47 +37,61 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".MainActivity"
+            android:configChanges="orientation"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".MenuActivity"
+            android:configChanges="orientation"
             android:label="Menus"
             android:screenOrientation="portrait"
-            android:configChanges="orientation"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ProfileActivity"
+            android:configChanges="orientation"
             android:label="Mon Profile"
             android:screenOrientation="portrait"
-            android:configChanges="orientation"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".AddMenuActivity"
+            android:configChanges="orientation"
             android:label="Ajouter un menu"
             android:screenOrientation="portrait"
-            android:configChanges="orientation"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".EditProfileActivity"
+            android:configChanges="orientation"
             android:label="Modifier le profile"
             android:screenOrientation="portrait"
-            android:configChanges="orientation"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".MenuDetailsActivity"
+            android:configChanges="orientation"
             android:label="Details menu"
             android:screenOrientation="portrait"
-            android:configChanges="orientation"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".EditMenuDetailsActivity"
+            android:configChanges="orientation"
             android:label="Editer menu"
             android:screenOrientation="portrait"
-            android:configChanges="orientation"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".VoirPusMenusActivity"
+            android:configChanges="orientation"
             android:label="Liste des menus"
             android:screenOrientation="portrait"
-            android:configChanges="orientation"
             android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".LoginActivity"
+            android:configChanges="orientation"
+            android:label="Connexion"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+
     </application>
 
 </manifest>

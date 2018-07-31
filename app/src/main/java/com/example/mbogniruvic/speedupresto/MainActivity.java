@@ -32,12 +32,9 @@ import com.example.mbogniruvic.speedupresto.Fragments.DatePickerFragment;
 import com.example.mbogniruvic.speedupresto.Fragments.LivreFragment;
 import com.example.mbogniruvic.speedupresto.Fragments.NonLivreFragment;
 import com.example.mbogniruvic.speedupresto.Fragments.RefuseFragment;
-import com.example.mbogniruvic.speedupresto.Tasks.StoreAllCategoriesTask;
 import com.example.mbogniruvic.speedupresto.Utils.ConnectionStatus;
 import com.example.mbogniruvic.speedupresto.Utils.ImagesManager;
 import com.example.mbogniruvic.speedupresto.Utils.RestaurantPreferencesDB;
-import com.example.mbogniruvic.speedupresto.models.Category;
-import com.example.mbogniruvic.speedupresto.models.CategoryResponse;
 import com.example.mbogniruvic.speedupresto.models.Restaurant;
 import com.example.mbogniruvic.speedupresto.models.RestaurantResponse;
 import com.example.mbogniruvic.speedupresto.rest.ApiClient;
@@ -114,18 +111,14 @@ public class MainActivity extends AppCompatActivity
         setupViewPager(viewPager);
         tabLayout.setupWithViewPager(viewPager);
 
-        //Store restaurant informations in sharePreference
-        //get Restaurant profile from Databases
-
-        getRestaurantProfile();
 
         shareDB=new RestaurantPreferencesDB(context);
+        restaurant=getIntent().getParcelableExtra(LoginActivity.TAG_RESTO);
+        shareDB.put(restaurant);
         db=new DatabaseHelper(getApplicationContext());
 
         //db.dropDatabase();
         //Toast.makeText(context, "Suppression reussie", Toast.LENGTH_SHORT).show();
-
-        getAllCategories();
 
 
 
@@ -188,7 +181,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    private void getAllCategories() {
+    /*private void getAllCategories() {
 
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
         Call<CategoryResponse> call=apiService.getAllCategories();
@@ -218,7 +211,7 @@ public class MainActivity extends AppCompatActivity
 
         });
 
-    }
+    }*/
 
 
 
@@ -251,6 +244,8 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.action_refresh) {
 
             setupViewPager(viewPager);
+
+            //new NotificationTask(getApplicationContext()).execute();
 
             return true;
 

@@ -22,6 +22,8 @@
     <string name="empty_list">liste vide, aucun élément n\'as été ajouté</string>
 
     <string name="ajouter">AJOUTER</string>
+    <string name="login_hint">Veuillez remplir l\'identifiant et le mot de passe du restaurant</string>
+    <string name="login_error">Informations incorrectes</string>
     <string name="modifier">MODIFIER</string>
     <string name="valider">VALIDER</string>
     <string name="confirmation">Confirmation...</string>
@@ -37,6 +39,20 @@
     <string name="conn_error_desc">Veuillez verifier votre connection internet et appuyer sur le bouton rafraîchir</string>
     <string name="conn_error_not">Vous devez être connecté à Internet.</string>
     <string name="fill_all_field">Veuillez remplir tous les champs.</string>
+    <string name="title_activity_login">Sign in</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password (optional)</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
 
 
 </resources>
