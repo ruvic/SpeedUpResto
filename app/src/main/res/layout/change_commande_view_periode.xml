@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:paddingTop="10dp"
     android:paddingBottom="0dp"
     android:paddingLeft="20dp"
@@ -11,7 +12,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Choix d'une période"
+        android:text="Filtrage"
         android:textSize="18sp"
         android:textColor="@color/gris_mat"
         android:textAlignment="center"
@@ -26,109 +27,131 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="De :"
-            android:textSize="16dp"
-            android:textStyle="bold"
-            android:textColor="@color/gris_mat"
-            />
+            android:text="Filtrer par "
+            android:textAlignment="center"
+            android:layout_marginRight="10dp"
+            android:layout_gravity="center_vertical"
+            android:textColor="@color/gris_mat"/>
 
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="Année"
-            android:inputType="number"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="2dp"
-            />
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_marginTop="@dimen/appbar_padding_top"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:background="@drawable/rounded_rect_empty">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="  -  "
-            android:textSize="18dp"
-            />
+            <com.jaredrummler.materialspinner.MaterialSpinner
+                android:id="@+id/type_filtre_spinner"
+                android:textColor="@color/gris_mat"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:paddingTop="0dp"
+                android:paddingBottom="0dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginBottom="0dp"
+                app:ms_hint="Type de filtre"
+                app:ms_dropdown_max_height="180dp" />
 
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="Mois"
-            android:inputType="number"
-            android:layout_marginLeft="2dp"
-            android:layout_marginRight="2dp"
-            />
+        </FrameLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="  -  "
-            android:textSize="18dp"
-            />
-
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="Jour"
-            android:inputType="number"
-            android:layout_marginLeft="2dp"
-            />
 
     </LinearLayout>
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_marginTop="10dp"
+        android:layout_height="wrap_content">
 
-        <TextView
-            android:layout_width="wrap_content"
+         <RelativeLayout
+             android:visibility="gone"
+             android:id="@+id/day_filter_layout"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content">
+
+             <EditText
+                 android:id="@+id/day_edit"
+                 android:layout_width="190dp"
+                 android:layout_height="wrap_content"
+                 android:hint="Le..."
+                 android:editable="false"
+                 android:layout_marginLeft="25dp"/>
+
+             <ImageButton
+                 android:id="@+id/loadDayBtn"
+                 android:layout_width="50dp"
+                 android:layout_height="40dp"
+                 android:layout_marginTop="0dp"
+                 android:paddingLeft="5dp"
+                 android:paddingRight="5dp"
+                 android:layout_toRightOf="@id/day_edit"
+                 android:background="?attr/selectableItemBackground"
+                 android:src="@drawable/ic_event_note_black_24dp"
+                 />
+         </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/periode_filter_layout"
+            android:visibility="gone"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="A   :"
-            android:textSize="16dp"
-            android:textStyle="bold"
-            android:textColor="@color/gris_mat"
-            />
+            android:orientation="vertical">
 
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="Année"
-            android:inputType="number"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="2dp"
-            />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="  -  "
-            android:textSize="18dp"
-            />
+                <EditText
+                    android:id="@+id/day_start"
+                    android:layout_width="190dp"
+                    android:layout_height="wrap_content"
+                    android:hint="Du..."
+                    android:editable="false"
+                    android:layout_marginLeft="25dp"/>
 
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="Mois"
-            android:inputType="number"
-            android:layout_marginLeft="2dp"
-            android:layout_marginRight="2dp"
-            />
+                <ImageButton
+                    android:id="@+id/loadStartDayBtn"
+                    android:layout_width="50dp"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="0dp"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:layout_toRightOf="@id/day_start"
+                    android:background="?attr/selectableItemBackground"
+                    android:src="@drawable/ic_event_note_black_24dp"
+                    />
+            </RelativeLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="  -  "
-            android:textSize="18dp"
-            />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="Jour"
-            android:inputType="number"
-            android:layout_marginLeft="2dp"
-            />
+                <EditText
+                    android:id="@+id/day_end"
+                    android:layout_width="190dp"
+                    android:layout_height="wrap_content"
+                    android:hint="Au..."
+                    android:editable="false"
+                    android:layout_marginLeft="25dp"/>
 
-    </LinearLayout>
+                <ImageButton
+                    android:id="@+id/loadEndDayBtn"
+                    android:layout_width="50dp"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="0dp"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:layout_toRightOf="@id/day_end"
+                    android:background="?attr/selectableItemBackground"
+                    android:src="@drawable/ic_event_note_black_24dp"
+                    />
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </FrameLayout>
 
 
 
@@ -141,7 +164,7 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/cancel_change_periode_btn"
+            android:id="@+id/cancel_filtre_btn"
             android:layout_width="90dp"
             android:layout_height="35dp"
             android:text="@string/annuler"
@@ -155,7 +178,7 @@
             android:background="@drawable/rounded_button_plein_cancel" />
 
         <Button
-            android:id="@+id/change_periode_btn"
+            android:id="@+id/valider_filtre_btn"
             android:layout_width="90dp"
             android:layout_height="35dp"
             android:text="@string/valider"

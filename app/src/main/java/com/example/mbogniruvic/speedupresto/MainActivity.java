@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -18,10 +19,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.mbogniruvic.speedupresto.Fragments.DatePickerFragment;
 import com.example.mbogniruvic.speedupresto.Fragments.LivreFragment;
 import com.example.mbogniruvic.speedupresto.Fragments.NonLivreFragment;
 import com.example.mbogniruvic.speedupresto.Fragments.RefuseFragment;
@@ -36,8 +43,12 @@ import com.example.mbogniruvic.speedupresto.models.RestaurantResponse;
 import com.example.mbogniruvic.speedupresto.rest.ApiClient;
 import com.example.mbogniruvic.speedupresto.rest.ApiInterface;
 import com.example.mbogniruvic.speedupresto.sqlite.DatabaseHelper;
+import com.jaredrummler.materialspinner.MaterialSpinner;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import retrofit2.Call;
@@ -66,6 +77,11 @@ public class MainActivity extends AppCompatActivity
     public static TextView dayText;
     public static TextView periodeStartText;
     public static TextView periodeEndText;
+
+    public boolean hasChooseType=false;
+    private boolean isDayFilter;
+    private String startDay;
+    private String endDay;
 
 
     @Override
@@ -234,6 +250,7 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.action_refresh) {
 
+            setupViewPager(viewPager);
 
             return true;
 
@@ -241,15 +258,169 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.change_periode_range_menu) {
 
-            Dialog dialog=new Dialog(context);
+            //get Adresses
+            final Dialog dialog=new Dialog(context);
             dialog.setContentView(R.layout.change_commande_view_periode);
+
+            final MaterialSpinner spinner=(MaterialSpinner)dialog.findViewById(R.id.type_filtre_spinner);
+            final RelativeLayout dayFilterLayout=(RelativeLayout)dialog.findViewById(R.id.day_filter_layout);
+            final LinearLayout periodeFilterLayout=(LinearLayout) dialog.findViewById(R.id.periode_filter_layout);
+            final EditText dayText=(EditText)dialog.findViewById(R.id.day_edit);
+            final EditText startPeriode=(EditText)dialog.findViewById(R.id.day_start);
+            final EditText endPeriode=(EditText)dialog.findViewById(R.id.day_end);
+            ImageButton loadDate=(ImageButton)dialog.findViewById(R.id.loadDayBtn);
+            ImageButton loadStartDate=(ImageButton)dialog.findViewById(R.id.loadStartDayBtn);
+            ImageButton loadEndDate=(ImageButton)dialog.findViewById(R.id.loadEndDayBtn);
+            Button cancelBtn=(Button)dialog.findViewById(R.id.cancel_filtre_btn);
+            Button validerBtn=(Button)dialog.findViewById(R.id.valider_filtre_btn);
+
+            //init field
+            List<String> items=new ArrayList<>();
+            items.add("Jour");
+            items.add("Période");
+            spinner.setItems(items);
+
+            //event listener
+            spinner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(MaterialSpinner view, int position, long id, Object item) {
+                    hasChooseType=true;
+                    if(position==0){
+                        dayFilterLayout.setVisibility(View.VISIBLE);
+                        periodeFilterLayout.setVisibility(View.GONE);
+                        isDayFilter=true;
+                    }else {
+                        dayFilterLayout.setVisibility(View.GONE);
+                        periodeFilterLayout.setVisibility(View.VISIBLE);
+                        isDayFilter=false;
+                    }
+                }
+            });
+
+            loadDate.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    showDatePicker(dayText);
+                }
+            });
+
+            loadStartDate.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    showDatePicker(startPeriode);
+                }
+            });
+
+            loadEndDate.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    showDatePicker(endPeriode);
+                }
+            });
+
+            cancelBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialog.dismiss();
+                }
+            });
+
+            validerBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    if (hasChooseType) {
+                        if(spinner.getSelectedIndex()==0){
+                            if(dayText.getText().toString().isEmpty()){
+                                showMessage("Veuillez choisir une date");
+                            }else{
+
+                                startDay=dayText.getText().toString();
+                                setHintVisibleLayout(dayHint);
+                                dialog.dismiss();
+                                setupViewPager(viewPager);
+
+                            }
+                        }else{
+
+                            if(startPeriode.getText().toString().isEmpty()
+                                    || endPeriode.getText().toString().isEmpty()){
+                                showMessage("La date de début et de fin doivent être remplies");
+                            }else {
+
+                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+                                try {
+                                    Date dateStart= sdf.parse(startPeriode.getText().toString());
+                                    Date dateEnd= sdf.parse(endPeriode.getText().toString());
+
+                                    if(dateStart.compareTo(dateEnd)>0){
+                                        showMessage("La date de fin doit être inférieure à la date début");
+                                    }else{
+
+                                        startDay=startPeriode.getText().toString();
+                                        endDay=endPeriode.getText().toString();
+                                        dialog.dismiss();
+                                        setHintVisibleLayout(periodeHint);
+                                        setupViewPager(viewPager);
+
+                                    }
+
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                    showMessage("Erreur"+e.getMessage());
+                                }
+                            }
+                        }
+                    } else {
+                        showMessage("Veuillez choisir une type de filtre");
+                    }
+
+                }
+
+                private void showMessage(String msg){
+                    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+                }
+
+                private void setHintVisibleLayout(LinearLayout layout){
+
+                    if(layout.equals(currentDayHint)){
+                        currentDayHint.setVisibility(View.VISIBLE);
+                        dayHint.setVisibility(View.GONE);
+                        periodeHint.setVisibility(View.GONE);
+                    }else if(layout.equals(dayHint)){
+                        MainActivity.dayText.setText(getStartDay().replace("-", ":"));
+                        currentDayHint.setVisibility(View.GONE);
+                        dayHint.setVisibility(View.VISIBLE);
+                        periodeHint.setVisibility(View.GONE);
+                    }else{
+                        periodeStartText.setText(getStartDay().replace("-", ":"));
+                        periodeEndText.setText(getEndDay().replace("-", ":"));
+                        currentDayHint.setVisibility(View.GONE);
+                        dayHint.setVisibility(View.GONE);
+                        periodeHint.setVisibility(View.VISIBLE);
+                    }
+                }
+
+            });
+
+
             dialog.show();
+
+
             return true;
 
         }
 
         return super.onOptionsItemSelected(item);
     }
+
+    private void showDatePicker(EditText editText){
+        DialogFragment newFragment = new DatePickerFragment(editText);
+        newFragment.show(getSupportFragmentManager(), "date picker");
+    }
+
+
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -284,6 +455,7 @@ public class MainActivity extends AppCompatActivity
 
         nonLivreFragment=new NonLivreFragment();
         nonLivreFragment.setMainActivity(this);
+
         livreFragment=new LivreFragment();
         refuseFragment=new RefuseFragment();
 
@@ -332,5 +504,27 @@ public class MainActivity extends AppCompatActivity
         return viewPager;
     }
 
+    public boolean isDayFilter() {
+        return isDayFilter;
+    }
 
+    public void setDayFilter(boolean dayFilter) {
+        isDayFilter = dayFilter;
+    }
+
+    public String getStartDay() {
+        return startDay;
+    }
+
+    public void setStartDay(String startDay) {
+        this.startDay = startDay;
+    }
+
+    public String getEndDay() {
+        return endDay;
+    }
+
+    public void setEndDay(String endDay) {
+        this.endDay = endDay;
+    }
 }

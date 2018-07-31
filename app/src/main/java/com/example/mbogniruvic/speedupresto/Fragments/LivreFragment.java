@@ -59,63 +59,6 @@ public class LivreFragment extends Fragment {
 
     public void prepareDatas() {
 
-        /*if (NonLivreFragment.livreCmdList.size()!=0) {
-
-            cmdList=NonLivreFragment.livreCmdList;
-            mAdapter = new CommandesAdapter(cmdList);
-            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
-            recyclerView.setLayoutManager(mLayoutManager);
-            recyclerView.setItemAnimator(new DefaultItemAnimator());
-            recyclerView.setAdapter(mAdapter);
-
-            //Gestion du clic sur un élément de la liste
-            recyclerView.addOnItemTouchListener(new NonLivreFragment.RecyclerTouchListener(getContext(), recyclerView, new NonLivreFragment.RecyclerTouchListener.ClickListener() {
-
-                @Override
-                public void onClick(View view, int position) {
-
-                    final Commande cmd = cmdList.get(position);
-                    View detailsview = getLayoutInflater().inflate(R.layout.fragment_commande_livre_details, null);
-
-                    TextView title=(TextView)detailsview.findViewById(R.id.livre_title_menu);
-                    ImageView imgView=(ImageView)detailsview.findViewById(R.id.livre_image_menu);
-                    TextView montant=(TextView)detailsview.findViewById(R.id.livre_montant_menu);
-                    TextView qte=(TextView)detailsview.findViewById(R.id.livre_qte_menu);
-                    TextView heure=(TextView)detailsview.findViewById(R.id.livre_heure_menu);
-                    TextView dateLivraison=(TextView)detailsview.findViewById(R.id.livre_date_livraison);
-
-                    title.setText(cmd.getMenu().getNom());
-                    montant.setText(cmd.getMontant()+" FCFA");
-                    qte.setText(cmd.getQte()+"");
-                    heure.setText(cmd.getJour()+"\n"+cmd.getHeure());
-                    dateLivraison.setText(cmd.getDateMaj());
-                    new DownLoadImageTask(imgView).execute(cmd.getMenu().getImage());
-
-                    final BottomSheetDialog dialog = new BottomSheetDialog(getContext());
-                    dialog.setContentView(detailsview);
-                    dialog.show();
-
-                    ImageView btn_close=(ImageView) detailsview.findViewById(R.id.livre_close_menu);
-                    btn_close.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            dialog.hide();
-                        }
-                    });
-                }
-
-                @Override
-                public void onLongClick(View view, int position) {
-
-                }
-            }));
-
-            recyclerView.setVisibility(View.VISIBLE);
-            progressBar.setVisibility(View.GONE);
-
-        } else {
-            Toast.makeText(getContext(), "Liste vide", Toast.LENGTH_SHORT).show();
-        }*/
         if (NonLivreFragment.livreCmdList.size()!=0) {
 
             cmdList=NonLivreFragment.livreCmdList;
@@ -156,7 +99,6 @@ public class LivreFragment extends Fragment {
                     btn_close.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            //dialog.hide();
                             dialog.dismiss();
                         }
                     });

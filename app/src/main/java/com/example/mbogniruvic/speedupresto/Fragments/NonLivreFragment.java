@@ -33,6 +33,7 @@ import com.example.mbogniruvic.speedupresto.rest.ApiClient;
 import com.example.mbogniruvic.speedupresto.rest.ApiInterface;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import retrofit2.Call;
@@ -66,6 +67,7 @@ public class NonLivreFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
     }
 
     @Override
@@ -77,8 +79,8 @@ public class NonLivreFragment extends Fragment {
         //getAdress
         recyclerView = (RecyclerView)rootView.findViewById(R.id.recyclerV_non_livre);
         progressBar = (ProgressBar) rootView.findViewById(R.id.progress_non_livre);
-        sharedDB= MainActivity.shareDB;
 
+        sharedDB= MainActivity.shareDB;
         prepareDatas();
 
         return rootView;
@@ -99,72 +101,102 @@ public class NonLivreFragment extends Fragment {
 
     private void prepareDatas() {
 
-        String today="2018-07-19";
+        /*Call<CommandeResponse> call=*/
 
-        Call<CommandeResponse> call=apiService.getAllCommandesForDate(
-                sharedDB.getString(RestaurantPreferencesDB.ID_KEY, ""),
-                today
-        );
+        Call<CommandeResponse> call=null;
 
-        call.enqueue(new Callback<CommandeResponse>() {
+        //Si on doit afficher les commandes dee la journée en cours ...
+        if(!mainActivity.hasChooseType){
 
-            @Override
-            public void onResponse(Call<CommandeResponse> call, Response<CommandeResponse> response) {
-                CommandeResponse body=response.body();
-                if(!body.isError()){
+            String today="";
+            final Calendar c = Calendar.getInstance();
+            int year = c.get(Calendar.YEAR);
+            int month = c.get(Calendar.MONTH);
+            int day = c.get(Calendar.DAY_OF_MONTH);
 
-                    if (body.getCommandes().size()!=0) {
+            today=year+":"+((month<10)?"0"+month:month)+":"+((day<10)?"0"+day:day);
+            call=apiService.getAllCommandesForDate(
+                    sharedDB.getString(RestaurantPreferencesDB.ID_KEY, ""),
+                    today
+            );
 
-                        cmdList=body.getCommandes();
-                        nonLivreCmdList=new ArrayList<>();
-                        livreCmdList=new ArrayList<>();
-                        refuseCmdList=new ArrayList<>();
-                        valideCmdList=new ArrayList<>();
+        }else if (mainActivity.isDayFilter()){
 
-                        for (Commande cmd : body.getCommandes()) {
+            call=apiService.getAllCommandesForDate(
+                    sharedDB.getString(RestaurantPreferencesDB.ID_KEY,""),
+                    mainActivity.getStartDay()
+            );
 
-                            switch (cmd.getEtat()){
-                                case Commande.STATUS_EN_ATTENTE :
-                                    nonLivreCmdList.add(cmd);
-                                    break;
-                                case Commande.STATUS_LIVRE:
-                                    livreCmdList.add(cmd);
-                                    break;
-                                case Commande.STATUS_REFUSE:
-                                    refuseCmdList.add(cmd);
-                                    break;
-                                default:
-                                    valideCmdList.add(cmd);
-                                    break;
-                            }
+        }else{
+
+            call=apiService.getAllCommandesForPeriodes(
+                    sharedDB.getString(RestaurantPreferencesDB.ID_KEY,""),
+                    mainActivity.getStartDay()+","+mainActivity.getEndDay()
+            );
+        }
+
+        if (call!=null) {
+
+            call.enqueue(new Callback<CommandeResponse>() {
+
+                @Override
+                public void onResponse(Call<CommandeResponse> call, Response<CommandeResponse> response) {
+                    CommandeResponse body=response.body();
+
+                    if(!body.isError()){
+
+                        if (body.getCommandes().size()!=0) {
+
+                            showCommandes(body.getCommandes());
+
+                        } else {
+                            Toast.makeText(context, "Aucune commande pour la journée", Toast.LENGTH_SHORT).show();
                         }
-
-                        showCommandes();
-                        //MainActivity.livreFragment.prepareDatas();
-                        //MainActivity.refuseFragment.prepareDatas();
-
-                        /*String result="Non live : "+nonLivreCmdList.size()+"\n"
-                                     +"Livre : "+livreCmdList.size()+"\n"
-                                     +"Refuse : "+refuseCmdList.size()+"\n"
-                                     +"Validé : "+valideCmdList.size()+"\n"
-                                     +"Tous : "+cmdList.size();*/
-
-                    } else {
-                        Toast.makeText(context, "Aucune commande pour la journée", Toast.LENGTH_SHORT).show();
+                    }else {
+                        Toast.makeText(context, body.getMessage(), Toast.LENGTH_SHORT).show();
                     }
-                }else {
-                    Toast.makeText(context, body.getMessage(), Toast.LENGTH_SHORT).show();
                 }
-            }
 
-            @Override
-            public void onFailure(Call<CommandeResponse> call, Throwable t) {
-                Toast.makeText(context, t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
+                @Override
+                public void onFailure(Call<CommandeResponse> call, Throwable t) {
+                    Toast.makeText(context, t.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            Toast.makeText(context, "Call is null", Toast.LENGTH_SHORT).show();
+        }
     }
 
-    private void showCommandes(){
+    private void prepareDatas(List<Commande> lists){
+        if(lists==null) prepareDatas();
+        showCommandes(lists);
+    }
+
+    private void showCommandes(List<Commande> list){
+
+        cmdList=list;
+        nonLivreCmdList=new ArrayList<>();
+        livreCmdList=new ArrayList<>();
+        refuseCmdList=new ArrayList<>();
+        valideCmdList=new ArrayList<>();
+
+        for (Commande cmd : list) {
+
+            switch (cmd.getEtat()){
+                case Commande.STATUS_EN_ATTENTE :
+                    nonLivreCmdList.add(cmd);
+                    break;
+                case Commande.STATUS_LIVRE:
+                    livreCmdList.add(cmd);
+                    break;
+                case Commande.STATUS_REFUSE:
+                    refuseCmdList.add(cmd);
+                    break;
+                default:
+                    valideCmdList.add(cmd);
+                    break;
+            }
+        }
 
         mAdapter = new CommandesAdapter(nonLivreCmdList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
@@ -204,8 +236,8 @@ public class NonLivreFragment extends Fragment {
                 btn_close.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        dialog.hide();
-                        //dialog.dismiss();
+                        //dialog.hide();
+                        dialog.dismiss();
                     }
                 });
 
@@ -262,7 +294,7 @@ public class NonLivreFragment extends Fragment {
             public void onResponse(Call<UpdateCommandeResponse> call, Response<UpdateCommandeResponse> response) {
                 UpdateCommandeResponse body=response.body();
                 if(!body.isError()){
-                    dialog.hide();
+                    dialog.dismiss();
                     getMainActivity().setupViewPager(getMainActivity().getViewPager());
                     Toast.makeText(getContext(), cmd.getMenu().getId() + " a été MAJ", Toast.LENGTH_SHORT).show();
                 }else{
@@ -275,12 +307,6 @@ public class NonLivreFragment extends Fragment {
                 Toast.makeText(getContext(), getString(R.string.conn_error_not), Toast.LENGTH_SHORT).show();
             }
         });
-
-        /*int i=0;
-        while (call.isExecuted()){
-            System.out.println("Je suis là : "+i);
-            i++;
-        }*/
 
     }
 
@@ -335,6 +361,7 @@ public class NonLivreFragment extends Fragment {
     }
 
     private void showAlert(String message, final Commande cmd, final String state, final BottomSheetDialog dial){
+
         AlertDialog.Builder builder=new AlertDialog.Builder(getContext());
         builder.setTitle("Confirmation...")
                .setMessage(message)
@@ -356,6 +383,16 @@ public class NonLivreFragment extends Fragment {
         AlertDialog alert=builder.create();
         alert.show();
 
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if(isVisibleToUser){
+            if(cmdList!=null){
+                showCommandes(cmdList);
+            }
+        }
     }
 
     public MainActivity getMainActivity() {
