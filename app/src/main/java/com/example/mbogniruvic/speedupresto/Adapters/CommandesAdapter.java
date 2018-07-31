@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.example.mbogniruvic.speedupresto.R;
 import com.example.mbogniruvic.speedupresto.Tasks.DownLoadImageTask;
+import com.example.mbogniruvic.speedupresto.Utils.ConnectionStatus;
 import com.example.mbogniruvic.speedupresto.models.Commande;
 
 import java.util.List;
@@ -53,7 +54,11 @@ public class CommandesAdapter extends RecyclerView.Adapter<CommandesAdapter.MyVi
         holder.montant.setText(cmd.getMontant()+" FCFA");
         holder.qte.setText(cmd.getQte()+"");
         holder.heure.setText(cmd.getHeure());
-        new DownLoadImageTask(holder.image).execute(cmd.getMenu().getImage());
+        if (ConnectionStatus.getInstance(context).isOnline()) {
+            new DownLoadImageTask(holder.image).execute(cmd.getMenu().getImage());
+        } else {
+            new DownLoadImageTask(holder.image, cmd.getMenu().getId()).execute(cmd.getMenu().getImage());
+        }
 
     }
 

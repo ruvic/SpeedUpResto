@@ -39,7 +39,9 @@ public class Commande {
     public static final String COLUMN_MENU_ID = "menuID";
     public static final String COLUMN_QTE = "qte";
     public static final String COLUMN_MONTANT = "montant";
-    public static final String COLUMN_DATE = "date";
+    public static final String COLUMN_ETAT = "etat";
+    public static final String COLUMN_CREATED_AT = "createdAt";
+    public static final String COLUMN_UPDATED_AT = "updateAT";
     public static final String COLUMN_TIMESTAMP = "timestamp";
 
     public static final String CREATE_TABLE =
@@ -47,8 +49,10 @@ public class Commande {
                     + COLUMN_ID + " TEXT PRIMARY KEY,"
                     + COLUMN_MENU_ID + " TEXT,"
                     + COLUMN_QTE + " INTEGER,"
+                    + COLUMN_ETAT + " TEXT,"
                     + COLUMN_MONTANT + " REAL,"
-                    + COLUMN_DATE + " TEXT,"
+                    + COLUMN_CREATED_AT + " TEXT,"
+                    + COLUMN_UPDATED_AT + " TEXT,"
                     + COLUMN_TIMESTAMP + " DATETIME DEFAULT CURRENT_TIMESTAMP, "
                     + " FOREIGN KEY ("+COLUMN_MENU_ID+") REFERENCES "+MenuItem.TABLE_NAME+"("+MenuItem.COLUMN_ID+")"
                     + ")";

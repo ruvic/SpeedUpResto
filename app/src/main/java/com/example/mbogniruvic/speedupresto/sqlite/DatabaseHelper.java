@@ -3,7 +3,6 @@ package com.example.mbogniruvic.speedupresto.sqlite;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.widget.Toast;
@@ -15,7 +14,10 @@ import com.example.mbogniruvic.speedupresto.models.Commande;
 import com.example.mbogniruvic.speedupresto.models.MenuItem;
 import com.example.mbogniruvic.speedupresto.models.Review;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
@@ -257,16 +259,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return imageUri;
     }
 
-    public MenuItem getRecentMenuItem(){
+    public MenuItem getMenuItem(String id){
         SQLiteDatabase db = this.getReadableDatabase();
 
-        String selectQuery = "SELECT  * FROM " + MenuItem.TABLE_NAME + " ORDER BY "
-                + "date("+ Review.COLUMN_TIMESTAMP +") DESC limit 1";
+        String selectQuery = "SELECT  * FROM " + MenuItem.TABLE_NAME + " WHERE "
+                +MenuItem.COLUMN_ID+"='"+id+"'";
 
         Cursor c = db.rawQuery(selectQuery, null);
 
-        if(c!=null){
-            c.moveToFirst();
+        if(c!=null && c.moveToFirst()){
+            //c.moveToFirst();
             MenuItem menu=new MenuItem();
             menu.setId(c.getString(c.getColumnIndex(MenuItem.COLUMN_ID)));
             menu.setIdCat(c.getString(c.getColumnIndex(MenuItem.COLUMN_CAT_ID)));
@@ -356,10 +358,139 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * Methode de gestion des commandes
      */
 
-    private void createCommande(Commande cmd){
+    private String createCommande(Commande cmd){
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(Commande.COLUMN_ID, cmd.getId());
+        values.put(Commande.COLUMN_MENU_ID, cmd.getMenu().getId());
+        values.put(Commande.COLUMN_QTE, cmd.getQte());
+        values.put(Commande.COLUMN_MONTANT, cmd.getMontant());
+        values.put(Commande.COLUMN_CREATED_AT, cmd.getDate());
+        values.put(Commande.COLUMN_UPDATED_AT, cmd.getDate());
+        values.put(Commande.COLUMN_ETAT, cmd.getEtat());
+
+        // insert row
+        return ""+db.insert(Commande.TABLE_NAME, null, values);
+    }
+
+    public String updateCommande(Commande cmd){
+
+        if(isCommandExist(cmd)){
+            SQLiteDatabase db = this.getWritableDatabase();
+
+            ContentValues values = new ContentValues();
+            values.put(Commande.COLUMN_ETAT, cmd.getEtat());
+
+            // updating row
+            long id=db.update(Commande.TABLE_NAME, values, Commande.COLUMN_ID + " = ?",
+                    new String[] { String.valueOf(cmd.getId()) });
+            return  id+"";
+        }else{
+            String id=createCommande(cmd);
+            return id+"";
+        }
 
     }
 
+    public List<Commande> getCommandesForDate(String date){
+
+        List<Commande> list = new ArrayList<>();
+
+        String selectQuery = "SELECT  * FROM " + Commande.TABLE_NAME;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (c.moveToFirst()) {
+            do {
+
+                if(c.getString(c.getColumnIndex(Commande.COLUMN_CREATED_AT)).contains(date)){
+
+                    Commande cmd=new Commande();
+
+                    cmd.setId(c.getString(c.getColumnIndex(Commande.COLUMN_ID)));
+                    cmd.setQte(c.getInt(c.getColumnIndex(Commande.COLUMN_QTE)));
+                    cmd.setMontant(c.getDouble(c.getColumnIndex(Commande.COLUMN_MONTANT)));
+                    cmd.setDate(c.getString(c.getColumnIndex(Commande.COLUMN_CREATED_AT)));
+                    cmd.setDateMaj(c.getString(c.getColumnIndex(Commande.COLUMN_UPDATED_AT)));
+                    cmd.setEtat(c.getString(c.getColumnIndex(Commande.COLUMN_ETAT)));
+                    cmd.setMenu(getMenuItem(c.getString(c.getColumnIndex(Commande.COLUMN_MENU_ID))));
+                    list.add(cmd);
+                }
+
+            } while (c.moveToNext());
+        }
+
+        return  list;
+    }
+
+    public List<Commande> getCommandesForPeriode(String start, String end) {
+
+        List<Commande> list = new ArrayList<>();
+
+        String selectQuery = "SELECT  * FROM " + Commande.TABLE_NAME;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (c.moveToFirst()) {
+            do {
+
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                String currentDate=c.getString(c.getColumnIndex(Commande.COLUMN_CREATED_AT)).split("T")[0];
+
+                try {
+                    Date date1=sdf.parse(start);
+                    Date date2=sdf.parse(currentDate);
+                    Date date3=sdf.parse(end);
+
+                    if(date1.compareTo(date2)<=0 && date2.compareTo(date3)<=0){
+                        Commande cmd=new Commande();
+
+                        cmd.setId(c.getString(c.getColumnIndex(Commande.COLUMN_ID)));
+                        cmd.setQte(c.getInt(c.getColumnIndex(Commande.COLUMN_QTE)));
+                        cmd.setMontant(c.getDouble(c.getColumnIndex(Commande.COLUMN_MONTANT)));
+                        cmd.setDate(c.getString(c.getColumnIndex(Commande.COLUMN_CREATED_AT)));
+                        cmd.setDateMaj(c.getString(c.getColumnIndex(Commande.COLUMN_UPDATED_AT)));
+                        cmd.setEtat(c.getString(c.getColumnIndex(Commande.COLUMN_ETAT)));
+                        cmd.setMenu(getMenuItem(c.getString(c.getColumnIndex(Commande.COLUMN_MENU_ID))));
+
+                        list.add(cmd);
+                    }
+
+                } catch (ParseException e) {
+                    Toast.makeText(context, "Ereur de parsage", Toast.LENGTH_SHORT).show();
+                }
+
+
+            } while (c.moveToNext());
+        }
+
+        return  list;
+    }
+
+    private boolean isCommandExist(Commande cmd){
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selectQuery = "SELECT  * FROM " + Commande.TABLE_NAME + " WHERE "
+                + Commande.COLUMN_ID +"="+"'"+cmd.getId()+"'";
+
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        return  c!=null && c.moveToFirst();
+
+    }
+
+
+
+
+    /**
+     * Fermeture de la base de donnée
+     */
     public void closeDB(){
         SQLiteDatabase db = this.getReadableDatabase();
         if (db != null && db.isOpen())

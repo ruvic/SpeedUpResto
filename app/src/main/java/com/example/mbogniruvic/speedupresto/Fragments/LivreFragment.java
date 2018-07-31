@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.example.mbogniruvic.speedupresto.Adapters.CommandesAdapter;
 import com.example.mbogniruvic.speedupresto.R;
 import com.example.mbogniruvic.speedupresto.Tasks.DownLoadImageTask;
+import com.example.mbogniruvic.speedupresto.Utils.ConnectionStatus;
 import com.example.mbogniruvic.speedupresto.models.Commande;
 
 import java.util.ArrayList;
@@ -59,62 +60,72 @@ public class LivreFragment extends Fragment {
 
     public void prepareDatas() {
 
-        if (NonLivreFragment.livreCmdList.size()!=0) {
+        if (NonLivreFragment.livreCmdList!=null) {
 
-            cmdList=NonLivreFragment.livreCmdList;
-            mAdapter = new CommandesAdapter(cmdList);
-            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
-            recyclerView.setLayoutManager(mLayoutManager);
-            recyclerView.setItemAnimator(new DefaultItemAnimator());
-            recyclerView.setAdapter(mAdapter);
+            if (NonLivreFragment.livreCmdList.size()!=0) {
 
-            //Gestion du clic sur un élément de la liste
-            recyclerView.addOnItemTouchListener(new NonLivreFragment.RecyclerTouchListener(getContext(), recyclerView, new NonLivreFragment.RecyclerTouchListener.ClickListener() {
+                cmdList=NonLivreFragment.livreCmdList;
+                mAdapter = new CommandesAdapter(cmdList);
+                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
+                recyclerView.setLayoutManager(mLayoutManager);
+                recyclerView.setItemAnimator(new DefaultItemAnimator());
+                recyclerView.setAdapter(mAdapter);
 
-                @Override
-                public void onClick(View view, int position) {
+                //Gestion du clic sur un élément de la liste
+                recyclerView.addOnItemTouchListener(new NonLivreFragment.RecyclerTouchListener(getContext(), recyclerView, new NonLivreFragment.RecyclerTouchListener.ClickListener() {
 
-                    final Commande cmd = cmdList.get(position);
-                    View detailsview = getLayoutInflater().inflate(R.layout.fragment_commande_livre_details, null);
+                    @Override
+                    public void onClick(View view, int position) {
 
-                    TextView title=(TextView)detailsview.findViewById(R.id.livre_title_menu);
-                    ImageView imgView=(ImageView)detailsview.findViewById(R.id.livre_image_menu);
-                    TextView montant=(TextView)detailsview.findViewById(R.id.livre_montant_menu);
-                    TextView qte=(TextView)detailsview.findViewById(R.id.livre_qte_menu);
-                    TextView heure=(TextView)detailsview.findViewById(R.id.livre_heure_menu);
-                    TextView dateLivraison=(TextView)detailsview.findViewById(R.id.livre_date_livraison);
+                        final Commande cmd = cmdList.get(position);
+                        View detailsview = getLayoutInflater().inflate(R.layout.fragment_commande_livre_details, null);
 
-                    title.setText(cmd.getMenu().getNom());
-                    montant.setText(cmd.getMontant()+" FCFA");
-                    qte.setText(cmd.getQte()+"");
-                    heure.setText(cmd.getJour()+"\n"+cmd.getHeure());
-                    dateLivraison.setText(cmd.getDateMaj());
-                    new DownLoadImageTask(imgView).execute(cmd.getMenu().getImage());
+                        TextView title=(TextView)detailsview.findViewById(R.id.livre_title_menu);
+                        ImageView imgView=(ImageView)detailsview.findViewById(R.id.livre_image_menu);
+                        TextView montant=(TextView)detailsview.findViewById(R.id.livre_montant_menu);
+                        TextView qte=(TextView)detailsview.findViewById(R.id.livre_qte_menu);
+                        TextView heure=(TextView)detailsview.findViewById(R.id.livre_heure_menu);
+                        TextView dateLivraison=(TextView)detailsview.findViewById(R.id.livre_date_livraison);
 
-                    final BottomSheetDialog dialog = new BottomSheetDialog(getContext());
-                    dialog.setContentView(detailsview);
-                    dialog.show();
-
-                    ImageView btn_close=(ImageView) detailsview.findViewById(R.id.livre_close_menu);
-                    btn_close.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            dialog.dismiss();
+                        title.setText(cmd.getMenu().getNom());
+                        montant.setText(cmd.getMontant()+" FCFA");
+                        qte.setText(cmd.getQte()+"");
+                        heure.setText(cmd.getJour()+"\n"+cmd.getHeure());
+                        dateLivraison.setText(cmd.getDateMaj());
+                        if (ConnectionStatus.getInstance(getContext()).isOnline()) {
+                            new DownLoadImageTask(imgView).execute(cmd.getMenu().getImage());
+                        } else {
+                            new DownLoadImageTask(imgView, cmd.getMenu().getId()).execute(cmd.getMenu().getImage());
                         }
-                    });
-                }
 
-                @Override
-                public void onLongClick(View view, int position) {
+                        final BottomSheetDialog dialog = new BottomSheetDialog(getContext());
+                        dialog.setContentView(detailsview);
+                        dialog.show();
 
-                }
-            }));
+                        ImageView btn_close=(ImageView) detailsview.findViewById(R.id.livre_close_menu);
+                        btn_close.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                dialog.dismiss();
+                                dialog.cancel();
+                            }
+                        });
+                    }
 
-            recyclerView.setVisibility(View.VISIBLE);
-            progressBar.setVisibility(View.GONE);
+                    @Override
+                    public void onLongClick(View view, int position) {
 
+                    }
+                }));
+
+                recyclerView.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.GONE);
+
+            } else {
+                Toast.makeText(NonLivreFragment.context, "Liste vide", Toast.LENGTH_SHORT).show();
+            }
         } else {
-            Toast.makeText(NonLivreFragment.context, "Liste vide", Toast.LENGTH_SHORT).show();
+            Toast.makeText(NonLivreFragment.context, "Erreur dans le chargement de la grande liste", Toast.LENGTH_SHORT).show();
         }
     }
 

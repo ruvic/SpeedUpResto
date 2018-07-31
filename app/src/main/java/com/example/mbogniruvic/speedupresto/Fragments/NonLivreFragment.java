@@ -25,12 +25,14 @@ import com.example.mbogniruvic.speedupresto.Adapters.CommandesAdapter;
 import com.example.mbogniruvic.speedupresto.MainActivity;
 import com.example.mbogniruvic.speedupresto.R;
 import com.example.mbogniruvic.speedupresto.Tasks.DownLoadImageTask;
+import com.example.mbogniruvic.speedupresto.Utils.ConnectionStatus;
 import com.example.mbogniruvic.speedupresto.Utils.RestaurantPreferencesDB;
 import com.example.mbogniruvic.speedupresto.models.Commande;
 import com.example.mbogniruvic.speedupresto.models.CommandeResponse;
 import com.example.mbogniruvic.speedupresto.models.UpdateCommandeResponse;
 import com.example.mbogniruvic.speedupresto.rest.ApiClient;
 import com.example.mbogniruvic.speedupresto.rest.ApiInterface;
+import com.example.mbogniruvic.speedupresto.sqlite.DatabaseHelper;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -47,6 +49,7 @@ import retrofit2.Response;
 public class NonLivreFragment extends Fragment {
     private final ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
     public static Context context;
+    public static DatabaseHelper db;
     public static List<Commande> cmdList;
     public static List<Commande> nonLivreCmdList;
     public static List<Commande> livreCmdList;
@@ -105,16 +108,11 @@ public class NonLivreFragment extends Fragment {
 
         Call<CommandeResponse> call=null;
 
+
         //Si on doit afficher les commandes dee la journée en cours ...
         if(!mainActivity.hasChooseType){
 
-            String today="";
-            final Calendar c = Calendar.getInstance();
-            int year = c.get(Calendar.YEAR);
-            int month = c.get(Calendar.MONTH);
-            int day = c.get(Calendar.DAY_OF_MONTH);
-
-            today=year+":"+((month<10)?"0"+month:month)+":"+((day<10)?"0"+day:day);
+            String today=getCurrentDate();
             call=apiService.getAllCommandesForDate(
                     sharedDB.getString(RestaurantPreferencesDB.ID_KEY, ""),
                     today
@@ -159,12 +157,41 @@ public class NonLivreFragment extends Fragment {
 
                 @Override
                 public void onFailure(Call<CommandeResponse> call, Throwable t) {
-                    Toast.makeText(context, t.getMessage(), Toast.LENGTH_SHORT).show();
+
+                    db=new DatabaseHelper(context);
+                    cmdList=new ArrayList<>();
+
+                    if(!mainActivity.hasChooseType){
+                        cmdList=db.getCommandesForDate(getCurrentDate());
+                    }else if(mainActivity.isDayFilter()){
+                        cmdList=db.getCommandesForDate(mainActivity.getStartDay());
+                    }else{
+                        cmdList=db.getCommandesForPeriode(mainActivity.getStartDay(), mainActivity.getEndDay());
+                    }
+
+                    db.closeDB();
+
+                    if(cmdList.size()!=0 && cmdList.get(0).getMenu()==null){
+                        Toast.makeText(context, getString(R.string.conn_error_not), Toast.LENGTH_SHORT).show();
+                    }
+                    else
+                        showCommandes(cmdList);
+
                 }
             });
         } else {
             Toast.makeText(context, "Call is null", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private String getCurrentDate() {
+
+        final Calendar c = Calendar.getInstance();
+        int year = c.get(Calendar.YEAR);
+        int month = c.get(Calendar.MONTH);
+        int day = c.get(Calendar.DAY_OF_MONTH);
+
+        return year+":"+((month<10)?"0"+month:month)+":"+((day<10)?"0"+day:day);
     }
 
     private void prepareDatas(List<Commande> lists){
@@ -174,6 +201,7 @@ public class NonLivreFragment extends Fragment {
 
     private void showCommandes(List<Commande> list){
 
+        db=new DatabaseHelper(context);
         cmdList=list;
         nonLivreCmdList=new ArrayList<>();
         livreCmdList=new ArrayList<>();
@@ -196,6 +224,10 @@ public class NonLivreFragment extends Fragment {
                     valideCmdList.add(cmd);
                     break;
             }
+
+            //Stockage en local
+            db.updateCommande(cmd);
+
         }
 
         mAdapter = new CommandesAdapter(nonLivreCmdList);
@@ -225,7 +257,11 @@ public class NonLivreFragment extends Fragment {
                 montant.setText(cmd.getMontant()+" FCFA");
                 qte.setText(cmd.getQte()+"");
                 heure.setText(cmd.getJour()+"\n"+cmd.getHeure());
-                new DownLoadImageTask(imgView).execute(cmd.getMenu().getImage());
+                if (ConnectionStatus.getInstance(context).isOnline()) {
+                    new DownLoadImageTask(imgView).execute(cmd.getMenu().getImage());
+                } else {
+                    new DownLoadImageTask(imgView, cmd.getMenu().getId()).execute(cmd.getMenu().getImage());
+                }
 
                 final BottomSheetDialog dialog = new BottomSheetDialog(getContext());
                 dialog.setContentView(detailsview);
@@ -238,6 +274,7 @@ public class NonLivreFragment extends Fragment {
                     public void onClick(View view) {
                         //dialog.hide();
                         dialog.dismiss();
+                        dialog.cancel();
                     }
                 });
 
@@ -279,6 +316,7 @@ public class NonLivreFragment extends Fragment {
 
         recyclerView.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.GONE);
+        db.closeDB();
 
     }
 
@@ -293,10 +331,13 @@ public class NonLivreFragment extends Fragment {
             @Override
             public void onResponse(Call<UpdateCommandeResponse> call, Response<UpdateCommandeResponse> response) {
                 UpdateCommandeResponse body=response.body();
+                db=new DatabaseHelper(context);
                 if(!body.isError()){
+                    db.updateCommande(body.getCommande());
+                    db.closeDB();
                     dialog.dismiss();
+                    dialog.cancel();
                     getMainActivity().setupViewPager(getMainActivity().getViewPager());
-                    Toast.makeText(getContext(), cmd.getMenu().getId() + " a été MAJ", Toast.LENGTH_SHORT).show();
                 }else{
                     Toast.makeText(getContext(), body.getMessage(), Toast.LENGTH_SHORT).show();
                 }
@@ -392,6 +433,12 @@ public class NonLivreFragment extends Fragment {
             if(cmdList!=null){
                 showCommandes(cmdList);
             }
+        }
+    }
+
+    private void showMessage(String msg){
+        if (context!=null) {
+            Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
         }
     }
 
