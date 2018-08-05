@@ -1,21 +1,133 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context="com.example.mbogniruvic.speedupresto.Fragments.HomeFragment">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerV_non_livre"
+    <RelativeLayout
+        android:visibility="visible"
+        android:id="@+id/non_livre_main"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerV_non_livre"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:scrollbars="vertical" />
+
+        <ProgressBar
+            android:id="@+id/progress_non_livre"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/non_livre_conn_error"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="20dp"
+        android:visibility="visible"
+        tools:context="com.example.mbogniruvic.speedupresto.Fragments.HomeFragment">
+
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_above="@+id/non_livre_label"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="-100dp"
+            android:src="@drawable/wifi" />
+
+        <TextView
+            android:id="@+id/non_livre_label"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="100dp"
+            android:gravity="center_horizontal"
+            android:text="Oups..."
+            android:textSize="45dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/non_livre_label2"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="170dp"
+            android:gravity="center_horizontal"
+            android:text="@string/conn_error_desc"
+            android:textSize="12dp" />
+
+        <Button
+            android:id="@+id/non_livre_conn_refresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="157dp"
+            android:width="200dp"
+            android:text="Rafraichir" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
         android:visibility="gone"
-        android:scrollbars="vertical" />
+        android:id="@+id/non_livre_empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="20dp"
+        tools:context="com.example.mbogniruvic.speedupresto.Fragments.HomeFragment">
 
-    <ProgressBar
-        android:id="@+id/progress_non_livre"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"/>
 
-</RelativeLayout>
+        <ImageView
+            android:layout_width="271dp"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/non_livre_label11"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="-20dp"
+            android:src="@drawable/empty_image" />
+
+        <TextView
+            android:id="@+id/non_livre_label11"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center_horizontal"
+            android:text="@string/empty_label"
+            android:textSize="30dp"
+            android:layout_marginTop="20dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/non_livre_label22"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/non_livre_label11"
+            android:layout_centerHorizontal="true"
+            android:gravity="center_horizontal"
+            android:text="@string/empty_desc"
+            android:textSize="12dp" />
+
+
+        <Button
+            android:id="@+id/non_livre_empty_refresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/non_livre_label22"
+            android:layout_centerHorizontal="true"
+            android:width="200dp"
+            android:text="@string/refresh_btn" />
+
+    </RelativeLayout>
+
+
+</FrameLayout>

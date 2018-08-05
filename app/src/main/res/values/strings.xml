@@ -40,6 +40,9 @@
     <string name="conn_error_not">Vous devez être connecté à Internet.</string>
     <string name="fill_all_field">Veuillez remplir tous les champs.</string>
     <string name="title_activity_login">Sign in</string>
+    <string name="empty_label">LISTE VIDE...</string>
+    <string name="refresh_btn">RAFRAICHIR</string>
+    <string name="empty_desc">Cette liste ne contient aucun élément pour l\'instant</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>

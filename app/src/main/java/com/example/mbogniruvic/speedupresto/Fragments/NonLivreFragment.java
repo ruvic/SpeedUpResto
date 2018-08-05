@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -60,7 +61,14 @@ public class NonLivreFragment extends Fragment {
     private CommandesAdapter mAdapter;
     private RestaurantPreferencesDB sharedDB;
     private ProgressBar progressBar;
-    private MainActivity mainActivity;
+    public static MainActivity mainActivity;
+
+    private RelativeLayout mainLayout;
+    private RelativeLayout connErrorLayout;
+    private RelativeLayout emptyLayout;
+    private Button refresh_conn;
+    private Button refresh_empty;
+
 
 
     public NonLivreFragment() {
@@ -82,6 +90,25 @@ public class NonLivreFragment extends Fragment {
         //getAdress
         recyclerView = (RecyclerView)rootView.findViewById(R.id.recyclerV_non_livre);
         progressBar = (ProgressBar) rootView.findViewById(R.id.progress_non_livre);
+        mainLayout = (RelativeLayout) rootView.findViewById(R.id.non_livre_main);
+        connErrorLayout = (RelativeLayout) rootView.findViewById(R.id.non_livre_conn_error);
+        emptyLayout = (RelativeLayout) rootView.findViewById(R.id.non_livre_empty);
+        refresh_conn = (Button) rootView.findViewById(R.id.non_livre_conn_refresh);
+        refresh_empty = (Button) rootView.findViewById(R.id.non_livre_empty_refresh);
+
+        refresh_conn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mainActivity.setupViewPager(mainActivity.getViewPager());
+            }
+        });
+
+        refresh_empty.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mainActivity.setupViewPager(mainActivity.getViewPager());
+            }
+        });
 
         sharedDB= MainActivity.shareDB;
         prepareDatas();
@@ -143,12 +170,15 @@ public class NonLivreFragment extends Fragment {
 
                     if(!body.isError()){
 
-                        if (body.getCommandes().size()!=0) {
+                        if (body.getCommandes()!=null && body.getCommandes().size()!=0) {
 
                             showCommandes(body.getCommandes());
 
                         } else {
-                            Toast.makeText(context, "Aucune commande pour la journée", Toast.LENGTH_SHORT).show();
+
+                            livreCmdList=new ArrayList<>();
+                            refuseCmdList=new ArrayList<>();
+                            setVisible(emptyLayout);
                         }
                     }else {
                         Toast.makeText(context, body.getMessage(), Toast.LENGTH_SHORT).show();
@@ -171,11 +201,12 @@ public class NonLivreFragment extends Fragment {
 
                     db.closeDB();
 
-                    if(cmdList.size()!=0 && cmdList.get(0).getMenu()==null){
-                        Toast.makeText(context, getString(R.string.conn_error_not), Toast.LENGTH_SHORT).show();
-                    }
-                    else
+                    if(cmdList.size()==0 || (cmdList.size()!=0 && cmdList.get(0).getMenu()==null)){
+                        setVisible(connErrorLayout);
+                    } else {
                         showCommandes(cmdList);
+                    }
+
 
                 }
             });
@@ -194,10 +225,7 @@ public class NonLivreFragment extends Fragment {
         return year+":"+((month<10)?"0"+month:month)+":"+((day<10)?"0"+day:day);
     }
 
-    private void prepareDatas(List<Commande> lists){
-        if(lists==null) prepareDatas();
-        showCommandes(lists);
-    }
+
 
     private void showCommandes(List<Commande> list){
 
@@ -325,7 +353,7 @@ public class NonLivreFragment extends Fragment {
         }));
 
 
-        recyclerView.setVisibility(View.VISIBLE);
+        mainLayout.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.GONE);
         db.closeDB();
 
@@ -442,7 +470,11 @@ public class NonLivreFragment extends Fragment {
         super.setUserVisibleHint(isVisibleToUser);
         if(isVisibleToUser){
             if(cmdList!=null){
-                showCommandes(cmdList);
+                if (cmdList.size()!=0) {
+                    showCommandes(cmdList);
+                } else {
+                    setVisible(connErrorLayout);
+                }
             }
         }
     }
@@ -451,6 +483,24 @@ public class NonLivreFragment extends Fragment {
         if (context!=null) {
             Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void setVisible(RelativeLayout layout){
+
+        if (layout.equals(mainLayout)){
+            mainLayout.setVisibility(View.VISIBLE);
+            connErrorLayout.setVisibility(View.GONE);
+            emptyLayout.setVisibility(View.GONE);
+        }else if(layout.equals(connErrorLayout)){
+            mainLayout.setVisibility(View.GONE);
+            connErrorLayout.setVisibility(View.VISIBLE);
+            emptyLayout.setVisibility(View.GONE);
+        }else if (layout.equals(emptyLayout)){
+            mainLayout.setVisibility(View.GONE);
+            connErrorLayout.setVisibility(View.GONE);
+            emptyLayout.setVisibility(View.VISIBLE);
+        }
+
     }
 
     public MainActivity getMainActivity() {

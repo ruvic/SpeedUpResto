@@ -10,10 +10,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.mbogniruvic.speedupresto.Adapters.CommandesAdapter;
 import com.example.mbogniruvic.speedupresto.R;
@@ -35,6 +36,12 @@ public class LivreFragment extends Fragment {
     private CommandesAdapter mAdapter;
     private ProgressBar progressBar;
 
+    private RelativeLayout mainLayout;
+    private RelativeLayout connErrorLayout;
+    private RelativeLayout emptyLayout;
+    private Button refresh_conn;
+    private Button refresh_empty;
+
 
     public LivreFragment() {
         // Required empty public constructor
@@ -53,7 +60,25 @@ public class LivreFragment extends Fragment {
         //get Adresses
         recyclerView = (RecyclerView)rootView.findViewById(R.id.recyclerV_livre);
         progressBar = (ProgressBar) rootView.findViewById(R.id.progress_livre);
+        mainLayout = (RelativeLayout) rootView.findViewById(R.id.livre_main);
+        connErrorLayout = (RelativeLayout) rootView.findViewById(R.id.livre_conn_error);
+        emptyLayout = (RelativeLayout) rootView.findViewById(R.id.livre_empty);
+        refresh_conn = (Button) rootView.findViewById(R.id.livre_conn_refresh);
+        refresh_empty = (Button) rootView.findViewById(R.id.livre_empty_refresh);
 
+        refresh_conn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                NonLivreFragment.mainActivity.setupViewPager(NonLivreFragment.mainActivity.getViewPager());
+            }
+        });
+
+        refresh_empty.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                NonLivreFragment.mainActivity.setupViewPager(NonLivreFragment.mainActivity.getViewPager());
+            }
+        });
 
         return rootView;
     }
@@ -122,10 +147,16 @@ public class LivreFragment extends Fragment {
                 progressBar.setVisibility(View.GONE);
 
             } else {
-                Toast.makeText(NonLivreFragment.context, "Liste vide", Toast.LENGTH_SHORT).show();
+
+                setVisible(emptyLayout);
+
+                //Toast.makeText(NonLivreFragment.context, "Liste vide", Toast.LENGTH_SHORT).show();
             }
         } else {
-            Toast.makeText(NonLivreFragment.context, "Erreur dans le chargement de la grande liste", Toast.LENGTH_SHORT).show();
+
+            setVisible(connErrorLayout);
+
+            //Toast.makeText(NonLivreFragment.context, "Erreur dans le chargement de la grande liste", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -148,7 +179,23 @@ public class LivreFragment extends Fragment {
         super.onDetach();
     }
 
+    private void setVisible(RelativeLayout layout){
 
+        if (layout.equals(mainLayout)){
+            mainLayout.setVisibility(View.VISIBLE);
+            connErrorLayout.setVisibility(View.GONE);
+            emptyLayout.setVisibility(View.GONE);
+        }else if(layout.equals(connErrorLayout)){
+            mainLayout.setVisibility(View.GONE);
+            connErrorLayout.setVisibility(View.VISIBLE);
+            emptyLayout.setVisibility(View.GONE);
+        }else if (layout.equals(emptyLayout)){
+            mainLayout.setVisibility(View.GONE);
+            connErrorLayout.setVisibility(View.GONE);
+            emptyLayout.setVisibility(View.VISIBLE);
+        }
+
+    }
 
 
 }
