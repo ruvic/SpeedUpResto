@@ -326,6 +326,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public String updateMenuItem(MenuItem menu){
 
         if (isMenuItemExist(menu)) {
+
             SQLiteDatabase db = this.getWritableDatabase();
 
             String imageUri=menu.getImage();
@@ -484,6 +485,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return  c!=null && c.moveToFirst();
 
     }
+
+
 
 
 

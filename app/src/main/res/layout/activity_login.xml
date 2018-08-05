@@ -14,6 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
+            android:layout_marginTop="25dp"
             android:gravity="center_horizontal">
 
             <ImageView
@@ -22,7 +23,7 @@
                 android:layout_height="138dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_margin="@dimen/appbar_padding_top"
-                android:src="@drawable/logo" />
+                android:src="@drawable/speedlogo" />
 
 
             <TextView
@@ -85,7 +86,7 @@
 
 
                 <EditText
-                    android:id="@+id/login_mail"
+                    android:id="@+id/login_phone"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_marginTop="@dimen/appbar_padding_top"
@@ -93,8 +94,8 @@
                     android:drawableLeft="@drawable/ic_phone_white_24dp"
                     android:drawablePadding="@dimen/fab_margin"
                     android:drawableTint="@color/colorPrimary"
-                    android:hint="Identifiant (Email)"
-                    android:inputType="textEmailAddress"
+                    android:hint="Téléphone"
+                    android:inputType="phone"
                     android:paddingBottom="@dimen/appbar_padding_top"
                     android:paddingLeft="@dimen/fab_margin"
                     android:paddingTop="@dimen/appbar_padding_top"

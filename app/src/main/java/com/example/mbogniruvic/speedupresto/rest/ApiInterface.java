@@ -6,7 +6,6 @@ import com.example.mbogniruvic.speedupresto.models.CategoryResponse;
 import com.example.mbogniruvic.speedupresto.models.CommandeResponse;
 import com.example.mbogniruvic.speedupresto.models.CreateMenuItemResponse;
 import com.example.mbogniruvic.speedupresto.models.RestaurantResponse;
-import com.example.mbogniruvic.speedupresto.models.RestaurantWithEmailResponse;
 import com.example.mbogniruvic.speedupresto.models.UpdateCommandeResponse;
 import com.example.mbogniruvic.speedupresto.models.UpdateMenuitemResponse;
 import com.example.mbogniruvic.speedupresto.models.UpdateRestaurantResponse;
@@ -61,11 +60,11 @@ public interface ApiInterface {
             @Field("disponible") boolean disponible
     );
 
-    @GET("restaurants/{restauID}")
-    Call<RestaurantResponse> getRestaurantProfile(@Path("restauID") String restauID);
-
-    @GET("restaurants/email/{email}")
-    Call<RestaurantWithEmailResponse> getRestoWithMail(@Path("email") String email);
+    @GET("/restaurants/phone/{phone}/password/{pass}")
+    Call<RestaurantResponse> getRestaurantProfile(
+            @Path("phone") String phone,
+            @Path("pass") String password
+    );
 
     @GET("reviews/restau/{restauID}")
     Call<AllRestauReviewsResponse> getAllRestauReviews(@Path("restauID") String restauID);

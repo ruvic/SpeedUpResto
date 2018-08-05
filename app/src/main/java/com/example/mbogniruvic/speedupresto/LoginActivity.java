@@ -2,6 +2,7 @@ package com.example.mbogniruvic.speedupresto;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -9,8 +10,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.mbogniruvic.speedupresto.Utils.ConnectionStatus;
+import com.example.mbogniruvic.speedupresto.Utils.ImagesManager;
+import com.example.mbogniruvic.speedupresto.Utils.RestaurantPreferencesDB;
 import com.example.mbogniruvic.speedupresto.models.Restaurant;
-import com.example.mbogniruvic.speedupresto.models.RestaurantWithEmailResponse;
+import com.example.mbogniruvic.speedupresto.models.RestaurantResponse;
 import com.example.mbogniruvic.speedupresto.rest.ApiClient;
 import com.example.mbogniruvic.speedupresto.rest.ApiInterface;
 
@@ -21,7 +25,7 @@ import retrofit2.Response;
 public class LoginActivity extends AppCompatActivity {
     public static final String TAG = LoginActivity.class.getSimpleName();
     public static final String TAG_RESTO = TAG+"_RESTO";
-    private EditText mailText;
+    private EditText phoneText;
     private EditText passwordText;
     private Button loginBtn;
 
@@ -39,7 +43,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
         //get Adresses
-        mailText=(EditText)findViewById(R.id.login_mail);
+        phoneText=(EditText)findViewById(R.id.login_phone);
         passwordText=(EditText)findViewById(R.id.login_password);
         loginBtn=(Button) findViewById(R.id.login_sign_in);
 
@@ -47,7 +51,8 @@ public class LoginActivity extends AppCompatActivity {
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(mailText.getText().toString().isEmpty()
+
+                if(phoneText.getText().toString().isEmpty()
                         || passwordText.getText().toString().isEmpty()){
 
                     Toast.makeText(getApplicationContext(), getString(R.string.login_hint), Toast.LENGTH_SHORT).show();
@@ -55,22 +60,31 @@ public class LoginActivity extends AppCompatActivity {
 
                     pd.show();
                     ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
-                    Call<RestaurantWithEmailResponse> call=apiService.getRestoWithMail(mailText.getText().toString());
+                    Call<RestaurantResponse> call=apiService.getRestaurantProfile(
+                        phoneText.getText().toString().trim(),
+                        passwordText.getText().toString().trim()
+                    );
 
-                    call.enqueue(new Callback<RestaurantWithEmailResponse>() {
+                    call.enqueue(new Callback<RestaurantResponse>() {
 
                         @Override
-                        public void onResponse(Call<RestaurantWithEmailResponse> call, Response<RestaurantWithEmailResponse> response) {
-                            RestaurantWithEmailResponse body=response.body();
+                        public void onResponse(Call<RestaurantResponse> call, Response<RestaurantResponse> response) {
+                            RestaurantResponse body=response.body();
 
                             if(!body.isError()){
-                                if(body.getRestaurants()!=null){
 
-                                    Restaurant resto=body.getRestaurants().get(0);
+                                if(body.getRestaurant()!=null){
+
+                                    //stockage en local
+                                    pd.setTitle("Récupération des infos.. ");
+                                    RestaurantPreferencesDB sharedDB=new RestaurantPreferencesDB(getApplicationContext());
+                                    body.getRestaurant().setPassword(passwordText.getText().toString().trim());
+                                    sharedDB.put(body.getRestaurant());
+
+                                    new SaveProfileImageTask(body.getRestaurant()).execute();
 
                                     pd.dismiss();
                                     Intent intent=new Intent(LoginActivity.this, MainActivity.class);
-                                    intent.putExtra(TAG_RESTO, resto);
                                     startActivity(intent);
                                     finish();
 
@@ -80,15 +94,32 @@ public class LoginActivity extends AppCompatActivity {
                                 }
                             }else{
                                 pd.dismiss();
-                                Toast.makeText(getApplicationContext(), body.getMessage(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), "Informations incorrectes", Toast.LENGTH_SHORT).show();
                             }
 
                         }
 
                         @Override
-                        public void onFailure(Call<RestaurantWithEmailResponse> call, Throwable t) {
-                            pd.dismiss();
-                            Toast.makeText(getApplicationContext(), getString(R.string.conn_error_not), Toast.LENGTH_SHORT).show();
+                        public void onFailure(Call<RestaurantResponse> call, Throwable t) {
+
+
+                            RestaurantPreferencesDB shareDB=new RestaurantPreferencesDB(getApplicationContext());
+                            String phone=shareDB.getString(RestaurantPreferencesDB.PHONE_KEY, "");
+                            String pwd=shareDB.getString(RestaurantPreferencesDB.PASSWORD_KEY, "");
+
+                            if(phoneText.getText().toString().trim().equals(phone)
+                                    && passwordText.getText().toString().trim().equals(pwd)){
+
+                                pd.dismiss();
+                                Intent intent=new Intent(LoginActivity.this, MainActivity.class);
+                                startActivity(intent);
+                                finish();
+
+                            }else{
+                                pd.dismiss();
+                                Toast.makeText(getApplicationContext(), getString(R.string.login_error), Toast.LENGTH_SHORT).show();
+                            }
+
                         }
 
                     });
@@ -97,5 +128,31 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+
+
+    class  SaveProfileImageTask extends AsyncTask<Void, Void, Void> {
+
+        private Restaurant restaurant;
+
+        public SaveProfileImageTask(Restaurant restaurant) {
+            this.restaurant = restaurant;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            if(ConnectionStatus.getInstance(getApplicationContext()).isOnline()){
+                ImagesManager.saveIntoInternalStorage(getApplicationContext(), restaurant.getImage(), restaurant.getId());
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+
+        }
     }
 }

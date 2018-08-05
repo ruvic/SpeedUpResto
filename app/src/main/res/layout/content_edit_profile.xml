@@ -24,46 +24,6 @@
                 android:src="@drawable/ic_image_empty"
                 android:foreground="#20000000"/>
 
-            <!--<RelativeLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="65dp"
-                android:layout_marginBottom="30dp"
-                android:background="#50000000"
-                android:layout_gravity="bottom">
-
-                <TextView
-                    android:id="@+id/edit_prof_resto_nom"
-                    android:textColor="@color/white"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:textSize="18sp"
-                    android:text="Restaurant Tchop Tchop"
-                    android:textStyle="bold"/>
-
-                <TextView
-                    android:layout_below="@id/edit_prof_resto_nom"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="15sp"
-                    android:textColor="@color/white"
-                    android:id="@+id/edit_prof_local"
-                    android:gravity="center"
-                    android:text="Essos, Yaoundé" />
-
-                <TextView
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginBottom="3dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="15sp"
-                    android:gravity="center"
-                    android:text="Essos, Yaoundé" />
-
-
-            </RelativeLayout>-->
-
             <ImageButton
                 android:id="@+id/edit_prof_load_image"
                 android:layout_width="50dp"

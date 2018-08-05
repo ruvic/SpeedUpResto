@@ -64,10 +64,10 @@ public class RestaurantPreferencesDB {
         editor.putString(BIO_KEY, restau.getBio());
         editor.putString(LATITUDE_KEY, restau.getLatitude());
         editor.putString(LONGITUDE_KEY, restau.getLongitude());
+        editor.putString(PASSWORD_KEY, restau.getPassword());
         editor.putFloat(NOTE_KEY, restau.getNote());
         editor.putBoolean(STATE_KEY, restau.isState());
         editor.putInt(MIN_ORDER_KEY, restau.getMin_order());
-
 
         editor.commit();
     }

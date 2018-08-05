@@ -1,11 +1,8 @@
 package com.example.mbogniruvic.speedupresto.Tasks;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.os.AsyncTask;
-import android.widget.Toast;
 
-import com.example.mbogniruvic.speedupresto.models.Category;
 import com.example.mbogniruvic.speedupresto.models.CategoryMenu;
 import com.example.mbogniruvic.speedupresto.models.MenuItem;
 import com.example.mbogniruvic.speedupresto.sqlite.DatabaseHelper;
@@ -37,7 +34,6 @@ public class StoreMenusTask extends AsyncTask<List<CategoryMenu>,Void,Boolean>  
             }
 
         }
-
 
         return null;
     }

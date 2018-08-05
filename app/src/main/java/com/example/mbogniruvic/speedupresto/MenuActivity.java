@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
@@ -30,6 +31,7 @@ import com.example.mbogniruvic.speedupresto.Utils.RestaurantPreferencesDB;
 import com.example.mbogniruvic.speedupresto.models.Category;
 import com.example.mbogniruvic.speedupresto.models.CategoryMenu;
 import com.example.mbogniruvic.speedupresto.models.CategoryMenuResponse;
+import com.example.mbogniruvic.speedupresto.models.CategoryResponse;
 import com.example.mbogniruvic.speedupresto.models.MenuItem;
 import com.example.mbogniruvic.speedupresto.rest.ApiClient;
 import com.example.mbogniruvic.speedupresto.rest.ApiInterface;
@@ -106,8 +108,6 @@ public class MenuActivity extends AppCompatActivity {
                     .execute(shareDB.getString(RestaurantPreferencesDB.IMAGE_KEY, ""));
         }
 
-        prepareDatas();
-
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.add_menu_fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -119,6 +119,11 @@ public class MenuActivity extends AppCompatActivity {
             }
         });
 
+        if(db.getAllCategories().size()==0){
+            getAllCategories();
+        }else{
+            prepareDatas();
+        }
     }
 
     @Override
@@ -247,6 +252,69 @@ public class MenuActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void getAllCategories() {
+
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+        Call<CategoryResponse> call=apiService.getAllCategories();
+
+        call.enqueue(new Callback<CategoryResponse>() {
+
+            @Override
+            public void onResponse(Call<CategoryResponse>call, Response<CategoryResponse> response) {
+                List<Category> categoryList = response.body().getResults();
+
+                if(categoryList!=null && categoryList.size()!=0){
+
+                    new StoreAllCategoriesTask(new DatabaseHelper(getApplicationContext()), getApplicationContext()).execute(categoryList);
+
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<CategoryResponse>call, Throwable t) {
+
+
+            }
+
+        });
+
+    }
+
+
+    public class StoreAllCategoriesTask extends AsyncTask<List<Category>, Void, List<String>> {
+
+        private DatabaseHelper db;
+        private Context context;
+
+        public StoreAllCategoriesTask(DatabaseHelper db, Context context) {
+            this.db = db;
+            this.context=context;
+        }
+
+        @Override
+        protected List<String> doInBackground(List<Category>... lists) {
+
+            List<Category> categoryList=lists[0];
+            List<String> list=new ArrayList<>();
+            for (Category cat : categoryList) {
+
+                String id=db.updateCategorie(cat);
+                list.add(id);
+
+            }
+            return list;
+        }
+
+        @Override
+        protected void onPostExecute(List<String> listes) {
+
+            Toast.makeText(context, "Sauv. cat. reussie", Toast.LENGTH_SHORT).show();
+            prepareDatas();
+
+        }
     }
 
     private  void updateInterfaceViews(){

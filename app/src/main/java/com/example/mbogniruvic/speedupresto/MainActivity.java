@@ -3,7 +3,6 @@ package com.example.mbogniruvic.speedupresto;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -23,6 +22,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -32,13 +32,9 @@ import com.example.mbogniruvic.speedupresto.Fragments.DatePickerFragment;
 import com.example.mbogniruvic.speedupresto.Fragments.LivreFragment;
 import com.example.mbogniruvic.speedupresto.Fragments.NonLivreFragment;
 import com.example.mbogniruvic.speedupresto.Fragments.RefuseFragment;
-import com.example.mbogniruvic.speedupresto.Utils.ConnectionStatus;
-import com.example.mbogniruvic.speedupresto.Utils.ImagesManager;
+import com.example.mbogniruvic.speedupresto.Tasks.DownLoadImageTask;
 import com.example.mbogniruvic.speedupresto.Utils.RestaurantPreferencesDB;
 import com.example.mbogniruvic.speedupresto.models.Restaurant;
-import com.example.mbogniruvic.speedupresto.models.RestaurantResponse;
-import com.example.mbogniruvic.speedupresto.rest.ApiClient;
-import com.example.mbogniruvic.speedupresto.rest.ApiInterface;
 import com.example.mbogniruvic.speedupresto.sqlite.DatabaseHelper;
 import com.jaredrummler.materialspinner.MaterialSpinner;
 
@@ -48,10 +44,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -59,7 +51,6 @@ public class MainActivity extends AppCompatActivity
     private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
-    private String restauID="5b060369244f78388a78f157";
     public static RestaurantPreferencesDB shareDB;
     private Restaurant restaurant;
     private DatabaseHelper db;
@@ -80,6 +71,8 @@ public class MainActivity extends AppCompatActivity
     private String startDay;
     private String endDay;
 
+    private ImageView imageHeaderNav;
+    private TextView titleHeaderNav;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +89,10 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        View headerLayout=navigationView.inflateHeaderView(R.layout.nav_header_main);
+        imageHeaderNav= (ImageView)headerLayout.findViewById(R.id.imageView);
+        titleHeaderNav=(TextView)headerLayout.findViewById(R.id.textView);
+
         navigationView.setNavigationItemSelectedListener(this);
 
         //getAdresses
@@ -111,107 +108,26 @@ public class MainActivity extends AppCompatActivity
         setupViewPager(viewPager);
         tabLayout.setupWithViewPager(viewPager);
 
-
         shareDB=new RestaurantPreferencesDB(context);
-        restaurant=getIntent().getParcelableExtra(LoginActivity.TAG_RESTO);
-        shareDB.put(restaurant);
         db=new DatabaseHelper(getApplicationContext());
 
         //db.dropDatabase();
         //Toast.makeText(context, "Suppression reussie", Toast.LENGTH_SHORT).show();
+        titleHeaderNav.setText(
+                shareDB.getString(RestaurantPreferencesDB.NOM_KEY, "")
+        );
 
+        new DownLoadImageTask(
+                imageHeaderNav,
+                shareDB.getString(RestaurantPreferencesDB.ID_KEY, "")
+        ).execute(
+                shareDB.getString(RestaurantPreferencesDB.IMAGE_KEY, "")
+        );
 
 
     }
 
 
-
-    private void getRestaurantProfile() {
-
-        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
-        Call<RestaurantResponse> call=apiService.getRestaurantProfile(restauID);
-
-        call.enqueue(new Callback<RestaurantResponse>() {
-
-            @Override
-            public void onResponse(Call<RestaurantResponse> call, Response<RestaurantResponse> response) {
-                if(!response.body().isError()){
-                    restaurant=response.body().getRestaurant();
-
-                    shareDB.put(restaurant);
-
-                    new SaveProfileImageTask().execute();
-
-                    Toast.makeText(context, "Infos chargé avec succès", Toast.LENGTH_SHORT).show();
-                }else{
-                    Toast.makeText(context, "Echec du chargement des informations", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<RestaurantResponse> call, Throwable t) {
-                Toast.makeText(context, t.toString(), Toast.LENGTH_SHORT).show();
-            }
-        });
-
-    }
-
-    class  SaveProfileImageTask extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-
-            if(ConnectionStatus.getInstance(context).isOnline()){
-                ImagesManager.saveIntoInternalStorage(getApplicationContext(), restaurant.getImage(), restaurant.getId());
-
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-
-            /*String url=shareDB.getString(RestaurantPreferencesDB.ROOT_IMAGE_KEY, "");
-            url+=shareDB.getString(RestaurantPreferencesDB.ID_KEY,"")+".jpg";
-
-            Toast.makeText(context, url, Toast.LENGTH_SHORT).show();
-            ImagesManager.uploadFile(context, url);*/
-
-        }
-    }
-
-    /*private void getAllCategories() {
-
-        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
-        Call<CategoryResponse> call=apiService.getAllCategories();
-
-        call.enqueue(new Callback<CategoryResponse>() {
-
-            @Override
-            public void onResponse(Call<CategoryResponse>call, Response<CategoryResponse> response) {
-                List<Category> categoryList = response.body().getResults();
-
-                if(categoryList!=null && categoryList.size()!=0){
-
-                    new StoreAllCategoriesTask(db, context).execute(categoryList);
-
-                }else if(categoryList==null){
-                    Toast.makeText(context, "Liste null", Toast.LENGTH_SHORT).show();
-                }else{
-                    Toast.makeText(context, "Liste vide", Toast.LENGTH_SHORT).show();
-                }
-
-            }
-
-            @Override
-            public void onFailure(Call<CategoryResponse>call, Throwable t) {
-                Toast.makeText(context, t.toString(), Toast.LENGTH_SHORT).show();
-            }
-
-        });
-
-    }*/
 
 
 

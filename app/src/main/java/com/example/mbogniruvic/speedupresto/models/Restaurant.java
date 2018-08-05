@@ -59,8 +59,11 @@ public class Restaurant implements Parcelable {
     @SerializedName("state")
     private boolean state;
 
+    @SerializedName("password")
+    private String password;
+
     public Restaurant(String id, String nom, String code, String image, float note, String email, String city, String quartier, String phone, long nber_note, int min_order, long fee_delivery,
-                      long time_delivery, String latitude, String longitude, String bio, boolean state) {
+                      long time_delivery, String latitude, String longitude, String bio, boolean state, String password) {
         this.id = id;
         this.nom = nom;
         this.code = code;
@@ -78,6 +81,7 @@ public class Restaurant implements Parcelable {
         this.longitude = longitude;
         this.bio = bio;
         this.state = state;
+        this.password=password;
     }
 
     public Restaurant() {
@@ -267,6 +271,14 @@ public class Restaurant implements Parcelable {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
 
