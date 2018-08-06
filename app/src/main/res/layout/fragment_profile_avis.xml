@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <LinearLayout
         android:layout_height="match_parent"
@@ -16,7 +17,7 @@
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recyclerV_avis"
-                android:visibility="invisible"
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
@@ -29,17 +30,109 @@
                 android:layout_marginTop="@dimen/fab_margin"
                 android:visibility="visible" />
 
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:visibility="gone"
+            android:id="@+id/avis_conn_error"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="20dp"
+            tools:context="com.example.mbogniruvic.speedupresto.Fragments.HomeFragment">
+
+
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_above="@+id/avis_label"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="-100dp"
+                android:src="@drawable/wifi" />
+
             <TextView
-                android:id="@+id/empty_review"
+                android:id="@+id/avis_label"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="100dp"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:textSize="45dp"
+                android:text="Oups..."
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/avis_label2"
+                android:layout_below="@id/avis_label"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textSize="12dp"
+                android:layout_marginTop="10dp"
+                android:gravity="center_horizontal"
+                android:text="@string/conn_error_desc" />
+
+            <Button
+                android:id="@+id/avis_conn_refresh"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/empty_list"
-                android:textSize="24sp"
-                android:layout_margin="24dp"
+                android:layout_marginTop="10dp"
+                android:text="Rafraichir"
+                android:width="200dp"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@id/avis_label2"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:visibility="gone"
+            android:id="@+id/avis_empty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="20dp"
+            tools:context="com.example.mbogniruvic.speedupresto.Fragments.HomeFragment">
+
+
+            <ImageView
+                android:layout_width="243dp"
+                android:layout_height="98dp"
+                android:layout_alignParentTop="true"
+
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/empty_image" />
+
+            <TextView
+                android:id="@+id/avis_label11"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:gravity="center"
-                android:layout_gravity="bottom"
-                android:visibility="invisible" />
+                android:gravity="center_horizontal"
+                android:text="@string/empty_label"
+                android:textSize="30dp"
+                android:layout_marginTop="100dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/avis_label22"
+                android:layout_below="@id/avis_label11"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textSize="12dp"
+                android:layout_marginTop="10dp"
+                android:gravity="center_horizontal"
+                android:text="@string/empty_desc" />
+
+
+            <Button
+                android:id="@+id/avis_empty_refresh"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/avis_label22"
+                android:layout_centerHorizontal="true"
+                android:width="200dp"
+                android:layout_marginTop="5dp"
+                android:text="@string/refresh_btn" />
+
         </RelativeLayout>
 
 

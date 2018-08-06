@@ -10,8 +10,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ProgressBar;
-import android.widget.TextView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.example.mbogniruvic.speedupresto.Adapters.RecyclerViewAvisItemsAdapter;
@@ -40,7 +41,11 @@ public class ProfileAvisFragment extends Fragment {
     private View view;
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
-    private TextView emptyText;
+
+    private RelativeLayout connLayout;
+    private RelativeLayout emptyLayout;
+    private Button conn_refresh;
+    private Button empty_refresh;
 
     public ProfileAvisFragment() {
         // Required empty public constructor
@@ -64,10 +69,33 @@ public class ProfileAvisFragment extends Fragment {
         //get Adress
         recyclerView=(RecyclerView)view.findViewById(R.id.recyclerV_avis);
         progressBar=(ProgressBar) view.findViewById(R.id.progress_review);
-        emptyText=(TextView) view.findViewById(R.id.empty_review);
+        connLayout=(RelativeLayout) view.findViewById(R.id.avis_conn_error);
+        emptyLayout=(RelativeLayout) view.findViewById(R.id.avis_empty);
+        conn_refresh=(Button) view.findViewById(R.id.avis_conn_refresh);
+        empty_refresh=(Button) view.findViewById(R.id.avis_empty_refresh);
+
+        refresh();
+
+        conn_refresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                refresh();
+            }
+        });
+
+        empty_refresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                refresh();
+            }
+        });
+
+        return rootView;
+    }
+
+    private void refresh(){
 
         String restauID=sharedDB.getString(RestaurantPreferencesDB.ID_KEY, "");
-
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
         Call<AllRestauReviewsResponse> call=apiService.getAllRestauReviews(restauID);
 
@@ -80,16 +108,19 @@ public class ProfileAvisFragment extends Fragment {
 
                     reviewsList=response.body().getReviews();
 
-                    if (reviewsList.size()!=0) {
+                    if (reviewsList!=null && reviewsList.size()!=0) {
 
                         new StoreReviewsTask(context, db).execute(reviewsList);
 
                         updateInterfaceViews();
 
                     } else {
-                        progressBar.setVisibility(View.INVISIBLE);
-                        recyclerView.setVisibility(View.INVISIBLE);
-                        emptyText.setVisibility(View.VISIBLE);
+
+                        progressBar.setVisibility(View.GONE);
+                        recyclerView.setVisibility(View.GONE);
+                        emptyLayout.setVisibility(View.VISIBLE);
+                        connLayout.setVisibility(View.GONE);
+
                     }
 
                 }else {
@@ -103,19 +134,20 @@ public class ProfileAvisFragment extends Fragment {
             @Override
             public void onFailure(Call<AllRestauReviewsResponse> call, Throwable t) {
 
-                /*emptyText.setVisibility(View.VISIBLE);
-                recyclerView.setVisibility(View.INVISIBLE);
-                progressBar.setVisibility(View.INVISIBLE);*/
 
                 reviewsList=db.getAllReviews();
-                updateInterfaceViews();
+                if (reviewsList.size()!=0) {
+                    updateInterfaceViews();
+                } else {
+                    progressBar.setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.GONE);
+                    emptyLayout.setVisibility(View.VISIBLE);
+                    connLayout.setVisibility(View.GONE);
+                }
 
 
             }
         });
-
-
-        return rootView;
     }
 
     private void updateInterfaceViews(){
@@ -126,8 +158,11 @@ public class ProfileAvisFragment extends Fragment {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
 
-        progressBar.setVisibility(View.INVISIBLE);
+        progressBar.setVisibility(View.GONE);
         recyclerView.setVisibility(View.VISIBLE);
+        emptyLayout.setVisibility(View.GONE);
+        connLayout.setVisibility(View.GONE);
+
     }
 
 

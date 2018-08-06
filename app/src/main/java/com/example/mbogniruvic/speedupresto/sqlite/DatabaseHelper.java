@@ -12,6 +12,7 @@ import com.example.mbogniruvic.speedupresto.Utils.ImagesManager;
 import com.example.mbogniruvic.speedupresto.models.Category;
 import com.example.mbogniruvic.speedupresto.models.Commande;
 import com.example.mbogniruvic.speedupresto.models.MenuItem;
+import com.example.mbogniruvic.speedupresto.models.Restaurant;
 import com.example.mbogniruvic.speedupresto.models.Review;
 
 import java.text.ParseException;
@@ -37,6 +38,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(Category.CREATE_TABLE);
+        db.execSQL(Restaurant.CREATE_TABLE);
         db.execSQL(MenuItem.CREATE_TABLE);
         db.execSQL(Commande.CREATE_TABLE);
         db.execSQL(Review.CREATE_TABLE);
@@ -46,6 +48,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {
 
         db.execSQL("DROP TABLE IF EXISTS " + Review.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + Restaurant.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + Commande.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + MenuItem.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + Category.TABLE_NAME);
@@ -486,7 +489,65 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
+    /***
+     * Gestion du restaurant
+     */
 
+    public String createRestaurant(Restaurant restau){
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(Restaurant.COLUMN_PHONE, restau.getPhone());
+        values.put(Restaurant.COLUMN_PASSWORD, restau.getPassword());
+
+        // insert row
+        return ""+db.insert(Restaurant.TABLE_NAME, null, values);
+    }
+
+
+
+    public boolean isRestaurantExist(String phone, String pwd){
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selectQuery = "SELECT  * FROM " + Restaurant.TABLE_NAME + " WHERE "
+                + Restaurant.COLUMN_PHONE +"="+"'"+phone+"' AND "
+                + Restaurant.COLUMN_PASSWORD + "="+"'"+pwd+"'";
+
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        return  c!=null && c.moveToFirst();
+
+    }
+
+    public Restaurant getRestaurant(String phone){
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selectQuery = "SELECT  * FROM " + Restaurant.TABLE_NAME + " WHERE "
+                +Restaurant.COLUMN_PHONE+"='"+phone+"'";
+
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        if(c!=null && c.moveToFirst()){
+            //c.moveToFirst();
+            Restaurant restaurant=new Restaurant();
+            restaurant.setPhone(c.getString(c.getColumnIndex(Restaurant.COLUMN_PHONE)));
+            restaurant.setPassword(c.getString(c.getColumnIndex(Restaurant.COLUMN_PASSWORD)));
+            return  restaurant;
+        }else{
+            return  null;
+        }
+    }
+
+
+    /**
+     * Méthodes de nettoyage des tables
+     * **/
+
+    public void clearMenus(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM "+MenuItem.TABLE_NAME);
+    }
 
 
 

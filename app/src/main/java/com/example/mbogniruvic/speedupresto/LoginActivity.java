@@ -17,6 +17,7 @@ import com.example.mbogniruvic.speedupresto.models.Restaurant;
 import com.example.mbogniruvic.speedupresto.models.RestaurantResponse;
 import com.example.mbogniruvic.speedupresto.rest.ApiClient;
 import com.example.mbogniruvic.speedupresto.rest.ApiInterface;
+import com.example.mbogniruvic.speedupresto.sqlite.DatabaseHelper;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -77,6 +78,11 @@ public class LoginActivity extends AppCompatActivity {
 
                                     //stockage en local
                                     pd.setTitle("Récupération des infos.. ");
+
+                                    checkNewRestaurant(
+                                            body.getRestaurant().getPhone(),
+                                            body.getRestaurant().getPassword());
+
                                     RestaurantPreferencesDB sharedDB=new RestaurantPreferencesDB(getApplicationContext());
                                     body.getRestaurant().setPassword(passwordText.getText().toString().trim());
                                     sharedDB.put(body.getRestaurant());
@@ -90,11 +96,11 @@ public class LoginActivity extends AppCompatActivity {
 
                                 }else {
                                     pd.dismiss();
-                                    Toast.makeText(getApplicationContext(), "Informations incorrectes", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getApplicationContext(), getString(R.string.login_error), Toast.LENGTH_SHORT).show();
                                 }
                             }else{
                                 pd.dismiss();
-                                Toast.makeText(getApplicationContext(), "Informations incorrectes", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), getString(R.string.login_error), Toast.LENGTH_SHORT).show();
                             }
 
                         }
@@ -107,17 +113,25 @@ public class LoginActivity extends AppCompatActivity {
                             String phone=shareDB.getString(RestaurantPreferencesDB.PHONE_KEY, "");
                             String pwd=shareDB.getString(RestaurantPreferencesDB.PASSWORD_KEY, "");
 
-                            if(phoneText.getText().toString().trim().equals(phone)
-                                    && passwordText.getText().toString().trim().equals(pwd)){
+                            if (!(phone==null || pwd==null || phone.isEmpty() || pwd.isEmpty())) {
 
-                                pd.dismiss();
-                                Intent intent=new Intent(LoginActivity.this, MainActivity.class);
-                                startActivity(intent);
-                                finish();
+                                if(phoneText.getText().toString().trim().equals(phone)
+                                        && passwordText.getText().toString().trim().equals(pwd)){
 
-                            }else{
+                                    pd.dismiss();
+                                    Intent intent=new Intent(LoginActivity.this, MainActivity.class);
+                                    startActivity(intent);
+                                    finish();
+
+                                }else{
+                                    pd.dismiss();
+                                    Toast.makeText(getApplicationContext(), getString(R.string.login_error), Toast.LENGTH_SHORT).show();
+                                }
+                            } else {
                                 pd.dismiss();
-                                Toast.makeText(getApplicationContext(), getString(R.string.login_error), Toast.LENGTH_SHORT).show();
+                                DatabaseHelper db=new DatabaseHelper(getApplicationContext());
+                                db.dropDatabase();
+                                Toast.makeText(getApplicationContext(), getString(R.string.conn_error_not), Toast.LENGTH_SHORT).show();
                             }
 
                         }
@@ -130,6 +144,16 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+    private void checkNewRestaurant(String phone, String pwd) {
+
+        RestaurantPreferencesDB sharedDB=new RestaurantPreferencesDB(getApplicationContext());
+        String ph=sharedDB.getString(RestaurantPreferencesDB.PHONE_KEY, "");
+        if(ph!=null && !ph.isEmpty() && !ph.equals(phone)){
+            DatabaseHelper db=new DatabaseHelper(getApplicationContext());
+            db.dropDatabase();
+        }
+
+    }
 
 
     class  SaveProfileImageTask extends AsyncTask<Void, Void, Void> {

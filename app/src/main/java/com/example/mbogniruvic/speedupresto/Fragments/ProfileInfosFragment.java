@@ -58,6 +58,7 @@ public class ProfileInfosFragment extends Fragment {
 
         int minOrder=shareDB.getInt(RestaurantPreferencesDB.MIN_ORDER_KEY, 0);
         long frais=shareDB.getLong(RestaurantPreferencesDB.FEE_DELIVERY_KEY, 0);
+        long nbrNote=shareDB.getLong(RestaurantPreferencesDB.NBER_NOTE_KEY, 0);
         long duree=shareDB.getLong(RestaurantPreferencesDB.TIME_DELIVERY_KEY, 0);
         boolean etat=shareDB.getBoolean(RestaurantPreferencesDB.STATE_KEY, false);
 
@@ -66,7 +67,7 @@ public class ProfileInfosFragment extends Fragment {
         dureeLivrasView.setText(duree+" min");
 
         etatView.setText((etat)?"Activé":"Desactivé");
-        nbNoteView.setText("Undefined");
+        nbNoteView.setText(nbrNote+"");
 
         return rootView;
     }

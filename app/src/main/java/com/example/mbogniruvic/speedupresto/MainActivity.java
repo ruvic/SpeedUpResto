@@ -124,7 +124,6 @@ public class MainActivity extends AppCompatActivity
                 shareDB.getString(RestaurantPreferencesDB.IMAGE_KEY, "")
         );
 
-
     }
 
 

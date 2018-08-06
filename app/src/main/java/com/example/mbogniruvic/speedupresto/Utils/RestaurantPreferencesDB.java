@@ -30,6 +30,7 @@ public class RestaurantPreferencesDB {
     public static final String PHONE_KEY = "PHONE";
     public static final String FEE_DELIVERY_KEY = "FEE_DELIVERY";
     public static final String MIN_ORDER_KEY = "MIN_ORDER";
+    public static final String NBER_NOTE_KEY = "NBER_NOTE";
     public static final String TIME_DELIVERY_KEY = "TIME_DELIVERY";
     public static final String IMAGE_KEY = "IMAGE";
     public static final String QUARTIER_KEY = "QUARTIER";
@@ -59,6 +60,7 @@ public class RestaurantPreferencesDB {
         editor.putString(PHONE_KEY, restau.getPhone());
         editor.putLong(FEE_DELIVERY_KEY, restau.getFee_delivery());
         editor.putLong(TIME_DELIVERY_KEY, restau.getTime_delivery());
+        editor.putLong(NBER_NOTE_KEY, restau.getNber_note());
         editor.putString(IMAGE_KEY, restau.getImage());
         editor.putString(QUARTIER_KEY, restau.getQuartier());
         editor.putString(BIO_KEY, restau.getBio());

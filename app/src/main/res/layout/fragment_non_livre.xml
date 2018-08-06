@@ -32,7 +32,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:padding="20dp"
-        android:visibility="visible"
+        android:visibility="gone"
         tools:context="com.example.mbogniruvic.speedupresto.Fragments.HomeFragment">
 
 
@@ -49,6 +49,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
             android:layout_marginTop="100dp"
             android:gravity="center_horizontal"
             android:text="Oups..."
@@ -56,7 +57,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/non_livre_label2"
+            android:id="@+id/non_livre_livre_label2"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
@@ -70,9 +71,9 @@
             android:id="@+id/non_livre_conn_refresh"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
+            android:layout_marginTop="15dp"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="157dp"
+            android:layout_below="@+id/non_livre_livre_label2"
             android:width="200dp"
             android:text="Rafraichir" />
 

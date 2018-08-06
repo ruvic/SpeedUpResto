@@ -62,6 +62,16 @@ public class Restaurant implements Parcelable {
     @SerializedName("password")
     private String password;
 
+    public static final String TABLE_NAME = "Restaurant";
+    public static final String COLUMN_PHONE = "phone";
+    public static final String COLUMN_PASSWORD = "password";
+
+    public static final String CREATE_TABLE =
+            "CREATE TABLE " + TABLE_NAME + " ("
+                    + COLUMN_PHONE + " TEXT PRIMARY KEY, "
+                    + COLUMN_PASSWORD + " TEXT)";
+
+
     public Restaurant(String id, String nom, String code, String image, float note, String email, String city, String quartier, String phone, long nber_note, int min_order, long fee_delivery,
                       long time_delivery, String latitude, String longitude, String bio, boolean state, String password) {
         this.id = id;
