@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.example.mbogniruvic.speedupresto.Fragments.ProfileAvisFragment;
@@ -34,7 +35,7 @@ public class ProfileActivity extends AppCompatActivity {
     private ImageView profileImageView;
     private TextView restoNomView;
     private TextView localView;
-    private TextView noteView;
+    private RatingBar noteRatingBar;
     private RestaurantPreferencesDB shareDB;
 
     @Override
@@ -62,7 +63,7 @@ public class ProfileActivity extends AppCompatActivity {
         profileImageView=(ImageView)findViewById(R.id.prof_image);
         restoNomView=(TextView)findViewById(R.id.prof_resto_name);
         localView=(TextView)findViewById(R.id.prof_local);
-        noteView=(TextView)findViewById(R.id.prof_note);
+        noteRatingBar=(RatingBar) findViewById(R.id.ProfileRatingBar);
 
         //init field
         shareDB=MainActivity.shareDB;
@@ -78,7 +79,10 @@ public class ProfileActivity extends AppCompatActivity {
         String local=shareDB.getString(RestaurantPreferencesDB.CITY_KEY, "<city>")+" , "
                 +shareDB.getString(RestaurantPreferencesDB.QUARTIER_KEY, "<quartier>");
         localView.setText(local);
-        noteView.setText(shareDB.getFloat(RestaurantPreferencesDB.NOTE_KEY, 0.0f)+" / 10");
+
+        float note=shareDB.getFloat(RestaurantPreferencesDB.NOTE_KEY, 0);
+        long nbrNote=shareDB.getLong(RestaurantPreferencesDB.NBER_NOTE_KEY, 0);
+        noteRatingBar.setRating(note/5.0f);
 
     }
 
