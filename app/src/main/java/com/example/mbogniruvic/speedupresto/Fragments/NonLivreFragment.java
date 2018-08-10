@@ -354,6 +354,7 @@ public class NonLivreFragment extends Fragment {
 
 
         mainLayout.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.GONE);
         db.closeDB();
 
